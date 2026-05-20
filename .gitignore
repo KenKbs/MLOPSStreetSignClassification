@@ -1,0 +1,2 @@
+# ignore data (managed by DVC later)
+/data/raw

@@ -1,0 +1,4 @@
+# ignore data (managed by DVC later)
+/data/raw
+/data/preprocessed
+__pycache__

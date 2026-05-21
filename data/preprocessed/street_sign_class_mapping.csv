@@ -50,7 +50,7 @@ canonical_id,canonical_name,italy_id,italy_name,germany_id,germany_name,mapping_
 48,warn_traffic_light,48,warn_traffic_light,26,traffic_signals,final,105
 49,warn_tram,49,warn_tram,,,pending_germany_mapping
 50,warn_two_way_traffic,50,warn_two_way_traffic,,,pending_germany_mapping
-51,warn_wild_animals,51,warn_wild_animals,37?,wild_animals_crossing,pending_germany_mapping,Review before using in preprocessing
+51,warn_wild_animals,51,warn_wild_animals,37,wild_animals_crossing,pending_germany_mapping,Review before using in preprocessing
 52,mand_bike_lane,52,mand_bike_lane,,,pending_germany_mapping
 53,mand_go_left,53,mand_go_left,34,turn_left_ahead,final,204
 54,mand_go_left_right,54,mand_go_left_right,,,pending_germany_mapping

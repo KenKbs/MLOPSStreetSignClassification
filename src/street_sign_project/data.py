@@ -1,6 +1,7 @@
 import csv
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Literal
 
 import typer
 from openpyxl import load_workbook
@@ -18,6 +19,9 @@ DEFAULT_PREPROCESS_DATA_DIR = PROJECT_ROOT / "data" / "preprocessed"
 DEFAULT_MAPPING_PATH_XLSX = DEFAULT_PREPROCESS_DATA_DIR / "street_sign_class_mapping.xlsx"
 DEFAULT_MAPPING_PATH_CSV = DEFAULT_PREPROCESS_DATA_DIR / "street_sign_class_mapping.csv"
 MAPPING_SHEET_NAME = "canonical_mapping"
+
+# Define Typing constants:
+DatasetName = Literal["germany", "italy"]
 
 
 @dataclass(frozen=True)
@@ -58,6 +62,15 @@ class ClassMapping:
             germany_to_canonical=germany_to_canonical,
             italy_to_canonical=italy_to_canonical,
         )
+    
+    def to_canonical(self, dataset_name: DatasetName, class_id: int) -> int:
+        """Return the canonical ID for a dataset specific class-id"""
+        if dataset_name == "germany":
+            return self.germany_to_canonical[class_id]
+        elif dataset_name == "italy":
+            return self.italy_to_canonical[class_id]
+        
+        raise ValueError(f"Unknown dataset name: {dataset_name}")
 
 
 class StreetSignDataset(Dataset):
@@ -69,9 +82,6 @@ class StreetSignDataset(Dataset):
 
     def __getitem__(self, index: int):
         """Return a given sample from the dataset."""
-
-    def preprocess(self, output_folder: Path) -> None:
-        """Preprocess the raw data and save it to the output folder."""
 
 
 def export_mapping_to_csv(
@@ -111,10 +121,53 @@ def export_mapping_to_csv(
         workbook.close()
 
 
+def _remap_label_file(
+    file_path: Path,
+    output_path: Path,
+    class_mapping: ClassMapping,
+    dataset_name: DatasetName,
+) -> None:
+    """Remap one YOLO label file to canonical class IDs.
 
-def remap_label_file(data_path:Path) -> None:
-    pass
+    Args:
+        file_path: Path to the source label file.
+        output_path: Path where the remapped label file should be written.
+        class_mapping: Mapping used to convert dataset-specific class IDs.
+        dataset_name: Source dataset name.
 
+    Raises:
+        ValueError: If a label line is malformed.
+        KeyError: If a class ID has no canonical mapping.
+    """
+    remapped_lines: list[str] = []
+
+    with file_path.open("r", encoding="utf-8") as label_file:
+        # One file can have multiple lines
+        for line_number, line in enumerate(label_file, start=1):
+            values = line.strip().split()
+            if not values:
+                continue
+            if len(values) != 5:
+                raise ValueError(f"Expected 5 YOLO values in {file_path}:{line_number}, got {len(values)}.")
+
+            # Get class id and remap to canonical
+            class_id = int(values[0])
+            try:
+                canonical_id = class_mapping.to_canonical(dataset_name, class_id)
+            except KeyError as error:
+                raise KeyError(f"No canonical mapping for {dataset_name} class ID {class_id}.") from error
+
+            # Add remapped lines to a list of strings
+            remapped_lines.append(" ".join([str(canonical_id), *values[1:]]))
+
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+
+    # Remap a list of lines to one string
+    output_text = "\n".join(remapped_lines)
+    output_text += "\n" # Add empty line to the end (convention)
+
+    with output_path.open("w", encoding="utf-8") as output_file:
+        output_file.write(output_text)
 
 def preprocess(data_path: Path, output_folder: Path) -> None:
     print("Preprocessing data...")

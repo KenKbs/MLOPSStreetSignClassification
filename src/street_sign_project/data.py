@@ -1,10 +1,11 @@
 import csv
+import shutil
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Literal
 
 import typer
-from openpyxl import load_workbook
+from openpyxl import load_workbook #TODO check if it can stay dev dependency or needs moving
 from torch.utils.data import Dataset
 #TODO replace print statements with logging
 
@@ -12,16 +13,17 @@ from torch.utils.data import Dataset
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 DEFAULT_RAW_DATA_DIR = PROJECT_ROOT / "data" / "raw"
-DEFAULT_GERMAN_DATA_DIR = DEFAULT_RAW_DATA_DIR / "Germany-GTSDB_Train_and_Test"
-DEFAULT_ITALIEN_DATA_DIR = DEFAULT_RAW_DATA_DIR / "Italy-StreetSignSet"
 
 DEFAULT_PREPROCESS_DATA_DIR = PROJECT_ROOT / "data" / "preprocessed"
 DEFAULT_MAPPING_PATH_XLSX = DEFAULT_PREPROCESS_DATA_DIR / "street_sign_class_mapping.xlsx"
 DEFAULT_MAPPING_PATH_CSV = DEFAULT_PREPROCESS_DATA_DIR / "street_sign_class_mapping.csv"
 MAPPING_SHEET_NAME = "canonical_mapping"
+IMAGE_SUFFIXES = {".jpg", ".jpeg", ".png"}
 
 # Define Typing constants:
 DatasetName = Literal["germany", "italy"]
+
+app = typer.Typer(no_args_is_help=True)
 
 
 @dataclass(frozen=True)
@@ -82,43 +84,6 @@ class StreetSignDataset(Dataset):
 
     def __getitem__(self, index: int):
         """Return a given sample from the dataset."""
-
-
-def export_mapping_to_csv(
-    sheet_path: Path = DEFAULT_MAPPING_PATH_XLSX,
-    output_path: Path = DEFAULT_MAPPING_PATH_CSV,
-) -> None:
-    """Export a mapping worksheet from an Excel workbook to a CSV file.
-
-    Args:
-        sheet_path: Path to the Excel workbook containing the mapping sheet.
-        output_path: Path where the exported CSV file should be written.
-
-    Raises:
-        FileNotFoundError: If the Excel workbook does not exist.
-        ValueError: If the canonical mapping worksheet is not present in the workbook.
-    """
-    if not sheet_path.exists():
-        raise FileNotFoundError(f"Mapping workbook not found: {sheet_path}")
-
-    # Load workbook
-    workbook = load_workbook(sheet_path, data_only=True, read_only=True)
-    try:
-        if MAPPING_SHEET_NAME not in workbook.sheetnames:
-            raise ValueError(f"Sheet '{MAPPING_SHEET_NAME}' not found in {sheet_path}.")
-
-        output_path.parent.mkdir(parents=True, exist_ok=True) # ensure outputpath exists
-        worksheet = workbook[MAPPING_SHEET_NAME]
-
-        # Write CSV file
-        with output_path.open("w", encoding="utf-8", newline="") as csv_file:
-            writer = csv.writer(csv_file)
-            for row in worksheet.iter_rows(values_only=True):
-                values = ["" if value is None else value for value in row]
-                if any(str(value).strip() for value in values):
-                    writer.writerow(values)
-    finally:
-        workbook.close()
 
 
 def _remap_label_file(
@@ -185,7 +150,56 @@ def _remap_label_folder(
             dataset_name=dataset_name,
         )
 
+def _copy_image_folder(input_images_dir: Path, output_images_dir: Path) -> None:
+    """Copy all image files in one folder to another folder."""
+    output_images_dir.mkdir(parents=True, exist_ok=True)
 
+    for image_path in input_images_dir.iterdir():
+        if not image_path.is_file():
+            continue
+        if image_path.suffix.lower() not in IMAGE_SUFFIXES:
+            continue
+
+        shutil.copy2(image_path, output_images_dir / image_path.name)
+
+@app.command()
+def export_mapping_to_csv(
+    sheet_path: Path = DEFAULT_MAPPING_PATH_XLSX,
+    output_path: Path = DEFAULT_MAPPING_PATH_CSV,
+) -> None:
+    """Export a mapping worksheet from an Excel workbook to a CSV file.
+
+    Args:
+        sheet_path: Path to the Excel workbook containing the mapping sheet.
+        output_path: Path where the exported CSV file should be written.
+
+    Raises:
+        FileNotFoundError: If the Excel workbook does not exist.
+        ValueError: If the canonical mapping worksheet is not present in the workbook.
+    """
+    if not sheet_path.exists():
+        raise FileNotFoundError(f"Mapping workbook not found: {sheet_path}")
+
+    # Load workbook
+    workbook = load_workbook(sheet_path, data_only=True, read_only=True)
+    try:
+        if MAPPING_SHEET_NAME not in workbook.sheetnames:
+            raise ValueError(f"Sheet '{MAPPING_SHEET_NAME}' not found in {sheet_path}.")
+
+        output_path.parent.mkdir(parents=True, exist_ok=True) # ensure outputpath exists
+        worksheet = workbook[MAPPING_SHEET_NAME]
+
+        # Write CSV file
+        with output_path.open("w", encoding="utf-8", newline="") as csv_file:
+            writer = csv.writer(csv_file)
+            for row in worksheet.iter_rows(values_only=True):
+                values = ["" if value is None else value for value in row]
+                if any(str(value).strip() for value in values):
+                    writer.writerow(values)
+    finally:
+        workbook.close()
+
+@app.command()
 def preprocess(raw_input_dir: Path = DEFAULT_RAW_DATA_DIR,
                output_dir: Path = DEFAULT_PREPROCESS_DATA_DIR,
                mapping_path:Path = DEFAULT_MAPPING_PATH_CSV,
@@ -200,22 +214,33 @@ def preprocess(raw_input_dir: Path = DEFAULT_RAW_DATA_DIR,
 
     # Preprocess German Dataset
     for split in ["Train", "Test"]:
+        input_split_dir = raw_input_dir / "GTSDB_Train_and_Test" / split
+        output_split = split.lower()
         _remap_label_folder(
-            input_labels_dir = raw_input_dir / "GTSDB_Train_and_Test" / split / "labels",
-            output_labels_dir = output_dir / split / "labels",
+            input_labels_dir = input_split_dir / "labels",
+            output_labels_dir = output_dir / output_split / "labels",
             class_mapping = class_mapping,
             dataset_name = "germany"
+        )
+        _copy_image_folder(
+            input_images_dir = input_split_dir / "images",
+            output_images_dir = output_dir / output_split / "images",
         )
     
     # Preprocess Italien Dataset
     for split in ["train", "test", "valid"]:
         # Save valid split also into test dir
+        input_split_dir = raw_input_dir / "StreetSignSet" / split
         output_split = "test" if split == "valid" else split
         _remap_label_folder(
-            input_labels_dir = raw_input_dir / "StreetSignSet" / split / "labels",
+            input_labels_dir = input_split_dir / "labels",
             output_labels_dir = output_dir / output_split / "labels",
             class_mapping = class_mapping,
-            dataset_name = "germany"
+            dataset_name = "italy"
+        )
+        _copy_image_folder(
+            input_images_dir = input_split_dir / "images",
+            output_images_dir = output_dir / output_split / "images",
         )
         
 # TODO MAYBE add safety net for duplicate file naming
@@ -227,4 +252,4 @@ but that would involve clearing the preproccessed data dir and then
 rewriting it every time"""
 
 if __name__ == "__main__":
-    typer.run(preprocess)
+    app()

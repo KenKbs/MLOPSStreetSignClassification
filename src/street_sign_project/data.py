@@ -6,7 +6,7 @@ from typing import Literal
 import typer
 from openpyxl import load_workbook
 from torch.utils.data import Dataset
-
+#TODO replace print statements with logging
 
 # Define Path constants
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -169,11 +169,62 @@ def _remap_label_file(
     with output_path.open("w", encoding="utf-8") as output_file:
         output_file.write(output_text)
 
-def preprocess(data_path: Path, output_folder: Path) -> None:
-    print("Preprocessing data...")
-    dataset = MyDataset(data_path)
-    dataset.preprocess(output_folder)
+def _remap_label_folder(
+    input_labels_dir: Path,
+    output_labels_dir: Path,
+    class_mapping: ClassMapping,
+    dataset_name:DatasetName,
+) -> None:
+    """Remap all YOLO label files in one folder to canonical values"""
+    for label_path in input_labels_dir.glob("*.txt"):
+        output_path = output_labels_dir / label_path.name
+        _remap_label_file(
+            file_path=label_path,
+            output_path = output_path,
+            class_mapping=class_mapping,
+            dataset_name=dataset_name,
+        )
 
+
+def preprocess(raw_input_dir: Path = DEFAULT_RAW_DATA_DIR,
+               output_dir: Path = DEFAULT_PREPROCESS_DATA_DIR,
+               mapping_path:Path = DEFAULT_MAPPING_PATH_CSV,
+               ) -> None:
+    """Remaps the labels and saves them to an output dir
+    Assumes the raw structure, as it's currently present in both
+    datasets"""
+    print("Preprocessing data...")
+
+    # Initialize class mapping
+    class_mapping = ClassMapping.from_csv(mapping_path)
+
+    # Preprocess German Dataset
+    for split in ["Train", "Test"]:
+        _remap_label_folder(
+            input_labels_dir = raw_input_dir / "GTSDB_Train_and_Test" / split / "labels",
+            output_labels_dir = output_dir / split / "labels",
+            class_mapping = class_mapping,
+            dataset_name = "germany"
+        )
+    
+    # Preprocess Italien Dataset
+    for split in ["train", "test", "valid"]:
+        # Save valid split also into test dir
+        output_split = "test" if split == "valid" else split
+        _remap_label_folder(
+            input_labels_dir = raw_input_dir / "StreetSignSet" / split / "labels",
+            output_labels_dir = output_dir / output_split / "labels",
+            class_mapping = class_mapping,
+            dataset_name = "germany"
+        )
+        
+# TODO MAYBE add safety net for duplicate file naming
+""" Idea: clear out all the exisiting files in the output dir 
+then save all the preprocessed data into that 
+and then we can check in the _remap_label_file if the output file already exists
+if yes throw an error, if not we're good 
+but that would involve clearing the preproccessed data dir and then 
+rewriting it every time"""
 
 if __name__ == "__main__":
     typer.run(preprocess)

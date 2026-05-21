@@ -72,9 +72,6 @@ class StreetSignDataset(Dataset):
 
     def preprocess(self, output_folder: Path) -> None:
         """Preprocess the raw data and save it to the output folder."""
-    
-    def __convert_labels_canonical(self, classmapping:ClassMapping) -> None:
-        pass
 
 
 def export_mapping_to_csv(

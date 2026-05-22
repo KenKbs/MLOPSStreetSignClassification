@@ -2,4 +2,4 @@
     remote = gcsremote
 ['remote "gcsremote"']
     url = gs://mlops-street-signs/dvcstore
-    projectname = mlops-streetsigns
+    projectname = mlops-steetsigns

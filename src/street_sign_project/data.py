@@ -74,18 +74,6 @@ class ClassMapping:
         
         raise ValueError(f"Unknown dataset name: {dataset_name}")
 
-
-class StreetSignDataset(Dataset):
-    """Dataset for loading already-processed street sign data"""
-    def __init__(self, data_path: Path) -> None:
-        self.data_path = data_path
-    def __len__(self) -> int:
-        """Return the length of the dataset."""
-
-    def __getitem__(self, index: int):
-        """Return a given sample from the dataset."""
-
-
 def _remap_label_file(
     file_path: Path,
     output_path: Path,

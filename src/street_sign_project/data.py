@@ -15,8 +15,9 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_RAW_DATA_DIR = PROJECT_ROOT / "data" / "raw"
 
 DEFAULT_PREPROCESS_DATA_DIR = PROJECT_ROOT / "data" / "preprocessed"
-DEFAULT_MAPPING_PATH_XLSX = DEFAULT_PREPROCESS_DATA_DIR / "street_sign_class_mapping.xlsx"
-DEFAULT_MAPPING_PATH_CSV = DEFAULT_PREPROCESS_DATA_DIR / "street_sign_class_mapping.csv"
+DEFAULT_CONFIG_DIR = PROJECT_ROOT / "configs"
+DEFAULT_MAPPING_PATH_XLSX = DEFAULT_CONFIG_DIR / "street_sign_class_mapping.xlsx"
+DEFAULT_MAPPING_PATH_CSV = DEFAULT_CONFIG_DIR / "street_sign_class_mapping.csv"
 MAPPING_SHEET_NAME = "canonical_mapping"
 IMAGE_SUFFIXES = {".jpg", ".jpeg", ".png"}
 

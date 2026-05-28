@@ -231,6 +231,28 @@ def preprocess(raw_input_dir: Path = DEFAULT_RAW_DATA_DIR,
             input_images_dir = input_split_dir / "images",
             output_images_dir = output_dir / output_split / "images",
         )
+
+def project_root() -> Path:
+    """Finds parent folder where pyproject.toml lies"""
+    for parent in [Path(__file__).resolve(), *Path(__file__).resolve().parents]:
+        if (parent / "pyproject.toml").exists():
+            return parent
+    raise FileNotFoundError("pyproject.toml not found")
+
+@app.command()
+def create_yaml_dataset():
+    root = project_root() / "data"
+    path = "data/preprocessed"
+    train = "train/images"
+    val = "test/images"
+    mapping = ClassMapping.from_csv(DEFAULT_MAPPING_PATH_CSV)
+    ids_names_yaml = "\n".join(f"  {i}: {name}" for i, name in enumerate(mapping.class_names, start = 0))
+    yaml_content = f"""path: {path}\ntrain: {train}\nval: {val}\n\nnames:\n{ids_names_yaml}
+    """
+    with open(str(root / "dataset.yaml"), "w") as f:
+        f.write(yaml_content)
+
+
         
 # TODO MAYBE add safety net for duplicate file naming
 """ Idea: clear out all the exisiting files in the output dir 

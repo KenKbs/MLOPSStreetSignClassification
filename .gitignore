@@ -2,3 +2,8 @@
 /data/raw
 /data/preprocessed
 __pycache__
+# files created automatically by YOLO are not to be pushed to git
+/runs
+yolo26n.pt
+yolo26s.pt
+yolo26m.pt

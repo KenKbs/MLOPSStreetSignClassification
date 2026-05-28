@@ -21,8 +21,12 @@ dependencies = [
     "dvc>=3.67.1",
     "dvc-gs>=3.0.2",
     "fastapi==0.115.6",
+    "google-api-python-client>=2.196.0",
+    "invoke>=2.2.0",
     "loguru>=0.7.3",
-    "torch==2.6.0",
+    "pandas>=3.0.3",
+    "torch",
+    "torchvision",
     "typer==0.15.1",
     "ultralytics>=8.4.51",
     "uvicorn==0.34.0",
@@ -45,12 +49,8 @@ dev = [
 
 
 [tool.uv.sources]
-torch = [
-    { index = "pytorch-cpu" },
-]
-torchvision = [
-    { index = "pytorch-cpu" },
-]
+torch = { index = "pytorch-cpu" }
+torchvision = { index = "pytorch-cpu" }
 
 [[tool.uv.index]]
 name = "pytorch-cpu"

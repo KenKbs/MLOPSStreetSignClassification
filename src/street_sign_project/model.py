@@ -3,11 +3,13 @@
 # Documentation on YOLO Website: https://docs.ultralytics.com/reference/engine/model#ultralytics.engine.model.Model.train
 # Detailed Documentation on GitHub: https://github.com/ultralytics/ultralytics/blob/main/ultralytics/engine/model.py    or .../predictior.py
 
-
+import typer
 from ultralytics import YOLO
 from loguru import logger
 from pathlib import Path
 from datetime import datetime
+
+app = typer.Typer(no_args_is_help=True)
 
 model_sizes = {"n", "s", "m", "l", "x"}
 
@@ -19,17 +21,20 @@ def project_root() -> Path:
     raise FileNotFoundError("pyproject.toml not found")
 
 
-class YOLOv26Seg():
-    """Wrapper für YOLO Version 2026 zur Segmentierung"""
-    def __init__(self, model_size: str = "s"):
+class YOLOv26():
+    """
+    Wrapper für YOLO Version 2026 zur Segmentierung und Klassifizierung
+    Model size n is default for cpu usage. For better performance run s or higher
+    """
+    def __init__(self, model_size: str = "n"):
         self.model_size = model_size
         if self.model_size not in model_sizes:
-            logger.error("Not a valid model_size. Valid are: n, s, m, l, x. Reverting to default s.")
-            self.model_size = "s"
-        self.model = YOLO(f"yolo26{self.model_size}-seg.pt")
-        logger.info(f"Model yolo26{self.model_size}-seg.pt loading completed")
+            logger.error("Not a valid model_size. Valid are: n, s, m, l, x. Reverting to default n.")
+            self.model_size = "n"
+        self.model = YOLO(f"yolo26{self.model_size}.pt")
+        logger.info(f"Model yolo26{self.model_size}.pt loading completed")
 
-    def train(self, data: str | Path | None = None, model_path: str | None = None, epochs: int = 50, batch_size: int = 16, lr0:float = 0.005, freeze:int=10, device = "cpu"):
+    def train(self, data: str | Path | None = None, model_path: str | None = None, epochs: int = 1, batch_size: int = 16, lr0:float = 0.005, freeze:int=10, device = "cpu"):
         """
         method for fine-tuning the Yolo model
 
@@ -44,17 +49,19 @@ class YOLOv26Seg():
         """
         if data is None:
             root = project_root() 
-            data = root / "data" / "raw"   #TODO Muss noch angepasst werden und auf die yaml zeigen, wenn sie dann da ist
+            data = root / "data" / "dataset.yaml"
 
-        logger.info(f"Start Training yolo26{self.model_size}-seg_ep{epochs}_bs{batch_size}_fr{freeze} at {datetime.now()}")
-        train_results=self.model.train(data=str(data), epochs=epochs, freeze=freeze, batch=batch_size, lr0 = lr0, device=device)
+        logger.info(f"Start Training yolo26{self.model_size}_ep{epochs}_bs{batch_size}_fr{freeze} at {datetime.now()}")
+        train_results=self.model.train(data=str(data), epochs=epochs, freeze=freeze, batch=batch_size, lr0 = lr0, device=device, save_period=-1, project = None, name = None)  # save_period to not save initial model and project & name to not save the runs/ folder
         logger.info(f"Training results: {train_results}")
-        logger.info(f"Finished training yolo26{self.model_size}-seg_ep{epochs}_bs{batch_size}_fr{freeze} at {datetime.now()}")
+        logger.info(f"Finished training yolo26{self.model_size}_ep{epochs}_bs{batch_size}_fr{freeze} at {datetime.now()}")
 
         # saving
-        if model_path is not None:
-            self.save_model(model_path)
-            logger.info(f"Model saved under {model_path}")
+        if model_path is None:
+            root = project_root()
+            model_path = root / "models" / f"YOLO_eps{epochs}_bs_{batch_size}_lr{lr0}_fr{freeze}.pt"
+        self.save_model(model_path)
+        logger.info(f"Model saved under {model_path}")
 
         return train_results
 
@@ -90,3 +97,8 @@ class YOLOv26Seg():
             raise ValueError("file path needs to be a \".pt\" file")
         self.model.save(filename = file_path)
 
+
+def train_model():
+    model = YOLOv26()
+    results = model.train()
+    print(f"train results: \n {results}")

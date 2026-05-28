@@ -1,10 +1,10 @@
-from street_sign_project.model import Model
-from street_sign_project.data import MyDataset
+from street_sign_project.model import YOLOv26
+import typer
 
-def train():
-    dataset = MyDataset("data/raw")
-    model = Model()
-    # add rest of your training code here
+def train_model():
+    model = YOLOv26()
+    results = model.train()
+    print(f"train results: \n {results}")
 
 if __name__ == "__main__":
-    train()
+    typer.run(train_model)

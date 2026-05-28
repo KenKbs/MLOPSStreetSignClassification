@@ -1,6 +1,8 @@
 import os
 
 from invoke import Context, task
+from src.street_sign_project.data import create_yaml_dataset
+from src.street_sign_project.model import train_model
 
 WINDOWS = os.name == "nt"
 PROJECT_NAME = "street_sign_project"
@@ -15,8 +17,19 @@ def preprocess_data(ctx: Context) -> None:
     #TODO maybe, make paths editable in this task
 
 @task
+def create_yaml(ctx: Context) -> None:
+    """
+    Function to create a file to pass data to YOLO
+    located in data.py
+    """
+    create_yaml_dataset()
+
+@task
 def train(ctx: Context) -> None:
-    """Train model."""
+    """
+    Train model
+    Current Model parameters can be found in model.py as default parameters in the class function
+    """
     ctx.run(f"uv run src/{PROJECT_NAME}/train.py", echo=True, pty=not WINDOWS)
 
 @task

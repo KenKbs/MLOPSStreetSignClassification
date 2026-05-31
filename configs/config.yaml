@@ -12,7 +12,8 @@ training:
   optimizer: auto
   lr0: 0.005
   freeze: 10
-  device: cpu
+  device: auto
+  workers: 8
 
 wandb:
   entity: k-kubsch-ludwig-maximilian-university-of-munich

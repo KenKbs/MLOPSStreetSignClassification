@@ -240,7 +240,7 @@ def project_root() -> Path:
     raise FileNotFoundError("pyproject.toml not found")
 
 @app.command()
-def create_yaml_dataset():
+def create_yaml_dataset() -> None:
     root = project_root() / "data"
     path = "data/preprocessed"
     train = "train/images"

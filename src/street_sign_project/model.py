@@ -31,7 +31,7 @@ class YOLOv26():
     Wrapper für YOLO Version 2026 zur Segmentierung und Klassifizierung
     Model size n is default for cpu usage. For better performance run s or higher
     """
-    def __init__(self, model_size: str = "n"):
+    def __init__(self, model_size: str = "n") -> None:
         self.model_size = model_size
         if self.model_size not in model_sizes:
             logger.error("Not a valid model_size. Valid are: n, s, m, l, x. Reverting to default n.")
@@ -39,17 +39,18 @@ class YOLOv26():
         self.model = YOLO(f"yolo26{self.model_size}.pt")
         logger.info(f"Model yolo26{self.model_size}.pt loading completed")
 
-    def train(self, data: str | Path | None = None, model_path: str | None = None, epochs: int = 10, batch_size: int = 16, lr0:float = 0.005, freeze:int=10, device = "cpu"):
+    def train(self, data: str | Path | None = None, model_path: str | None = None, epochs: int = 10, batch_size: int = 16, lr0:float = 0.005, freeze:int=10, device = "cpu") -> Any:
         """
         method for fine-tuning the Yolo model
 
         params:
 
         data: path to yaml file
-        model_name: under which name it is saved
+        model_path: under which name it is saved
         epochs: number of epochs
-        batch_size: -""-
+        batch_size: batch size
         lr0: initial learning rate
+        freeze: number of layers in which the parameters are frozen and not trained
         device: "cuda" or "cpu"
         """
         name_string = f"YOLO_eps{epochs}_bs_{batch_size}_lr{lr0}_fr{freeze}"
@@ -126,12 +127,13 @@ class YOLOv26():
 
         return train_results
 
-    def predict(self, new_data: str | Path | None = None, conf:float=0.25):
+    def predict(self, new_data: str | Path | None = None, conf:float=0.25) -> Any:
         """
         method for predicting with the model
 
         params:
             new_data: file path
+            conf: confidence score threshold for prediction
         """
         if new_data is None or not str(new_data).endswith(".yaml"):
             raise RuntimeError("Keine Daten für prediction angegeben. Datenverweis muss als .yaml gegeben werden")
@@ -139,7 +141,7 @@ class YOLOv26():
         # Data preprocessing für daten im Format (N, 3, H, W) nicht nötig
         return self.model.predict(source=new_data, conf=conf)
 
-    def test(self, data:str | Path):
+    def test(self, data:str | Path) -> Any:
         """
         Tests Model on test data and returns metrics
 
@@ -150,7 +152,7 @@ class YOLOv26():
             raise RuntimeError("Keine Daten zum Testen angegeben. Datenverweis muss als .yaml gegeben werden")
         return self.model.val(data=str(data))
 
-    def save_model(self, file_path: str | Path):
+    def save_model(self, file_path: str | Path) -> None:
         """
         method for saving a model under a given path as a .pt file
         """
@@ -159,7 +161,7 @@ class YOLOv26():
         self.model.save(filename = file_path)
 
 
-def train_model():
+def train_model() -> None:
     model = YOLOv26()
     results = model.train()
     print(f"train results: \n {results}")

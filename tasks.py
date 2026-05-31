@@ -1,8 +1,8 @@
 import os
+from shlex import quote
 
 from invoke import Context, task
 from src.street_sign_project.data import create_yaml_dataset
-from src.street_sign_project.model import train_model
 
 WINDOWS = os.name == "nt"
 PROJECT_NAME = "street_sign_project"
@@ -25,12 +25,44 @@ def create_yaml(ctx: Context) -> None:
     create_yaml_dataset()
 
 @task
-def train(ctx: Context) -> None:
+def train(
+    ctx: Context,
+    data_yaml: str | None = None,
+    yolo_model_size: str | None = None,
+    epochs: int | None = None,
+    batch_size: int | None = None,
+    lr0: float | None = None,
+    freeze: int | None = None,
+    device: str | None = None,
+    wandb_project: str | None = None,
+    wandb_dir: str | None = None,
+) -> None:
     """
-    Train model
-    Current Model parameters can be found in model.py as default parameters in the class function
+    Train model.
+
+    Parameters not passed here use the defaults from configs/config.yaml.
     """
-    ctx.run(f"uv run src/{PROJECT_NAME}/train.py", echo=True, pty=not WINDOWS)
+    # Define override values
+    overrides = {
+        "paths.data_yaml": data_yaml,
+        "model.yolo_model_size": yolo_model_size,
+        "training.epochs": epochs,
+        "training.batch_size": batch_size,
+        "training.lr0": lr0,
+        "training.freeze": freeze,
+        "training.device": device,
+        "wandb.project": wandb_project,
+        "wandb.dir": wandb_dir,
+    }
+
+    # Glue together overwritten values
+    override_args = " ".join(f"{key}={quote(str(value))}" for key, value in overrides.items() if value is not None)
+
+    # Create command
+    command = f"uv run src/{PROJECT_NAME}/train.py"
+    if override_args:
+        command = f"{command} {override_args}"
+    ctx.run(command, echo=True, pty=not WINDOWS)
 
 @task
 def test(ctx: Context) -> None:

@@ -1,0 +1,17 @@
+paths:
+  data_yaml: data/dataset.yaml
+
+model:
+  yolo_model_size: n
+
+training:
+  epochs: 10
+  batch_size: 16
+  lr0: 0.005
+  freeze: 10
+  device: cpu
+
+wandb:
+  entity: k-kubsch-ludwig-maximilian-university-of-munich
+  project: StreetSignClassification
+  dir: /tmp

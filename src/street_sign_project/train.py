@@ -18,7 +18,7 @@ def train_model(config: DictConfig):
                           model_path = path_cfg.model_path,
                           epochs = train_cfg.epochs,
                           batch_size = train_cfg.batch_size,
-                          seed = train_cfg.seed
+                          seed = train_cfg.seed,
                           optimizer = train_cfg.optimizer,
                           lr0 = train_cfg.lr0,
                           freeze = train_cfg.freeze,

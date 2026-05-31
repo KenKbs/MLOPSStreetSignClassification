@@ -28,13 +28,18 @@ def create_yaml(ctx: Context) -> None:
 def train(
     ctx: Context,
     data_yaml: str | None = None,
+    model_path: str | None = None,
     yolo_model_size: str | None = None,
     epochs: int | None = None,
     batch_size: int | None = None,
+    seed: int | None = None,
+    optimizer: str | None = None,
     lr0: float | None = None,
     freeze: int | None = None,
     device: str | None = None,
+    wandb_entity: str | None = None,
     wandb_project: str | None = None,
+    wandb_mode: str | None = None,
     wandb_dir: str | None = None,
 ) -> None:
     """
@@ -45,13 +50,18 @@ def train(
     # Define override values
     overrides = {
         "paths.data_yaml": data_yaml,
+        "paths.model_path": model_path,
         "model.yolo_model_size": yolo_model_size,
         "training.epochs": epochs,
         "training.batch_size": batch_size,
+        "training.seed": seed,
+        "training.optimizer": optimizer,
         "training.lr0": lr0,
         "training.freeze": freeze,
         "training.device": device,
+        "wandb.entity": wandb_entity,
         "wandb.project": wandb_project,
+        "wandb.mode": wandb_mode,
         "wandb.dir": wandb_dir,
     }
 

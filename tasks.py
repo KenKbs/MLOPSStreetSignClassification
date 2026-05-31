@@ -9,6 +9,48 @@ PROJECT_NAME = "street_sign_project"
 PYTHON_VERSION = "3.12"
 
 
+def _hydra_override_args(overrides: dict[str, object]) -> str:
+    """Build Hydra CLI override arguments from non-empty values."""
+    return " ".join(f"{key}={quote(str(value))}" for key, value in overrides.items() if value is not None)
+
+
+def _train_overrides(
+    data_yaml: str | None = None,
+    model_path: str | None = None,
+    yolo_model_size: str | None = None,
+    epochs: int | None = None,
+    batch_size: int | None = None,
+    seed: int | None = None,
+    optimizer: str | None = None,
+    lr0: float | None = None,
+    freeze: int | None = None,
+    device: str | None = None,
+    workers: int | None = None,
+    wandb_entity: str | None = None,
+    wandb_project: str | None = None,
+    wandb_mode: str | None = None,
+    wandb_dir: str | None = None,
+) -> dict[str, object]:
+    """Map train task arguments to Hydra override keys."""
+    return {
+        "paths.data_yaml": data_yaml,
+        "paths.model_path": model_path,
+        "model.yolo_model_size": yolo_model_size,
+        "training.epochs": epochs,
+        "training.batch_size": batch_size,
+        "training.seed": seed,
+        "training.optimizer": optimizer,
+        "training.lr0": lr0,
+        "training.freeze": freeze,
+        "training.device": device,
+        "training.workers": workers,
+        "wandb.entity": wandb_entity,
+        "wandb.project": wandb_project,
+        "wandb.mode": wandb_mode,
+        "wandb.dir": wandb_dir,
+    }
+
+
 # Project commands
 @task
 def preprocess_data(ctx: Context) -> None:
@@ -51,30 +93,73 @@ def train(
 
     Parameters not passed here use the defaults from configs/config.yaml.
     """
-    # Define override values
-    overrides = {
-        "paths.data_yaml": data_yaml,
-        "paths.model_path": model_path,
-        "model.yolo_model_size": yolo_model_size,
-        "training.epochs": epochs,
-        "training.batch_size": batch_size,
-        "training.seed": seed,
-        "training.optimizer": optimizer,
-        "training.lr0": lr0,
-        "training.freeze": freeze,
-        "training.device": device,
-        "training.workers": workers,
-        "wandb.entity": wandb_entity,
-        "wandb.project": wandb_project,
-        "wandb.mode": wandb_mode,
-        "wandb.dir": wandb_dir,
-    }
-
-    # Glue together overwritten values
-    override_args = " ".join(f"{key}={quote(str(value))}" for key, value in overrides.items() if value is not None)
-
-    # Create command
+    override_args = _hydra_override_args(
+        _train_overrides(
+            data_yaml=data_yaml,
+            model_path=model_path,
+            yolo_model_size=yolo_model_size,
+            epochs=epochs,
+            batch_size=batch_size,
+            seed=seed,
+            optimizer=optimizer,
+            lr0=lr0,
+            freeze=freeze,
+            device=device,
+            workers=workers,
+            wandb_entity=wandb_entity,
+            wandb_project=wandb_project,
+            wandb_mode=wandb_mode,
+            wandb_dir=wandb_dir,
+        )
+    )
     command = f"uv run src/{PROJECT_NAME}/train.py"
+    if override_args:
+        command = f"{command} {override_args}"
+    ctx.run(command, echo=True, pty=not WINDOWS)
+
+
+@task
+def profile_train(
+    ctx: Context,
+    output_path: str = "reports/profiling/train.prof",
+    data_yaml: str | None = None,
+    model_path: str | None = None,
+    yolo_model_size: str | None = None,
+    epochs: int | None = 1,
+    batch_size: int | None = None,
+    seed: int | None = None,
+    optimizer: str | None = None,
+    lr0: float | None = None,
+    freeze: int | None = None,
+    device: str | None = None,
+    workers: int | None = None,
+    wandb_entity: str | None = None,
+    wandb_project: str | None = None,
+    wandb_mode: str | None = "disabled",
+    wandb_dir: str | None = None,
+) -> None:
+    """Profile one training run with cProfile."""
+    ctx.run("mkdir -p reports/profiling", echo=True, pty=not WINDOWS)
+    override_args = _hydra_override_args(
+        _train_overrides(
+            data_yaml=data_yaml,
+            model_path=model_path,
+            yolo_model_size=yolo_model_size,
+            epochs=epochs,
+            batch_size=batch_size,
+            seed=seed,
+            optimizer=optimizer,
+            lr0=lr0,
+            freeze=freeze,
+            device=device,
+            workers=workers,
+            wandb_entity=wandb_entity,
+            wandb_project=wandb_project,
+            wandb_mode=wandb_mode,
+            wandb_dir=wandb_dir,
+        )
+    )
+    command = f"uv run python -m cProfile -o {quote(output_path)} src/{PROJECT_NAME}/train.py"
     if override_args:
         command = f"{command} {override_args}"
     ctx.run(command, echo=True, pty=not WINDOWS)

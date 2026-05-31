@@ -65,18 +65,23 @@ class YOLOv26:
         wb_mode: Literal["online", "offline", "disabled", "shared"] | None = None,
         wb_dir: str | Path = "/tmp",
     ) -> DetMetrics | None:
-        """
-        method for fine-tuning the Yolo model
+        """Fine-tune the YOLO model.
 
-        params:
-
-        data: path to yaml file
-        model_path: under which name it is saved
-        epochs: number of epochs
-        batch_size: batch size
-        lr0: initial learning rate
-        freeze: number of layers in which the parameters are frozen and not trained
-        device: "cuda" or "cpu"
+        Args:
+            data: Path to the YOLO dataset YAML file.
+            model_path: Path where the trained model should be saved.
+            epochs: Number of training epochs.
+            batch_size: Batch size used during training.
+            seed: Random seed used by Ultralytics training.
+            optimizer: Optimizer name passed to Ultralytics.
+            lr0: Initial learning rate.
+            freeze: Number of layers to freeze during training.
+            device: Training device. Use "auto" to select CUDA when available and CPU otherwise.
+            workers: Maximum number of dataloader workers.
+            wb_entity: W&B entity used for experiment tracking.
+            wb_project: W&B project used for experiment tracking.
+            wb_mode: W&B mode, such as "online", "offline", "disabled", or "shared".
+            wb_dir: Local directory used by W&B for run files.
         """
         name_string = f"YOLO_eps{epochs}_bs_{batch_size}_lr{lr0}_fr{freeze}"
 

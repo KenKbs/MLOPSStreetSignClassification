@@ -5,9 +5,8 @@ from pathlib import Path
 from typing import Literal
 
 import typer
-from openpyxl import load_workbook #TODO check if it can stay dev dependency or needs moving
-from torch.utils.data import Dataset
-#TODO replace print statements with logging
+from openpyxl import load_workbook  # TODO check if it can stay dev dependency or needs moving
+# TODO replace print statements with logging
 
 # Define Path constants
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -65,15 +64,16 @@ class ClassMapping:
             germany_to_canonical=germany_to_canonical,
             italy_to_canonical=italy_to_canonical,
         )
-    
+
     def to_canonical(self, dataset_name: DatasetName, class_id: int) -> int:
         """Return the canonical ID for a dataset specific class-id"""
         if dataset_name == "germany":
             return self.germany_to_canonical[class_id]
         elif dataset_name == "italy":
             return self.italy_to_canonical[class_id]
-        
+
         raise ValueError(f"Unknown dataset name: {dataset_name}")
+
 
 def _remap_label_file(
     file_path: Path,
@@ -118,26 +118,28 @@ def _remap_label_file(
 
     # Remap a list of lines to one string
     output_text = "\n".join(remapped_lines)
-    output_text += "\n" # Add empty line to the end (convention)
+    output_text += "\n"  # Add empty line to the end (convention)
 
     with output_path.open("w", encoding="utf-8") as output_file:
         output_file.write(output_text)
+
 
 def _remap_label_folder(
     input_labels_dir: Path,
     output_labels_dir: Path,
     class_mapping: ClassMapping,
-    dataset_name:DatasetName,
+    dataset_name: DatasetName,
 ) -> None:
     """Remap all YOLO label files in one folder to canonical values"""
     for label_path in input_labels_dir.glob("*.txt"):
         output_path = output_labels_dir / label_path.name
         _remap_label_file(
             file_path=label_path,
-            output_path = output_path,
+            output_path=output_path,
             class_mapping=class_mapping,
             dataset_name=dataset_name,
         )
+
 
 def _copy_image_folder(input_images_dir: Path, output_images_dir: Path) -> None:
     """Copy all image files in one folder to another folder."""
@@ -150,6 +152,7 @@ def _copy_image_folder(input_images_dir: Path, output_images_dir: Path) -> None:
             continue
 
         shutil.copy2(image_path, output_images_dir / image_path.name)
+
 
 @app.command()
 def export_mapping_to_csv(
@@ -175,7 +178,7 @@ def export_mapping_to_csv(
         if MAPPING_SHEET_NAME not in workbook.sheetnames:
             raise ValueError(f"Sheet '{MAPPING_SHEET_NAME}' not found in {sheet_path}.")
 
-        output_path.parent.mkdir(parents=True, exist_ok=True) # ensure outputpath exists
+        output_path.parent.mkdir(parents=True, exist_ok=True)  # ensure outputpath exists
         worksheet = workbook[MAPPING_SHEET_NAME]
 
         # Write CSV file
@@ -188,11 +191,13 @@ def export_mapping_to_csv(
     finally:
         workbook.close()
 
+
 @app.command()
-def preprocess(raw_input_dir: Path = DEFAULT_RAW_DATA_DIR,
-               output_dir: Path = DEFAULT_PREPROCESS_DATA_DIR,
-               mapping_path:Path = DEFAULT_MAPPING_PATH_CSV,
-               ) -> None:
+def preprocess(
+    raw_input_dir: Path = DEFAULT_RAW_DATA_DIR,
+    output_dir: Path = DEFAULT_PREPROCESS_DATA_DIR,
+    mapping_path: Path = DEFAULT_MAPPING_PATH_CSV,
+) -> None:
     """Remaps the labels and saves them to an output dir
     Assumes the raw structure, as it's currently present in both
     datasets"""
@@ -206,31 +211,32 @@ def preprocess(raw_input_dir: Path = DEFAULT_RAW_DATA_DIR,
         input_split_dir = raw_input_dir / "GTSDB_Train_and_Test" / split
         output_split = split.lower()
         _remap_label_folder(
-            input_labels_dir = input_split_dir / "labels",
-            output_labels_dir = output_dir / output_split / "labels",
-            class_mapping = class_mapping,
-            dataset_name = "germany"
+            input_labels_dir=input_split_dir / "labels",
+            output_labels_dir=output_dir / output_split / "labels",
+            class_mapping=class_mapping,
+            dataset_name="germany",
         )
         _copy_image_folder(
-            input_images_dir = input_split_dir / "images",
-            output_images_dir = output_dir / output_split / "images",
+            input_images_dir=input_split_dir / "images",
+            output_images_dir=output_dir / output_split / "images",
         )
-    
+
     # Preprocess Italien Dataset
     for split in ["train", "test", "valid"]:
         # Save valid split also into test dir
         input_split_dir = raw_input_dir / "StreetSignSet" / split
         output_split = "test" if split == "valid" else split
         _remap_label_folder(
-            input_labels_dir = input_split_dir / "labels",
-            output_labels_dir = output_dir / output_split / "labels",
-            class_mapping = class_mapping,
-            dataset_name = "italy"
+            input_labels_dir=input_split_dir / "labels",
+            output_labels_dir=output_dir / output_split / "labels",
+            class_mapping=class_mapping,
+            dataset_name="italy",
         )
         _copy_image_folder(
-            input_images_dir = input_split_dir / "images",
-            output_images_dir = output_dir / output_split / "images",
+            input_images_dir=input_split_dir / "images",
+            output_images_dir=output_dir / output_split / "images",
         )
+
 
 def project_root() -> Path:
     """Finds parent folder where pyproject.toml lies"""
@@ -239,6 +245,7 @@ def project_root() -> Path:
             return parent
     raise FileNotFoundError("pyproject.toml not found")
 
+
 @app.command()
 def create_yaml_dataset() -> None:
     root = project_root() / "data"
@@ -246,14 +253,13 @@ def create_yaml_dataset() -> None:
     train = "train/images"
     val = "test/images"
     mapping = ClassMapping.from_csv(DEFAULT_MAPPING_PATH_CSV)
-    ids_names_yaml = "\n".join(f"  {i}: {name}" for i, name in enumerate(mapping.class_names, start = 0))
+    ids_names_yaml = "\n".join(f"  {i}: {name}" for i, name in enumerate(mapping.class_names, start=0))
     yaml_content = f"""path: {path}\ntrain: {train}\nval: {val}\n\nnames:\n{ids_names_yaml}
     """
     with open(str(root / "dataset.yaml"), "w") as f:
         f.write(yaml_content)
 
 
-        
 # TODO MAYBE add safety net for duplicate file naming
 """ Idea: clear out all the exisiting files in the output dir 
 then save all the preprocessed data into that 

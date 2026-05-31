@@ -12,6 +12,8 @@ import wandb
 import matplotlib.pyplot as plt
 
 from ultralytics import settings
+from ultralytics.engine.results import Results # for Typing
+from ultralytics.utils.metrics import DetMetrics # for Typing
 settings.update({"wandb": False})   #schalte das wandb logging von ultralytics ab, da wir das ja selber machen wollen
 
 app = typer.Typer(no_args_is_help=True)
@@ -39,7 +41,16 @@ class YOLOv26():
         self.model = YOLO(f"yolo26{self.model_size}.pt")
         logger.info(f"Model yolo26{self.model_size}.pt loading completed")
 
-    def train(self, data: str | Path | None = None, model_path: str | None = None, epochs: int = 10, batch_size: int = 16, lr0:float = 0.005, freeze:int=10, device = "cpu") -> Any:
+    def train(
+        self,
+        data: str | Path | None = None,
+        model_path: str | Path | None = None,
+        epochs: int = 10,
+        batch_size: int = 16,
+        lr0: float = 0.005,
+        freeze: int = 10,
+        device: str = "cpu",
+    ) -> DetMetrics | None:
         """
         method for fine-tuning the Yolo model
 
@@ -127,7 +138,7 @@ class YOLOv26():
 
         return train_results
 
-    def predict(self, new_data: str | Path | None = None, conf:float=0.25) -> Any:
+    def predict(self, new_data: str | Path | None = None, conf: float = 0.25) -> list[Results]:
         """
         method for predicting with the model
 
@@ -141,7 +152,7 @@ class YOLOv26():
         # Data preprocessing für daten im Format (N, 3, H, W) nicht nötig
         return self.model.predict(source=new_data, conf=conf)
 
-    def test(self, data:str | Path) -> Any:
+    def test(self, data: str | Path) -> DetMetrics:
         """
         Tests Model on test data and returns metrics
 

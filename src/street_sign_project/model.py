@@ -11,6 +11,7 @@ from pathlib import Path
 from datetime import datetime
 import wandb
 import matplotlib.pyplot as plt
+import torch
 
 from ultralytics import settings
 from ultralytics.engine.results import Results  # for Typing
@@ -57,7 +58,8 @@ class YOLOv26:
         optimizer: optimizer_options = "auto",
         lr0: float = 0.005,
         freeze: int = 10,
-        device: str = "cpu",
+        device: Literal["auto", "cuda", "cpu"] = "cpu",
+        workers: int = 8,
         wb_entity: str = "k-kubsch-ludwig-maximilian-university-of-munich",
         wb_project: str = "StreetSignClassification",
         wb_mode: Literal["online", "offline", "disabled", "shared"] | None = None,
@@ -83,7 +85,7 @@ class YOLOv26:
         log_path = log_dir / f"training_{name_string}.log"
 
         log_file = None
-
+        
         def logger_callback(
             trainer
         ):  # this function is needed so that with the start of the training, YOLO doesn't block the saving of our log file
@@ -117,6 +119,12 @@ class YOLOv26:
         )  # outputs only to console because the file is resetted with start of training
         start = datetime.now()
 
+        # Determine Device:
+        if device == "auto":
+            device = "cuda" if torch.cuda.is_available() else "cpu"
+        
+        logger.info(f"Using device {device}")
+
         # training
         train_results = self.model.train(
             data=str(data),
@@ -127,6 +135,7 @@ class YOLOv26:
             optimizer=optimizer,
             lr0=lr0,
             device=device,
+            workers=workers,
             save_period=-1,
             exist_ok=True,
         )

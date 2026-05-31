@@ -9,3 +9,6 @@ yolo26s.pt
 yolo26m.pt
 /reports/logs
 /models
+
+# Ignore output of hydra logs --> W&B main experiment tracking source
+/outputs/

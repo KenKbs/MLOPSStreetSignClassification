@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 from shlex import quote
 
 from invoke import Context, task
@@ -121,7 +122,7 @@ def train(
 @task
 def profile_train(
     ctx: Context,
-    output_path: str = "reports/profiling/train.prof",
+    output_path: str | None = None,
     data_yaml: str | None = None,
     model_path: str | None = None,
     yolo_model_size: str | None = None,
@@ -140,6 +141,9 @@ def profile_train(
 ) -> None:
     """Profile one training run with cProfile."""
     ctx.run("mkdir -p reports/profiling", echo=True, pty=not WINDOWS)
+    if output_path is None:
+        timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+        output_path = f"reports/profiling/train-{timestamp}.prof"
     override_args = _hydra_override_args(
         _train_overrides(
             data_yaml=data_yaml,

@@ -50,6 +50,7 @@ class YOLOv26():
         model_path: str | Path | None = None,
         epochs: int = 10,
         batch_size: int = 16,
+        seed: int = 420,
         optimizer: optimizer_options = "auto",
         lr0: float = 0.005,
         freeze: int = 10,
@@ -109,6 +110,7 @@ class YOLOv26():
         train_results = self.model.train(
             data=str(data),
             epochs=epochs,
+            seed = seed,
             freeze=freeze,
             batch=batch_size,
             optimizer=optimizer,

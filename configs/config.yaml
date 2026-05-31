@@ -8,6 +8,7 @@ model:
 training:
   epochs: 10
   batch_size: 16
+  seed: 420
   optimizer: auto
   lr0: 0.005
   freeze: 10

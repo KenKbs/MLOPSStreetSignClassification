@@ -1,5 +1,6 @@
 paths:
   data_yaml: data/dataset.yaml
+  model_path: null
 
 model:
   yolo_model_size: n
@@ -7,6 +8,7 @@ model:
 training:
   epochs: 10
   batch_size: 16
+  optimizer: auto
   lr0: 0.005
   freeze: 10
   device: cpu
@@ -16,3 +18,7 @@ wandb:
   project: StreetSignClassification
   mode: null
   dir: /tmp
+
+hydra:
+  job:
+    chdir: false

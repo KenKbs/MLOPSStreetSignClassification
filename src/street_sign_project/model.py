@@ -4,6 +4,7 @@
 # Detailed Documentation on GitHub: https://github.com/ultralytics/ultralytics/blob/main/ultralytics/engine/model.py    or .../predictior.py
 
 import typer
+from typing import Literal
 from ultralytics import YOLO
 from loguru import logger
 from pathlib import Path
@@ -19,6 +20,8 @@ settings.update({"wandb": False})   #schalte das wandb logging von ultralytics a
 app = typer.Typer(no_args_is_help=True)
 
 model_sizes = {"n", "s", "m", "l", "x"}
+# For Typing, Define optimizer options
+optimizer_options = Literal["auto", "SGD", "MuSGD", "Adam", "Adamax", "AdamW", "NAdam", "RAdam", "RMSProp"]
 
 def project_root() -> Path:
     """Finds parent folder where pyproject.toml lies"""
@@ -47,9 +50,14 @@ class YOLOv26():
         model_path: str | Path | None = None,
         epochs: int = 10,
         batch_size: int = 16,
+        optimizer: optimizer_options = "auto",
         lr0: float = 0.005,
         freeze: int = 10,
         device: str = "cpu",
+        wb_entity: str = "k-kubsch-ludwig-maximilian-university-of-munich",
+        wb_project: str = "StreetSignClassification",
+        wb_mode: Literal["online", "offline", "disabled", "shared"] | None = None,
+        wb_dir: str | Path = "/tmp",
     ) -> DetMetrics | None:
         """
         method for fine-tuning the Yolo model
@@ -84,7 +92,12 @@ class YOLOv26():
         self.model.add_callback("on_train_epoch_end", epoch_metrics_callback)
 
 
-        wandb.init(project="StreetSignClassification", dir = "/tmp", config={"lr": lr0, "batch_size": batch_size, "epochs": epochs, "freeze":freeze})
+        wandb.init(
+            entity=wb_entity,
+            project=wb_project, 
+            dir = wb_dir, 
+            mode = wb_mode,
+            config={"lr": lr0, "batch_size": batch_size, "epochs": epochs, "freeze":freeze})
         if data is None:
             root = project_root() 
             data = root / "data" / "dataset.yaml"
@@ -93,7 +106,17 @@ class YOLOv26():
         start = datetime.now()
         
         #training
-        train_results=self.model.train(data=str(data), epochs=epochs, freeze=freeze, batch=batch_size, lr0 = lr0, device=device, save_period=-1, exist_ok = True) 
+        train_results = self.model.train(
+            data=str(data),
+            epochs=epochs,
+            freeze=freeze,
+            batch=batch_size,
+            optimizer=optimizer,
+            lr0=lr0,
+            device=device,
+            save_period=-1,
+            exist_ok=True,
+        )
         
         #logging
         logger.info(f"Finished training {name_string} at {datetime.now()}; time difference of {datetime.now() - start}")

@@ -15,11 +15,17 @@ def train_model(config: DictConfig):
     
     model = YOLOv26(model_size =model_cfg.yolo_model_size)
     results = model.train(data = path_cfg.data_yaml,
+                          model_path = path_cfg.model_path,
                           epochs = train_cfg.epochs,
                           batch_size = train_cfg.batch_size,
+                          optimizer = train_cfg.optimizer,
                           lr0 = train_cfg.lr0,
                           freeze = train_cfg.freeze,
-                          device = train_cfg.device)
+                          device = train_cfg.device,
+                          wb_entity = wandb_cfg.entity,
+                          wb_project = wandb_cfg.project,
+                          wb_mode = wandb_cfg.mode,
+                          wb_dir = wandb_cfg.dir)
 
     print(f"train results: \n {results}")
 

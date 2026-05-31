@@ -25,11 +25,13 @@ dependencies = [
     "invoke>=2.2.0",
     "loguru>=0.7.3",
     "pandas>=3.0.3",
+    "plotly>=6.7.0",
     "torch",
     "torchvision",
     "typer==0.15.1",
     "ultralytics>=8.4.51",
     "uvicorn==0.34.0",
+    "wandb>=0.27.0",
 ]
 
 [dependency-groups]

@@ -6,7 +6,7 @@ from typing import Literal
 
 import typer
 from loguru import logger
-from openpyxl import load_workbook  # TODO check if it can stay dev dependency or needs moving
+from openpyxl import load_workbook  
 
 # Define Path constants
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -275,15 +275,6 @@ def create_yaml_dataset() -> None:
     """
     with open(str(root / "dataset.yaml"), "w") as f:
         f.write(yaml_content)
-
-
-# TODO MAYBE add safety net for duplicate file naming
-""" Idea: clear out all the exisiting files in the output dir 
-then save all the preprocessed data into that 
-and then we can check in the _remap_label_file if the output file already exists
-if yes throw an error, if not we're good 
-but that would involve clearing the preproccessed data dir and then 
-rewriting it every time"""
 
 if __name__ == "__main__":
     app()

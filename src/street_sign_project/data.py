@@ -5,8 +5,8 @@ from pathlib import Path
 from typing import Literal
 
 import typer
-from openpyxl import load_workbook  # TODO check if it can stay dev dependency or needs moving
-# TODO replace print statements with logging
+from loguru import logger
+from openpyxl import load_workbook
 
 # Define Path constants
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -41,6 +41,7 @@ class ClassMapping:
         germany_to_canonical: dict[int, int] = {}
         italy_to_canonical: dict[int, int] = {}
 
+        logger.info(f"Loading class mapping from {mapping_path}")
         with mapping_path.open("r", encoding="utf-8", newline="") as csv_file:
             reader = csv.DictReader(csv_file)
             for row in reader:
@@ -59,6 +60,7 @@ class ClassMapping:
                 if germany_id and germany_id.isdecimal():
                     germany_to_canonical[int(germany_id)] = canonical_id
 
+        logger.info(f"Loaded {len(class_names)} canonical classes")
         return cls(
             class_names=tuple(class_names),
             germany_to_canonical=germany_to_canonical,
@@ -131,6 +133,9 @@ def _remap_label_folder(
     dataset_name: DatasetName,
 ) -> None:
     """Remap all YOLO label files in one folder to canonical values"""
+    logger.info(f"Remapping {dataset_name} labels from {input_labels_dir} to {output_labels_dir}")
+
+    remapped_count = 0
     for label_path in input_labels_dir.glob("*.txt"):
         output_path = output_labels_dir / label_path.name
         _remap_label_file(
@@ -139,12 +144,17 @@ def _remap_label_folder(
             class_mapping=class_mapping,
             dataset_name=dataset_name,
         )
+        remapped_count += 1
+
+    logger.info(f"Remapped {remapped_count} label files for {dataset_name}")
 
 
 def _copy_image_folder(input_images_dir: Path, output_images_dir: Path) -> None:
     """Copy all image files in one folder to another folder."""
+    logger.info(f"Copying images from {input_images_dir} to {output_images_dir}")
     output_images_dir.mkdir(parents=True, exist_ok=True)
 
+    copied_count = 0
     for image_path in input_images_dir.iterdir():
         if not image_path.is_file():
             continue
@@ -152,6 +162,9 @@ def _copy_image_folder(input_images_dir: Path, output_images_dir: Path) -> None:
             continue
 
         shutil.copy2(image_path, output_images_dir / image_path.name)
+        copied_count += 1
+
+    logger.info(f"Copied {copied_count} images to {output_images_dir}")
 
 
 @app.command()
@@ -169,6 +182,8 @@ def export_mapping_to_csv(
         FileNotFoundError: If the Excel workbook does not exist.
         ValueError: If the canonical mapping worksheet is not present in the workbook.
     """
+    logger.info(f"Exporting mapping sheet '{MAPPING_SHEET_NAME}' from {sheet_path} to {output_path}")
+
     if not sheet_path.exists():
         raise FileNotFoundError(f"Mapping workbook not found: {sheet_path}")
 
@@ -188,6 +203,8 @@ def export_mapping_to_csv(
                 values = ["" if value is None else value for value in row]
                 if any(str(value).strip() for value in values):
                     writer.writerow(values)
+
+        logger.info(f"Exported mapping CSV to {output_path}")
     finally:
         workbook.close()
 
@@ -201,7 +218,7 @@ def preprocess(
     """Remaps the labels and saves them to an output dir
     Assumes the raw structure, as it's currently present in both
     datasets"""
-    print("Preprocessing data...")
+    logger.info(f"Preprocessing data from {raw_input_dir} into {output_dir}")
 
     # Initialize class mapping
     class_mapping = ClassMapping.from_csv(mapping_path)
@@ -259,14 +276,6 @@ def create_yaml_dataset() -> None:
     with open(str(root / "dataset.yaml"), "w") as f:
         f.write(yaml_content)
 
-
-# TODO MAYBE add safety net for duplicate file naming
-""" Idea: clear out all the exisiting files in the output dir 
-then save all the preprocessed data into that 
-and then we can check in the _remap_label_file if the output file already exists
-if yes throw an error, if not we're good 
-but that would involve clearing the preproccessed data dir and then 
-rewriting it every time"""
 
 if __name__ == "__main__":
     app()

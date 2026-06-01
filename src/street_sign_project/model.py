@@ -3,17 +3,16 @@
 # Documentation on YOLO Website: https://docs.ultralytics.com/reference/engine/model#ultralytics.engine.model.Model.train
 # Detailed Documentation on GitHub: https://github.com/ultralytics/ultralytics/blob/main/ultralytics/engine/model.py    or .../predictior.py
 
-import typer
-from typing import Literal
-from ultralytics import YOLO
-from loguru import logger
-from pathlib import Path
 from datetime import datetime
-import wandb
+from pathlib import Path
+from typing import Literal
+
 import matplotlib.pyplot as plt
 import torch
-
-from ultralytics import settings
+import typer
+import wandb
+from loguru import logger
+from ultralytics import YOLO, settings
 from ultralytics.engine.results import Results  # for Typing
 from ultralytics.utils.metrics import DetMetrics  # for Typing
 
@@ -90,7 +89,7 @@ class YOLOv26:
         log_path = log_dir / f"training_{name_string}.log"
 
         log_file = None
-        
+
         def logger_callback(
             trainer
         ):  # this function is needed so that with the start of the training, YOLO doesn't block the saving of our log file
@@ -127,7 +126,7 @@ class YOLOv26:
         # Determine Device:
         if device == "auto":
             device = "cuda" if torch.cuda.is_available() else "cpu"
-        
+
         logger.info(f"Using device {device}")
 
         # training

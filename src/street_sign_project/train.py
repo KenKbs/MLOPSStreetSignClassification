@@ -6,6 +6,7 @@ from street_sign_project.model import YOLOv26
 
 @hydra.main(version_base=None, config_path="../../configs", config_name="config")
 def train_model(config: DictConfig):
+    """Main train model Orchestrator, CLI wrapped by hydra"""
     # Config path is realative to this function where we inject hydra
     # Get config branches
     path_cfg = config.paths
@@ -23,7 +24,7 @@ def train_model(config: DictConfig):
         lr0=train_cfg.lr0,
         freeze=train_cfg.freeze,
         device=train_cfg.device,
-        workers = train_cfg.workers,
+        workers=train_cfg.workers,
         wb_entity=wandb_cfg.entity,
         wb_project=wandb_cfg.project,
         wb_mode=wandb_cfg.mode,

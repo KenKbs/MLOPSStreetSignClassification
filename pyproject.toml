@@ -63,6 +63,19 @@ explicit = true
 
 [tool.ruff]
 line-length = 120
+target-version = "py312" 
+lint.select = [
+  "E", # Errors in formatting
+  "W", # Warnings in formatting
+  "I", # Import Sorting
+  "B", # BugBear likly bugs / bad patterns
+  "NPY", # NumPy specific rules
+  "PD" # Pandas specific rules
+]
+lint.ignore = [
+  "E501", # Lint line length handled by formatter
+  "W505", # ignore doc/comment line length
+]
 
 [tool.coverage.run]
 omit = ["tests/*"]

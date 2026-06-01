@@ -6,7 +6,7 @@ from typing import Literal
 
 import typer
 from loguru import logger
-from openpyxl import load_workbook  
+from openpyxl import load_workbook
 
 # Define Path constants
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -275,6 +275,7 @@ def create_yaml_dataset() -> None:
     """
     with open(str(root / "dataset.yaml"), "w") as f:
         f.write(yaml_content)
+
 
 if __name__ == "__main__":
     app()

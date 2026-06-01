@@ -3,17 +3,16 @@
 # Documentation on YOLO Website: https://docs.ultralytics.com/reference/engine/model#ultralytics.engine.model.Model.train
 # Detailed Documentation on GitHub: https://github.com/ultralytics/ultralytics/blob/main/ultralytics/engine/model.py    or .../predictior.py
 
-import typer
-from typing import Literal
-from ultralytics import YOLO
-from loguru import logger
-from pathlib import Path
 from datetime import datetime
-import wandb
+from pathlib import Path
+from typing import Literal
+
 import matplotlib.pyplot as plt
 import torch
-
-from ultralytics import settings
+import typer
+import wandb
+from loguru import logger
+from ultralytics import YOLO, settings
 from ultralytics.engine.results import Results  # for Typing
 from ultralytics.utils.metrics import DetMetrics  # for Typing
 

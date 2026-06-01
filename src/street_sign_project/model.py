@@ -90,7 +90,7 @@ class YOLOv26:
         log_path = log_dir / f"training_{name_string}.log"
 
         log_file = None
-        
+
         def logger_callback(
             trainer
         ):  # this function is needed so that with the start of the training, YOLO doesn't block the saving of our log file
@@ -127,7 +127,7 @@ class YOLOv26:
         # Determine Device:
         if device == "auto":
             device = "cuda" if torch.cuda.is_available() else "cpu"
-        
+
         logger.info(f"Using device {device}")
 
         # training

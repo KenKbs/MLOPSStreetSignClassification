@@ -24,7 +24,7 @@ def train_model(config: DictConfig):
         lr0=train_cfg.lr0,
         freeze=train_cfg.freeze,
         device=train_cfg.device,
-        workers = train_cfg.workers,
+        workers=train_cfg.workers,
         wb_entity=wandb_cfg.entity,
         wb_project=wandb_cfg.project,
         wb_mode=wandb_cfg.mode,

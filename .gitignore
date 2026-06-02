@@ -7,8 +7,9 @@ __pycache__
 yolo26n.pt
 yolo26s.pt
 yolo26m.pt
+yolo26l.pt
+yolo26x.pt
 /reports/logs
-/models
 
 # Ignore output of hydra logs --> W&B main experiment tracking source
 /outputs/

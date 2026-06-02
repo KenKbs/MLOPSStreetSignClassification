@@ -76,7 +76,7 @@ class YOLOv26:
             wb_mode: W&B mode, such as "online", "offline", "disabled", or "shared".
             wb_dir: Local directory used by W&B for run files.
         """
-        name_string = f"YOLO_eps{epochs}_bs_{batch_size}_lr{lr0}_fr{freeze}"
+        name_string = f"YOLO_eps{epochs}_bs_{batch_size}_lr{lr0}_fr{freeze}_{self.model_size}"
 
         log_dir = project_root() / "reports" / "logs" / "training"
         log_dir.mkdir(parents=True, exist_ok=True)

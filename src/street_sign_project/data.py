@@ -8,13 +8,13 @@ import typer
 from loguru import logger
 from openpyxl import load_workbook
 
+from src.street_sign_project.utils import project_root
+
 # Define Path constants
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
+DEFAULT_RAW_DATA_DIR = project_root() / "data" / "raw"
 
-DEFAULT_RAW_DATA_DIR = PROJECT_ROOT / "data" / "raw"
-
-DEFAULT_PREPROCESS_DATA_DIR = PROJECT_ROOT / "data" / "preprocessed"
-DEFAULT_CONFIG_DIR = PROJECT_ROOT / "configs"
+DEFAULT_PREPROCESS_DATA_DIR = project_root() / "data" / "preprocessed"
+DEFAULT_CONFIG_DIR = project_root() / "configs"
 DEFAULT_MAPPING_PATH_XLSX = DEFAULT_CONFIG_DIR / "street_sign_class_mapping.xlsx"
 DEFAULT_MAPPING_PATH_CSV = DEFAULT_CONFIG_DIR / "street_sign_class_mapping.csv"
 MAPPING_SHEET_NAME = "canonical_mapping"
@@ -253,14 +253,6 @@ def preprocess(
             input_images_dir=input_split_dir / "images",
             output_images_dir=output_dir / output_split / "images",
         )
-
-
-def project_root() -> Path:
-    """Finds parent folder where pyproject.toml lies"""
-    for parent in [Path(__file__).resolve(), *Path(__file__).resolve().parents]:
-        if (parent / "pyproject.toml").exists():
-            return parent
-    raise FileNotFoundError("pyproject.toml not found")
 
 
 @app.command()

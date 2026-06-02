@@ -7,6 +7,8 @@ __pycache__
 yolo26n.pt
 yolo26s.pt
 yolo26m.pt
+yolo26l.pt
+yolo26x.pt
 /reports/logs
 /models
 

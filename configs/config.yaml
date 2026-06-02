@@ -6,7 +6,7 @@ model:
   yolo_model_size: n
 
 training:
-  epochs: 10
+  epochs: 1
   batch_size: 16
   seed: 420
   optimizer: auto

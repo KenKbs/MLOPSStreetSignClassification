@@ -4,8 +4,6 @@ from shlex import quote
 
 from invoke import Context, task
 
-from src.street_sign_project.data import create_yaml_dataset
-
 WINDOWS = os.name == "nt"
 PROJECT_NAME = "street_sign_project"
 PYTHON_VERSION = "3.12"
@@ -68,7 +66,7 @@ def create_yaml(ctx: Context) -> None:
     Function to create a file to pass data to YOLO
     located in data.py
     """
-    create_yaml_dataset()
+    ctx.run(f"uv run src/{PROJECT_NAME}/data.py create-yaml-dataset", echo=True, pty=not WINDOWS)
 
 
 @task

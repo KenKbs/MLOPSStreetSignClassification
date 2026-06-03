@@ -16,3 +16,5 @@ yolo26x.pt
 
 # logs from hyperparameter sweeping
 /wandb/
+# Ignore coverage runs, as it's similar to cache/tests artifacts.
+/.coverage

@@ -10,15 +10,13 @@ import typer
 from loguru import logger
 from openpyxl import load_workbook
 
-# Define Typing constants:
-DatasetName = Literal["germany", "italy"]
-SplitName = Literal["train", "valid", "test"]
+from street_sign_project.utils import project_root
 
 # Define Path constants
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_RAW_DATA_DIR = PROJECT_ROOT / "data" / "raw"
-DEFAULT_PREPROCESS_DATA_DIR = PROJECT_ROOT / "data" / "preprocessed"
-DEFAULT_CONFIG_DIR = PROJECT_ROOT / "configs"
+DEFAULT_RAW_DATA_DIR = project_root() / "data" / "raw"
+
+DEFAULT_PREPROCESS_DATA_DIR = project_root() / "data" / "preprocessed"
+DEFAULT_CONFIG_DIR = project_root() / "configs"
 DEFAULT_MAPPING_PATH_XLSX = DEFAULT_CONFIG_DIR / "street_sign_class_mapping.xlsx"
 DEFAULT_MAPPING_PATH_CSV = DEFAULT_CONFIG_DIR / "street_sign_class_mapping.csv"
 
@@ -30,6 +28,10 @@ DEFAULT_SPLIT_SEED = 420
 DEFAULT_TRAIN_RATIO = 0.70
 DEFAULT_VALID_RATIO = 0.15
 DEFAULT_TEST_RATIO = 0.15
+
+# Define Typing constants:
+DatasetName = Literal["germany", "italy"]
+SplitName = Literal["train", "valid", "test"]
 SPLIT_NAMES: tuple[SplitName, ...] = ("train", "valid", "test")
 
 app = typer.Typer(no_args_is_help=True)
@@ -142,14 +144,6 @@ def _remap_label_file(
 
     with output_path.open("w", encoding="utf-8") as output_file:
         output_file.write(output_text)
-
-
-def project_root() -> Path:
-    """Finds parent folder where pyproject.toml lies"""
-    for parent in [Path(__file__).resolve(), *Path(__file__).resolve().parents]:
-        if (parent / "pyproject.toml").exists():
-            return parent
-    raise FileNotFoundError("pyproject.toml not found")
 
 
 def _remap_label_folder(

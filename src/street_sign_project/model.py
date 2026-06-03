@@ -16,6 +16,8 @@ from ultralytics import YOLO, settings
 from ultralytics.engine.results import Results  # for Typing
 from ultralytics.utils.metrics import DetMetrics  # for Typing
 
+from utils import project_root
+
 settings.update({"wandb": False})  # schalte das wandb logging von ultralytics ab, da wir das ja selber machen wollen
 
 app = typer.Typer(no_args_is_help=True)
@@ -23,14 +25,6 @@ app = typer.Typer(no_args_is_help=True)
 model_sizes = {"n", "s", "m", "l", "x"}
 # For Typing, Define optimizer options
 optimizer_options = Literal["auto", "SGD", "MuSGD", "Adam", "Adamax", "AdamW", "NAdam", "RAdam", "RMSProp"]
-
-
-def project_root() -> Path:
-    """Finds parent folder where pyproject.toml lies"""
-    for parent in [Path(__file__).resolve(), *Path(__file__).resolve().parents]:
-        if (parent / "pyproject.toml").exists():
-            return parent
-    raise FileNotFoundError("pyproject.toml not found")
 
 
 class YOLOv26:
@@ -82,7 +76,7 @@ class YOLOv26:
             wb_mode: W&B mode, such as "online", "offline", "disabled", or "shared".
             wb_dir: Local directory used by W&B for run files.
         """
-        name_string = f"YOLO_eps{epochs}_bs_{batch_size}_lr{lr0}_fr{freeze}"
+        name_string = f"YOLO_eps{epochs}_bs_{batch_size}_lr{lr0}_fr{freeze}_{self.model_size}"
 
         log_dir = project_root() / "reports" / "logs" / "training"
         log_dir.mkdir(parents=True, exist_ok=True)
@@ -115,8 +109,7 @@ class YOLOv26:
             config={"lr": lr0, "batch_size": batch_size, "epochs": epochs, "freeze": freeze},
         )
         if data is None:
-            root = project_root()
-            data = root / "data" / "dataset.yaml"
+            data = project_root() / "data" / "dataset.yaml"
 
         logger.info(
             f"Start Training {name_string} at {datetime.now()}"
@@ -182,8 +175,7 @@ class YOLOv26:
 
         # saving
         if model_path is None:
-            root = project_root()
-            model_path = root / "models" / f"{name_string}.pt"
+            model_path = project_root() / "models" / f"{name_string}.pt"
         self.save_model(model_path)
         logger.info(f"Model saved under {model_path}")
         if log_file is not None:

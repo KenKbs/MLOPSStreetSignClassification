@@ -15,7 +15,6 @@ from loguru import logger
 from ultralytics import YOLO, settings
 from ultralytics.engine.results import Results  # for Typing
 from ultralytics.utils.metrics import DetMetrics  # for Typing
-
 from utils import project_root
 
 settings.update({"wandb": False})  # schalte das wandb logging von ultralytics ab, da wir das ja selber machen wollen

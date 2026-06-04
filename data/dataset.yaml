@@ -1,6 +1,7 @@
 path: data/preprocessed
 train: train/images
-val: test/images
+val: valid/images
+test: test/images
 
 names:
   0: prio_give_way
@@ -76,4 +77,3 @@ names:
   70: restriction_ends
   71: restrichtion_ends_overtaking
   72: restirction_ends_overtaking_trucks
-    

@@ -199,9 +199,9 @@ def _validate_split_ratios(train_ratio: float, valid_ratio: float, test_ratio: f
 
 
 def _target_split_sizes(total_items: int, ratios: dict[SplitName, float]) -> dict[SplitName, int]:
-    """Calculate exact split sizes from fractional ratios."""
+    """Calculate exact split sizes from fractional ratios. To create Train,val,test split"""
     raw_sizes = {split_name: total_items * ratios[split_name] for split_name in SPLIT_NAMES}
-    split_sizes = {split_name: int(raw_sizes[split_name]) for split_name in SPLIT_NAMES}
+    split_sizes = {split_name: int(raw_sizes[split_name]) for split_name in SPLIT_NAMES}        # Abrunden über int() wichtig
     remaining_items = total_items - sum(split_sizes.values())
     remainder_order = sorted(
         SPLIT_NAMES,
@@ -210,7 +210,7 @@ def _target_split_sizes(total_items: int, ratios: dict[SplitName, float]) -> dic
     )
     for split_name in remainder_order[:remaining_items]:
         split_sizes[split_name] += 1
-    return split_sizes
+    return split_sizes  
 
 
 def _read_label_class_counts(label_path: Path | None) -> Counter[int]:

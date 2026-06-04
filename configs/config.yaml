@@ -3,7 +3,8 @@ paths:
   model_path: null
 
 model:
-  yolo_model_size: n
+  base_model_name: None # either "model_name.pt" for further training of existing model or None for using pretrained model of size model_size
+  yolo_model_size: n # is ignored if an existing base model is given
 
 training:
   epochs: 1

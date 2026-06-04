@@ -33,13 +33,31 @@ class YOLOv26:
     Model size n is default for cpu usage. For better performance run s or higher
     """
 
-    def __init__(self, model_size: str = "n") -> None:
-        self.model_size = model_size
-        if self.model_size not in model_sizes:
-            logger.error("Not a valid model_size. Valid are: n, s, m, l, x. Reverting to default n.")
-            self.model_size = "n"
-        self.model = YOLO(f"yolo26{self.model_size}.pt")
-        logger.info(f"Model yolo26{self.model_size}.pt loading completed")
+    def __init__(self, local_model_name: str | None = None, model_size: str = "n") -> None:
+        """
+        function for initializing a model object based on either a pretrained model (e.g. yolo26n.pt) or a locally saved model
+
+        Params:
+        local_model_name: if not none, a local model from the models folder will be loaded. if none, a pretrained model will be loaded
+        model_size: size of pretrained model
+        """
+        if local_model_name is None or local_model_name == "None":
+            self.model_name = None
+            self.model_size = model_size
+            if self.model_size not in model_sizes:
+                logger.error("Not a valid model_size. Valid are: n, s, m, l, x. Reverting to default n.")
+                self.model_size = "n"
+            self.model = YOLO(f"yolo26{self.model_size}.pt")
+            logger.info(f"Model yolo26{self.model_size}.pt loading completed")
+        else:
+            if not local_model_name.endswith(".pt"):
+                raise ValueError('model name needs to be a ".pt" file')
+            self.model_name = local_model_name
+            model_path = project_root() / "models" / self.model_name
+            if not model_path.exists():
+                raise ValueError('model does not exist in the models folder')
+            self.model = YOLO(str(model_path))
+            logger.info(f"Model {self.model_name} loading completed")
 
     def train(
         self,
@@ -76,7 +94,20 @@ class YOLOv26:
             wb_mode: W&B mode, such as "online", "offline", "disabled", or "shared".
             wb_dir: Local directory used by W&B for run files.
         """
-        name_string = f"YOLO_eps{epochs}_bs_{batch_size}_lr{lr0}_fr{freeze}_{self.model_size}"
+        if self.model_name is None:
+            name_string = f"YOLO_eps{epochs}_bs{batch_size}_lr{lr0}_fr{freeze}_{self.model_size}"
+            logger.info(f"Initialized training procedure based on yolo26{self.model_size}.pt")
+            logger.info(f"Model is called {name_string}.pt")
+        else:
+            model_name_parts = self.model_name.split("_")
+            base_model_eps = str([p for p in model_name_parts if p.startswith("eps")][0]).replace("eps", "")
+            base_model_bs = str([p for p in model_name_parts if p.startswith("bs")][0]).replace("bs", "")
+            base_model_lr = str([p for p in model_name_parts if p.startswith("lr")][0]).replace("lr", "")
+            base_model_fr = str([p for p in model_name_parts if p.startswith("fr")][0]).replace("fr", "")
+            base_model_size = model_name_parts[-1].split(".")[0]
+            name_string = f"YOLO_eps{epochs}_bs{batch_size}_lr{lr0}_fr{freeze}_based_on_{base_model_eps}_{base_model_bs}_{base_model_lr}_{base_model_fr}_{base_model_size}"
+            logger.info(f"Initialized training procedure based on {self.model_name}")
+            logger.info(f"Model is called {name_string}.pt")
 
         log_dir = project_root() / "reports" / "logs" / "training"
         log_dir.mkdir(parents=True, exist_ok=True)
@@ -217,7 +248,4 @@ class YOLOv26:
         self.model.save(filename=file_path)
 
 
-def train_model() -> None:
-    model = YOLOv26()
-    results = model.train()
-    print(f"train results: \n {results}")
+

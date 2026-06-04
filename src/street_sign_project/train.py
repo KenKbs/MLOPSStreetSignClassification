@@ -13,7 +13,7 @@ def train_model(config: DictConfig):
     model_cfg = config.model
     train_cfg = config.training
     wandb_cfg = config.wandb
-    model = YOLOv26(model_size=model_cfg.yolo_model_size)
+    model = YOLOv26(local_model_name=model_cfg.base_model_name, model_size=model_cfg.yolo_model_size)
     results = model.train(
         data=path_cfg.data_yaml,
         model_path=path_cfg.model_path,

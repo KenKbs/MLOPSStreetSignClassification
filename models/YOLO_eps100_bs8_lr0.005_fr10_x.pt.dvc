@@ -2,4 +2,4 @@ outs:
 - md5: db2df082a62822d4b296bef4b82da2a0
   size: 118705475
   hash: md5
-  path: YOLO_eps100_bs_8_lr0.005_fr10.pt
+  path: YOLO_eps100_bs8_lr0.005_fr10_x.pt

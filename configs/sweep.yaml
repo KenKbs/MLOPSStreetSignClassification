@@ -1,0 +1,24 @@
+# see this page for documentation: https://docs.wandb.ai/models/sweeps/define-sweep-configuration
+program: train.py
+name: sweepdemo
+project: StreetSignClassification
+entity: k-kubsch-ludwig-maximilian-university-of-munich
+method: bayes
+metric:
+  goal: maximize
+  name: metrics/mAP50(B)
+parameters:
+  training.lr0:
+    min: -9.2 # log(0.0001)
+    max: -4.6 # log(0.01)
+    distribution: log_uniform
+  training.batch_size:
+    values: [16, 24, 32]
+  training.epochs:
+    values: [1, 2, 3]
+run_cap: 3
+command:
+  - uv
+  - run
+  - src/street_sign_project/train.py
+  - ${args_no_hyphens}

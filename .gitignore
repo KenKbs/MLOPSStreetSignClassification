@@ -13,3 +13,6 @@ yolo26x.pt
 
 # Ignore output of hydra logs --> W&B main experiment tracking source
 /outputs/
+
+# logs from hyperparameter sweeping
+/wandb/

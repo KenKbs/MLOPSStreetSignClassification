@@ -195,8 +195,9 @@ class YOLOv26:
         # wandb
         wandb.log(
             {
-                "train_mAP50": train_results.results_dict["metrics/mAP50(B)"],
-                "train_precision": train_results.results_dict["metrics/precision(B)"],
+                "train_mAP50_detect": train_results.results_dict["metrics/mAP50(B)"],  # metrics within yolo are for detection; there are no separate metrics for segmentation or classification
+                "miss_rate_detect": 1 - train_results.results_dict["metrics/recall(B)"],
+                "train_precision_detect": train_results.results_dict["metrics/precision(B)"],
                 "box loss per epoch": box_epoch_loss,
                 "cls loss per epoch": cls_epoch_loss,
                 "box loss per epoch plot": wandb.Image(box_epoch_loss_plot),

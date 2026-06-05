@@ -1,5 +1,0 @@
-Sweeping:
-	- Run          uv run wandb sweep configs/sweep.yaml
-	- Copy the ID from the output
-	- Run          uv run wandb agent k-kubsch-ludwig-maximilian-university-of-munich/StreetSignClassification/90zn23ea
-

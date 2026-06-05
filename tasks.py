@@ -1,6 +1,7 @@
 import os
 from datetime import datetime
 from shlex import quote
+import re
 
 from invoke import Context, task
 
@@ -199,3 +200,12 @@ def build_docs(ctx: Context) -> None:
 def serve_docs(ctx: Context) -> None:
     """Serve documentation."""
     ctx.run("uv run mkdocs serve --config-file docs/mkdocs.yaml", echo=True, pty=not WINDOWS)
+
+@task
+def tune(ctx:Context) -> None:
+    """tuning the model. See configs/sweep.yaml for changing the params"""
+    output = ctx.run("uv run wandb sweep configs/sweep.yaml", echo=True, pty=not WINDOWS)
+    full_output = output.stdout + output.stderr
+    match = re.search(r"(?i)with\s+ID:(?:[^\w]*\d+m)?\s*([a-z0-9]{8})", full_output)     # complicated regex because terminal output is in yellow
+    id_string=match.group(1).strip()
+    ctx.run(f"uv run wandb agent k-kubsch-ludwig-maximilian-university-of-munich/StreetSignClassification/{id_string}", echo=True, pty=not WINDOWS)

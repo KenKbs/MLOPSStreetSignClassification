@@ -18,6 +18,7 @@ def _hydra_override_args(overrides: dict[str, object]) -> str:
 def _train_overrides(
     data_yaml: str | None = None,
     model_path: str | None = None,
+    base_model_name: str | None = None,
     yolo_model_size: str | None = None,
     epochs: int | None = None,
     batch_size: int | None = None,
@@ -36,6 +37,7 @@ def _train_overrides(
     return {
         "paths.data_yaml": data_yaml,
         "paths.model_path": model_path,
+        "model.base_model_name": base_model_name,
         "model.yolo_model_size": yolo_model_size,
         "training.epochs": epochs,
         "training.batch_size": batch_size,
@@ -75,6 +77,7 @@ def train(
     ctx: Context,
     data_yaml: str | None = None,
     model_path: str | None = None,
+    base_model_name: str | None = None,
     yolo_model_size: str | None = None,
     epochs: int | None = None,
     batch_size: int | None = None,
@@ -98,6 +101,7 @@ def train(
         _train_overrides(
             data_yaml=data_yaml,
             model_path=model_path,
+            base_model_name=base_model_name,
             yolo_model_size=yolo_model_size,
             epochs=epochs,
             batch_size=batch_size,
@@ -125,6 +129,7 @@ def profile_train(
     output_path: str | None = None,
     data_yaml: str | None = None,
     model_path: str | None = None,
+    base_model_name: str | None = None,
     yolo_model_size: str | None = None,
     epochs: int | None = 1,
     batch_size: int | None = None,
@@ -148,6 +153,7 @@ def profile_train(
         _train_overrides(
             data_yaml=data_yaml,
             model_path=model_path,
+            base_model_name=base_model_name,
             yolo_model_size=yolo_model_size,
             epochs=epochs,
             batch_size=batch_size,

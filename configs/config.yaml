@@ -7,7 +7,7 @@ model:
   yolo_model_size: n # is ignored if an existing base model is given
 
 training:
-  epochs: 1
+  epochs: 2
   batch_size: 16
   seed: 420
   optimizer: auto
@@ -15,6 +15,7 @@ training:
   freeze: 10
   device: auto
   workers: 8
+  patience: 3
 
 wandb:
   entity: k-kubsch-ludwig-maximilian-university-of-munich

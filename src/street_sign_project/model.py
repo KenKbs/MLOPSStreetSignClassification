@@ -11,12 +11,18 @@ import matplotlib.pyplot as plt
 import torch
 import typer
 import wandb
+import yaml
 from loguru import logger
 from ultralytics import YOLO, settings
 from ultralytics.engine.results import Results  # for Typing
 from ultralytics.utils.metrics import DetMetrics  # for Typing
 
 from utils import project_root
+from evaluate import evaluate_tp_fp_fn
+
+MODELS_QUALITY_YAML = project_root() / "models" / "models_quality.yaml"
+TEST_IMAGES = project_root() / "data" / "preprocessed" / "test" / "images"
+TEST_LABELS = project_root() / "data" / "preprocessed" / "test" / "labels"
 
 settings.update({"wandb": False})  # schalte das wandb logging von ultralytics ab, da wir das ja selber machen wollen
 
@@ -55,7 +61,7 @@ class YOLOv26:
             self.model_name = local_model_name
             model_path = project_root() / "models" / self.model_name
             if not model_path.exists():
-                raise ValueError('model does not exist in the models folder')
+                raise ValueError("model does not exist in the models folder")
             self.model = YOLO(str(model_path))
             logger.info(f"Model {self.model_name} loading completed")
 
@@ -75,6 +81,7 @@ class YOLOv26:
         wb_project: str = "StreetSignClassification",
         wb_mode: Literal["online", "offline", "disabled", "shared"] | None = None,
         wb_dir: str | Path = "/tmp",
+        patience: int = 3,
     ) -> DetMetrics | None:
         """Fine-tune the YOLO model.
 
@@ -94,6 +101,15 @@ class YOLOv26:
             wb_mode: W&B mode, such as "online", "offline", "disabled", or "shared".
             wb_dir: Local directory used by W&B for run files.
         """
+        if (
+            not MODELS_QUALITY_YAML.exists()
+        ):  # checken, dass die Models_quality_yaml zur Überwchung der Modellgüte existiert
+            logger.critical(
+                "models_quality.yaml doesn't exist. Create by running >>>uv run invoke create-models-quality-yaml<<<"
+            )
+            raise FileNotFoundError(
+                "models_quality.yaml doesn't exist. Create by running >>>uv run invoke create-models-quality-yaml<<<"
+            )
         if self.model_name is None:
             name_string = f"YOLO_eps{epochs}_bs{batch_size}_lr{lr0}_fr{freeze}_{self.model_size}"
             logger.info(f"Initialized training procedure based on yolo26{self.model_size}.pt")
@@ -195,7 +211,9 @@ class YOLOv26:
         # wandb
         wandb.log(
             {
-                "train_mAP50_detect": train_results.results_dict["metrics/mAP50(B)"],  # metrics within yolo are for detection; there are no separate metrics for segmentation or classification
+                "train_mAP50_detect": train_results.results_dict[
+                    "metrics/mAP50(B)"
+                ],  # metrics within yolo are for detection; there are no separate metrics for segmentation or classification
                 "miss_rate_detect": 1 - train_results.results_dict["metrics/recall(B)"],
                 "train_precision_detect": train_results.results_dict["metrics/precision(B)"],
                 "box loss per epoch": box_epoch_loss,
@@ -205,13 +223,61 @@ class YOLOv26:
             }
         )
 
-        # saving
-        if model_path is None:
-            model_path = project_root() / "models" / f"{name_string}.pt"
-        self.save_model(model_path)
-        logger.info(f"Model saved under {model_path}")
-        if log_file is not None:
-            logger.remove(log_file)
+        #####
+        # hier wird jetzt versucht, dass immer die besten 3 Modelle gespeichert werden
+        # dafür das neue Modell mit der korrekten Models quality.yaml abgleichen
+        with open(str(MODELS_QUALITY_YAML), "r") as f:
+            AP_dict = yaml.safe_load(f)
+        tp_global, fp_global, fn_global = 0, 0, 0
+        for image in TEST_IMAGES.glob("*.jpg"):
+            label_path = TEST_LABELS / f"{image.stem}.txt"
+            labels = []
+            if label_path.exists():
+                with open(label_path, "r") as f:
+                    for line in f.readlines():
+                        labels.append([float(x) for x in line.strip().split()])
+            preds = self.predict(image)
+            tp, fp, fn = evaluate_tp_fp_fn(preds, labels, iou_threshold=0.5)
+            tp_global += tp
+            fp_global += fp
+            fn_global += fn
+        if (tp_global + fp_global) == 0:
+            precision_50 = 0
+        else:
+            precision_50 = tp_global / (
+                tp_global + fp_global
+            )  # vereinfachte, da normale AP50 ein Mittelwert über alle Konfidenzschwellen ist
+        current_models = list(AP_dict.keys())
+        current_values = list(AP_dict.values())
+        min_idx = torch.tensor(current_values + [precision_50]).argmin().item()
+        if min_idx != 3:
+            if len(current_models) == 3:
+                worst_model = current_models[min_idx]
+                worst_model_path = project_root() / "models" / worst_model
+                logger.info(
+                    f"Trained model has precision_50 of {precision_50}. Old Model {worst_model} is the worst model with precision_50 of {current_values[min_idx]} and is deleted"
+                )
+                if worst_model_path.exists():
+                    worst_model_path.unlink()
+                else:
+                    raise ValueError("Model to be deleted is not existing in the models folder.")
+                del AP_dict[worst_model]  # Altes Modell aus AP_dict löschen
+            else:
+                logger.info("Less than 3 models saved, so deleting none.")
+
+            AP_dict[name_string] = precision_50
+            with open(str(MODELS_QUALITY_YAML), "w") as f:
+                yaml.safe_dump(AP_dict, f)
+
+            # saving
+            if model_path is None:
+                model_path = project_root() / "models" / f"{name_string}.pt"
+            self.save_model(model_path)
+            logger.info(f"Model saved under {model_path}")
+            if log_file is not None:
+                logger.remove(log_file)
+        else:
+            logger.info(f"Trained model has precision_50 of {precision_50} and is therefore not saved")
 
         return train_results
 
@@ -223,11 +289,13 @@ class YOLOv26:
             new_data: file path
             conf: confidence score threshold for prediction
         """
-        if new_data is None or not str(new_data).endswith(".yaml"):
-            raise RuntimeError("Keine Daten für prediction angegeben. Datenverweis muss als .yaml gegeben werden")
+        if new_data is None or not str(new_data).endswith((".yaml", ".jpg")):
+            raise RuntimeError(
+                "Keine Daten für prediction angegeben. Datenverweis muss als .yaml oder .jpg gegeben werden"
+            )
         # Modell wird automatisch in Evaluationsmodus gesetzt
         # Data preprocessing für daten im Format (N, 3, H, W) nicht nötig
-        return self.model.predict(source=new_data, conf=conf)
+        return self.model.predict(source=new_data, conf=conf)[0]
 
     def test(self, data: str | Path) -> DetMetrics:
         """
@@ -247,6 +315,3 @@ class YOLOv26:
         if not str(file_path).endswith(".pt"):
             raise ValueError('file path needs to be a ".pt" file')
         self.model.save(filename=file_path)
-
-
-

@@ -10,6 +10,8 @@ yolo26m.pt
 yolo26l.pt
 yolo26x.pt
 /reports/logs
+/models/
+!/models/YOLO_eps100_bs8_lr0.005_fr10_x.pt.dvc
 
 # Ignore output of hydra logs --> W&B main experiment tracking source
 /outputs/

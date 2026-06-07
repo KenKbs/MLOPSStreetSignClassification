@@ -29,6 +29,7 @@ def train_model(config: DictConfig):
         wb_project=wandb_cfg.project,
         wb_mode=wandb_cfg.mode,
         wb_dir=wandb_cfg.dir,
+        patience=train_cfg.patience,
     )
 
     print(f"train results: \n {results}")

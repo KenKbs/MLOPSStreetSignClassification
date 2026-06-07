@@ -27,6 +27,7 @@ dependencies = [
     "loguru>=0.7.3",
     "pandas>=3.0.3",
     "plotly>=6.7.0",
+    "pytorch-lightning>=2.6.5",
     "torch",
     "torchvision",
     "typer==0.15.1",

@@ -1,4 +1,4 @@
-# Author: Finn Schmidt
+# Author: Finn Schmidt, Editor: Kenny Kubsch
 # Defining wrapper classes for the model for easier application later on
 # Documentation on YOLO Website: https://docs.ultralytics.com/reference/engine/model#ultralytics.engine.model.Model.train
 # Detailed Documentation on GitHub: https://github.com/ultralytics/ultralytics/blob/main/ultralytics/engine/model.py    or .../predictior.py
@@ -17,12 +17,13 @@ from ultralytics import YOLO, settings
 from ultralytics.engine.results import Results  # for Typing
 from ultralytics.utils.metrics import DetMetrics  # for Typing
 
-from utils import project_root
-from evaluate import evaluate_tp_fp_fn
+from street_sign_project.utils import project_root
+from street_sign_project.evaluate import evaluate_tp_fp_fn
 
 MODELS_QUALITY_YAML = project_root() / "models" / "models_quality.yaml"
 TEST_IMAGES = project_root() / "data" / "preprocessed" / "test" / "images"
 TEST_LABELS = project_root() / "data" / "preprocessed" / "test" / "labels"
+
 
 settings.update({"wandb": False})  # schalte das wandb logging von ultralytics ab, da wir das ja selber machen wollen
 
@@ -105,10 +106,10 @@ class YOLOv26:
             not MODELS_QUALITY_YAML.exists()
         ):  # checken, dass die Models_quality_yaml zur Überwchung der Modellgüte existiert
             logger.critical(
-                "models_quality.yaml doesn't exist. Create by running >>>uv run invoke create-models-quality-yaml<<<"
+                "models_quality.yaml doesn't exist. Create by running >>uv run invoke create-models-quality-yaml<<"
             )
             raise FileNotFoundError(
-                "models_quality.yaml doesn't exist. Create by running >>>uv run invoke create-models-quality-yaml<<<"
+                "models_quality.yaml doesn't exist. Create by running >>uv run invoke create-models-quality-yaml<<"
             )
         if self.model_name is None:
             name_string = f"YOLO_eps{epochs}_bs{batch_size}_lr{lr0}_fr{freeze}_{self.model_size}"

@@ -1,7 +1,7 @@
 from ultralytics.utils.metrics import bbox_iou
 from torch import tensor
 from loguru import logger
-from utils import project_root
+from street_sign_project.utils import project_root
 import yaml
 import typer
 
@@ -63,7 +63,7 @@ def evaluate_tp_fp_fn(preds, labels, iou_threshold: float = 0.5) -> float:
 
 @app.command()
 def models_quality_yaml():
-    from model import YOLOv26  # darf nicht oben stehen, da sonst import zyklus
+    from street_sign_project.model import YOLOv26  # darf nicht oben stehen, da sonst import zyklus
 
     logger.info("Creating...")
     quality_dict = {}

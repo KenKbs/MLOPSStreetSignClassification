@@ -201,7 +201,7 @@ def _validate_split_ratios(train_ratio: float, valid_ratio: float, test_ratio: f
 def _target_split_sizes(total_items: int, ratios: dict[SplitName, float]) -> dict[SplitName, int]:
     """Calculate exact split sizes from fractional ratios. To create Train,val,test split"""
     raw_sizes = {split_name: total_items * ratios[split_name] for split_name in SPLIT_NAMES}
-    split_sizes = {split_name: int(raw_sizes[split_name]) for split_name in SPLIT_NAMES}        # Abrunden über int() wichtig
+    split_sizes = {split_name: int(raw_sizes[split_name]) for split_name in SPLIT_NAMES}  # Abrunden über int() wichtig
     remaining_items = total_items - sum(split_sizes.values())
     remainder_order = sorted(
         SPLIT_NAMES,
@@ -210,7 +210,7 @@ def _target_split_sizes(total_items: int, ratios: dict[SplitName, float]) -> dic
     )
     for split_name in remainder_order[:remaining_items]:
         split_sizes[split_name] += 1
-    return split_sizes  
+    return split_sizes
 
 
 def _read_label_class_counts(label_path: Path | None) -> Counter[int]:
@@ -504,18 +504,33 @@ def preprocess(
 
 
 @app.command()
-def create_yaml_dataset() -> None:
+def create_yaml_dataset(
+    output_path: Path | None = None,
+    mapping_path: Path = DEFAULT_MAPPING_PATH_CSV,
+    dataset_path: str = "data/preprocessed",
+    train_path: str = "train/images",
+    valid_path: str = "valid/images",
+    test_path: str = "test/images",
+) -> None:
     """Create the YOLO dataset YAML file."""
-    root = project_root() / "data"
-    path = "data/preprocessed"
-    train = "train/images"
-    val = "valid/images"
-    test = "test/images"
-    mapping = ClassMapping.from_csv(DEFAULT_MAPPING_PATH_CSV)
+    if output_path is None:
+        output_path = project_root() / "data" / "dataset.yaml"
+
+    mapping = ClassMapping.from_csv(mapping_path)
     ids_names_yaml = "\n".join(f"  {i}: {name}" for i, name in enumerate(mapping.class_names, start=0))
-    yaml_content = f"path: {path}\ntrain: {train}\nval: {val}\ntest: {test}\n\nnames:\n{ids_names_yaml}\n"
-    with open(str(root / "dataset.yaml"), "w") as f:
-        f.write(yaml_content)
+    yaml_content = (
+        f"path: {dataset_path}\n"
+        f"train: {train_path}\n"
+        f"val: {valid_path}\n"
+        f"test: {test_path}\n"
+        f"\n"
+        f"names:\n"
+        f"{ids_names_yaml}\n"
+    )
+
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(output_path, "w", encoding="utf-8") as file:
+        file.write(yaml_content)
 
 
 if __name__ == "__main__":

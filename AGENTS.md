@@ -8,6 +8,7 @@
   * To run Python scripts, use `uv run <script-name>.py`.
   * To run other commands related to Python, prefix them with `uv run `, e.g., `uv run <command>`.
 * The project uses `pytest` for testing. To run tests, use `uv run pytest tests/`.
+  * To run tests with coverage reporting, use `uv run invoke test-coverage`.
 * The project uses `ruff` for linting and formatting:
     * To format code, use `uv run ruff format .`.
     * To lint code, use `uv run ruff check . --fix`.

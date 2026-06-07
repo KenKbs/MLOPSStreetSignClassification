@@ -10,13 +10,13 @@ from typing import Literal
 import matplotlib.pyplot as plt
 import torch
 import typer
-import wandb
 from loguru import logger
 from ultralytics import YOLO, settings
 from ultralytics.engine.results import Results  # for Typing
 from ultralytics.utils.metrics import DetMetrics  # for Typing
 
-from utils import project_root
+import wandb
+from street_sign_project.utils import project_root
 
 settings.update({"wandb": False})  # schalte das wandb logging von ultralytics ab, da wir das ja selber machen wollen
 
@@ -55,7 +55,7 @@ class YOLOv26:
             self.model_name = local_model_name
             model_path = project_root() / "models" / self.model_name
             if not model_path.exists():
-                raise ValueError('model does not exist in the models folder')
+                raise ValueError("model does not exist in the models folder")
             self.model = YOLO(str(model_path))
             logger.info(f"Model {self.model_name} loading completed")
 
@@ -195,7 +195,9 @@ class YOLOv26:
         # wandb
         wandb.log(
             {
-                "train_mAP50_detect": train_results.results_dict["metrics/mAP50(B)"],  # metrics within yolo are for detection; there are no separate metrics for segmentation or classification
+                "train_mAP50_detect": train_results.results_dict[
+                    "metrics/mAP50(B)"
+                ],  # metrics within yolo are for detection; there are no separate metrics for segmentation or classification
                 "miss_rate_detect": 1 - train_results.results_dict["metrics/recall(B)"],
                 "train_precision_detect": train_results.results_dict["metrics/precision(B)"],
                 "box loss per epoch": box_epoch_loss,
@@ -247,6 +249,3 @@ class YOLOv26:
         if not str(file_path).endswith(".pt"):
             raise ValueError('file path needs to be a ".pt" file')
         self.model.save(filename=file_path)
-
-
-

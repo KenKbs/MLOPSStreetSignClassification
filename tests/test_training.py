@@ -53,6 +53,7 @@ def test_train_model_passes_config_to_yolov26(monkeypatch) -> None:
                 "freeze": 5,
                 "device": "cpu",
                 "workers": 2,
+                "patience": 3,
             },
             "wandb": {
                 "entity": "test-entity",
@@ -85,6 +86,7 @@ def test_train_model_passes_config_to_yolov26(monkeypatch) -> None:
         "freeze": 5,
         "device": "cpu",
         "workers": 2,
+        "patience": 3,
         "wb_entity": "test-entity",
         "wb_project": "test-project",
         "wb_mode": "disabled",

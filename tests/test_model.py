@@ -2,7 +2,8 @@ from pathlib import Path
 
 import pytest
 from street_sign_project.model import YOLOv26
-
+class DummyResult:
+    pass
 
 class FakeYOLO:
     """Fake Ultralytics YOLO object used to test the project wrapper.
@@ -19,6 +20,12 @@ class FakeYOLO:
         """Store the path requested by the wrapper."""
         self.saved_path = filename
 
+    def predict(self, source: str | Path | None = None, conf: float = 0.25) -> list[DummyResult]:
+        """store the inputs"""
+        self.predict_source = source
+        self.predict_conf = conf
+        return [DummyResult()]
+
 
 def test_yolov26_predict_rejects_missing_or_non_yaml_input(monkeypatch: pytest.MonkeyPatch) -> None:
     """Test that YOLOv26 prediction validates the dataset path format.
@@ -27,12 +34,12 @@ def test_yolov26_predict_rejects_missing_or_non_yaml_input(monkeypatch: pytest.M
     model = YOLOv26(model_size="n")
 
     # model.predict with new_data=None should produce error
-    with pytest.raises(RuntimeError, match="Datenverweis muss als .yaml"):
+    with pytest.raises(RuntimeError, match="Datenverweis muss als .yaml oder .jpg"):
         model.predict(new_data=None)
 
     # same for model.predict with new_data = image.jpg should produce error
-    with pytest.raises(RuntimeError, match="Datenverweis muss als .yaml"):
-        model.predict(new_data="image.jpg")
+    with pytest.raises(RuntimeError, match="Datenverweis muss als .yaml oder .jpg"):
+        model.predict(new_data="image.png")
 
 
 def test_yolov26_save_model_requires_pt_file(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:

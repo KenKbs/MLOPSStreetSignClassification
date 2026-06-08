@@ -1,4 +1,6 @@
 from ultralytics.utils.metrics import bbox_iou
+from ultralytics import YOLO
+from ultralytics.engine.results import Results
 from torch import tensor
 from loguru import logger
 from street_sign_project.utils import project_root
@@ -13,7 +15,9 @@ TEST_IMAGES = project_root() / "data" / "preprocessed" / "test" / "images"
 TEST_LABELS = project_root() / "data" / "preprocessed" / "test" / "labels"
 
 
-def evaluate_tp_fp_fn(preds, labels, iou_threshold: float = 0.5) -> float:
+def evaluate_tp_fp_fn(preds: Results, labels: list[list[float]], iou_threshold: float = 0.5) -> tuple[int, int, int]:
+    if preds.boxes is None:
+        raise ValueError("no predictions given to evaluate. preds.boxes is None")
     if len(labels) == 0:
         return 0, len(preds.boxes), 0
     img_h, img_w = preds.orig_shape
@@ -93,7 +97,7 @@ def models_quality_yaml():
     while len(quality_dict) > 3:
         current_models = list(quality_dict.keys())
         current_values = list(quality_dict.values())
-        min_idx = tensor(current_values).argmin().item()
+        min_idx = int(tensor(current_values).argmin().item())
         worst_model = current_models[min_idx]
         logger.warning(f"Due to too many models {worst_model} is not included in the yaml an should be deleted")
         del quality_dict[worst_model]

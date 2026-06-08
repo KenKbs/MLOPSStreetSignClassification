@@ -126,6 +126,8 @@ class YOLOv26:
             logger.info(f"Initialized training procedure based on {self.model_name}")
             logger.info(f"Model is called {name_string}.pt")
 
+        self.name_string = name_string
+
         log_dir = project_root() / "reports" / "logs" / "training"
         log_dir.mkdir(parents=True, exist_ok=True)
         log_path = log_dir / f"training_{name_string}.log"
@@ -183,7 +185,11 @@ class YOLOv26:
             workers=workers,
             save_period=-1,
             exist_ok=True,
+            patience=patience,
         )
+
+        if train_results is None:
+            raise ValueError("Training didn't work. Train results are None")
 
         # logging
         logger.info(f"Finished training {name_string} at {datetime.now()}; time difference of {datetime.now() - start}")
@@ -250,7 +256,7 @@ class YOLOv26:
             )  # vereinfachte, da normale AP50 ein Mittelwert über alle Konfidenzschwellen ist
         current_models = list(AP_dict.keys())
         current_values = list(AP_dict.values())
-        min_idx = torch.tensor(current_values + [precision_50]).argmin().item()
+        min_idx = int(torch.tensor(current_values + [precision_50]).argmin().item())
         if min_idx != 3:
             if len(current_models) == 3:
                 worst_model = current_models[min_idx]
@@ -270,19 +276,12 @@ class YOLOv26:
             with open(str(MODELS_QUALITY_YAML), "w") as f:
                 yaml.safe_dump(AP_dict, f)
 
-            # saving
-            if model_path is None:
-                model_path = project_root() / "models" / f"{name_string}.pt"
-            self.save_model(model_path)
-            logger.info(f"Model saved under {model_path}")
-            if log_file is not None:
-                logger.remove(log_file)
         else:
             logger.info(f"Trained model has precision_50 of {precision_50} and is therefore not saved")
 
         return train_results
 
-    def predict(self, new_data: str | Path | None = None, conf: float = 0.25) -> list[Results]:
+    def predict(self, new_data: str | Path | None = None, conf: float = 0.25) -> Results:
         """
         method for predicting with the model
 
@@ -296,7 +295,11 @@ class YOLOv26:
             )
         # Modell wird automatisch in Evaluationsmodus gesetzt
         # Data preprocessing für daten im Format (N, 3, H, W) nicht nötig
-        return self.model.predict(source=new_data, conf=conf)[0]
+        return self.model.predict(
+            source=new_data, conf=conf
+        )[
+            0
+        ]  # Ergebnis nur für das erste Bild das reingesteckt wurde, deswegen [0], wir wenden es ja eh immer nur auf ein Bild an
 
     def test(self, data: str | Path) -> DetMetrics:
         """
@@ -316,3 +319,61 @@ class YOLOv26:
         if not str(file_path).endswith(".pt"):
             raise ValueError('file path needs to be a ".pt" file')
         self.model.save(filename=file_path)
+
+    def evaluate(self) -> float:
+        """vereinfachte, da normale AP50 ein Mittelwert über alle Konfidenzschwellen ist"""
+        tp_global, fp_global, fn_global = 0, 0, 0
+        for image in TEST_IMAGES.glob("*.jpg"):
+            label_path = TEST_LABELS / f"{image.stem}.txt"
+            labels = []
+            if label_path.exists():
+                with open(label_path, "r") as f:
+                    for line in f.readlines():
+                        labels.append([float(x) for x in line.strip().split()])
+            preds = self.predict(image)
+            tp, fp, fn = evaluate_tp_fp_fn(preds, labels, iou_threshold=0.5)
+            tp_global += tp
+            fp_global += fp
+            fn_global += fn
+        if (tp_global + fp_global) == 0:
+            precision_50 = 0
+        else:
+            precision_50 = tp_global / (tp_global + fp_global)
+        return precision_50
+
+    def cleanup_savings(self) -> bool:
+        """
+        Abgleich mit models_quality.yaml, um die 3 besten Modelle zu speichern
+        returns a bool that indicates whether model should be saved or not
+        """
+        precision_50 = self.evaluate()
+
+        with open(str(MODELS_QUALITY_YAML), "r") as f:
+            AP_dict = yaml.safe_load(f)
+        current_models = list(AP_dict.keys())
+        current_values = list(AP_dict.values())
+        current_n = len(current_models)
+        min_idx = int(torch.tensor(current_values + [precision_50]).argmin().item())
+        if min_idx != current_n:
+            if current_n >= 3:
+                worst_model = current_models[min_idx]
+                worst_model_path = project_root() / "models" / worst_model
+                logger.info(
+                    f"Trained model has precision_50 of {precision_50}. Old Model {worst_model} is the worst model with precision_50 of {current_values[min_idx]} and is deleted"
+                )
+                if worst_model_path.exists():
+                    worst_model_path.unlink()
+                else:
+                    raise ValueError("Model to be deleted is not existing in the models folder.")
+                del AP_dict[worst_model]  # Altes Modell aus AP_dict löschen
+            else:
+                logger.info("Less than 3 models saved, so deleting none.")
+
+            AP_dict[self.name_string] = precision_50
+            with open(str(MODELS_QUALITY_YAML), "w") as f:
+                yaml.safe_dump(AP_dict, f)
+            saving_model = True
+        else:
+            logger.info(f"Trained model has precision_50 of {precision_50} and is therefore not saved")
+            saving_model = False
+        return saving_model

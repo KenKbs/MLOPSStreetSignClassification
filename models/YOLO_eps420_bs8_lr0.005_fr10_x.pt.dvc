@@ -1,0 +1,5 @@
+outs:
+- md5: dcebc1c50107bdaa842e4025790c5b9b
+  size: 118747089
+  hash: md5
+  path: YOLO_eps420_bs8_lr0.005_fr10_x.pt

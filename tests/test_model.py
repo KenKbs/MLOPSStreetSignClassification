@@ -2,8 +2,11 @@ from pathlib import Path
 
 import pytest
 from street_sign_project.model import YOLOv26
+
+
 class DummyResult:
     pass
+
 
 class FakeYOLO:
     """Fake Ultralytics YOLO object used to test the project wrapper.

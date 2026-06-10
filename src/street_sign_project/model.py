@@ -10,15 +10,15 @@ from typing import Literal
 import matplotlib.pyplot as plt
 import torch
 import typer
-import wandb
 import yaml
+import wandb
 from loguru import logger
 from ultralytics import YOLO, settings
 from ultralytics.engine.results import Results  # for Typing
 from ultralytics.utils.metrics import DetMetrics  # for Typing
 
-from street_sign_project.utils import project_root
 from street_sign_project.evaluate import evaluate_tp_fp_fn
+from street_sign_project.utils import project_root
 
 MODELS_QUALITY_YAML = project_root() / "models" / "models_quality.yaml"
 TEST_IMAGES = project_root() / "data" / "preprocessed" / "test" / "images"
@@ -249,9 +249,9 @@ class YOLOv26:
             fp_global += fp
             fn_global += fn
         if (tp_global + fp_global) == 0:
-            precision_50 = 0
+            precision_50: float = 0
         else:
-            precision_50 = tp_global / (
+            precision_50: float = tp_global / (
                 tp_global + fp_global
             )  # vereinfachte, da normale AP50 ein Mittelwert über alle Konfidenzschwellen ist
         current_models = list(AP_dict.keys())
@@ -336,9 +336,9 @@ class YOLOv26:
             fp_global += fp
             fn_global += fn
         if (tp_global + fp_global) == 0:
-            precision_50 = 0
+            precision_50: float = 0
         else:
-            precision_50 = tp_global / (tp_global + fp_global)
+            precision_50: float = tp_global / (tp_global + fp_global)
         return precision_50
 
     def cleanup_savings(self) -> bool:

@@ -1,11 +1,12 @@
-from ultralytics.utils.metrics import bbox_iou
+import typer
+import yaml
+from loguru import logger
+from torch import tensor
 from ultralytics import YOLO
 from ultralytics.engine.results import Results
-from torch import tensor
-from loguru import logger
+from ultralytics.utils.metrics import bbox_iou
+
 from street_sign_project.utils import project_root
-import yaml
-import typer
 
 app = typer.Typer()
 
@@ -74,8 +75,8 @@ def models_quality_yaml():
     for model_path in MODELS_PATH.glob("*.pt"):
         try:
             model = YOLOv26(model_path.name)
-        except Exception as e:
-            raise ValueError(f"Fehler beim Laden von {model_path.stem}: {e}")
+        except ValueError as e:
+            raise RuntimeError("Failed") from e
         tp_global, fp_global = 0, 0
         for image in TEST_IMAGES.glob("*.jpg"):
             label_path = TEST_LABELS / f"{image.stem}.txt"

@@ -10,15 +10,15 @@ from typing import Literal
 import matplotlib.pyplot as plt
 import torch
 import typer
-import wandb
 import yaml
 from loguru import logger
 from ultralytics import YOLO, settings
 from ultralytics.engine.results import Results  # for Typing
 from ultralytics.utils.metrics import DetMetrics  # for Typing
 
-from street_sign_project.utils import project_root
+import wandb
 from street_sign_project.evaluate import evaluate_tp_fp_fn
+from street_sign_project.utils import project_root
 
 MODELS_QUALITY_YAML = project_root() / "models" / "models_quality.yaml"
 TEST_IMAGES = project_root() / "data" / "preprocessed" / "test" / "images"

@@ -1,15 +1,14 @@
 import os
 import re
-from loguru import logger
 from datetime import datetime
 from shlex import quote
-from hydra import compose, initialize
 
+from hydra import compose, initialize
 from invoke.context import Context
 from invoke.tasks import task
-
-from street_sign_project.train import train_model
+from loguru import logger
 from street_sign_project.model import YOLOv26
+from street_sign_project.train import train_model
 from street_sign_project.utils import project_root
 
 WINDOWS = os.name == "nt"

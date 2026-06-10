@@ -1,8 +1,9 @@
-import cv2
 from pathlib import Path
-from loguru import logger
-import typer
 from typing import Optional
+
+import cv2
+import typer
+from loguru import logger
 
 from street_sign_project.model import YOLOv26
 from street_sign_project.utils import project_root

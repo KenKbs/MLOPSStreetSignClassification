@@ -24,6 +24,8 @@ jobs:
         uses: astral-sh/setup-uv@v7 # vordefinierte Action in GitHub, installiert uv
         with:
           python-version: 3.12
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
 
       - name: Install dependencies # lädt die duch die uv lock file definierte Umgebung
         run: |

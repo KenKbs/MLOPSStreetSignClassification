@@ -11,12 +11,12 @@ import matplotlib.pyplot as plt
 import torch
 import typer
 import yaml
-import wandb
 from loguru import logger
 from ultralytics import YOLO, settings
 from ultralytics.engine.results import Results  # for Typing
 from ultralytics.utils.metrics import DetMetrics  # for Typing
 
+import wandb
 from street_sign_project.evaluate import evaluate_tp_fp_fn
 from street_sign_project.utils import project_root
 
@@ -135,7 +135,7 @@ class YOLOv26:
         log_file = None
 
         def logger_callback(
-            trainer
+            trainer,
         ):  # this function is needed so that with the start of the training, YOLO doesn't block the saving of our log file
             nonlocal log_file
             log_file = logger.add(str(log_path), level="DEBUG", rotation="10 MB")

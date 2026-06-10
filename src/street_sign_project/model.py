@@ -249,9 +249,9 @@ class YOLOv26:
             fp_global += fp
             fn_global += fn
         if (tp_global + fp_global) == 0:
-            precision_50 = 0
+            precision_50: float = 0
         else:
-            precision_50 = tp_global / (
+            precision_50: float = tp_global / (
                 tp_global + fp_global
             )  # vereinfachte, da normale AP50 ein Mittelwert über alle Konfidenzschwellen ist
         current_models = list(AP_dict.keys())
@@ -336,9 +336,9 @@ class YOLOv26:
             fp_global += fp
             fn_global += fn
         if (tp_global + fp_global) == 0:
-            precision_50 = 0
+            precision_50: float = 0
         else:
-            precision_50 = tp_global / (tp_global + fp_global)
+            precision_50: float = tp_global / (tp_global + fp_global)
         return precision_50
 
     def cleanup_savings(self) -> bool:

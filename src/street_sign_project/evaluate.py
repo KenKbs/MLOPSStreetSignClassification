@@ -42,7 +42,7 @@ def evaluate_tp_fp_fn(preds: Results, labels: list[list[float]], iou_threshold: 
     fp = 0
     tp = 0
     for i, pred_box in enumerate(pred_boxes):
-        best_iou = 0
+        best_iou: float = 0
         best_idx = -1
         for j, label_box in enumerate(label_boxes):
             if j in matched_labels:

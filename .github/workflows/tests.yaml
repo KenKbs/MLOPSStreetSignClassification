@@ -9,7 +9,7 @@ on:
 jobs:
   build:
     runs-on: ${{ matrix.os }}
-    continue-on-error: true # bricht lauf einer zelle nicht ab wenn ein test failed
+    continue-on-error: false # bricht lauf einer zelle ab wenn ein test failed
     strategy:
       fail-fast: false # bricht nicht ab wenn eine zelle failed
       matrix:
@@ -19,12 +19,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5 # vordefinierte Action in GitHub
-
-      - name: Caching
         uses: actions/setup-python@v5
         with:
           python-version: 3.12
-          cache: "pip" # caching pip dependencies
+          cache: 'pip'
 
       - name: Setup uv
         uses: astral-sh/setup-uv@v7 # vordefinierte Action in GitHub, installiert uv

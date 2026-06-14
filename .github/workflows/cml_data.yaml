@@ -40,4 +40,4 @@ jobs:
 
       - name: Check data statistics
         run: |
-          uv run invole dataset-statistics-check
+          uv run invoke dataset-statistics-check

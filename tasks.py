@@ -232,3 +232,9 @@ def create_models_quality_yaml(ctx: Context) -> None:
 def plot_images(ctx: Context) -> None:
     """creating a yaml for saving of 3 best models"""
     ctx.run(f"uv run src/{PROJECT_NAME}/visualize.py plot-image-pred", echo=True, pty=not WINDOWS)
+
+
+@task
+def dataset_statistics_check(ctx: Context) -> None:
+    """running the dataset statistics (for automation via GitHub with cml_data.yaml)"""
+    ctx.run(f"uv run src/{PROJECT_NAME}/dataset.py dataset-statistics", echo=True, pty=not WINDOWS)

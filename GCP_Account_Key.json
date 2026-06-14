@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "mlops-steetsigns",
+  "private_key_id": "247db05d0845e43b8b6f76c6ee8a48dd8138cd7c",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCsuHQcKd+3pnKL\n1+xFrXRbODw/NjI902RE8ZQqkd1p+uRhJcZTbZCixpeWImbCcRpIJ6PuqRh8HhcA\nbzljyLSjdaU3WkS0kLnwjX5p9rQ2Cza739I/Tm9JdZrQxFpPcHV8Bu/h66Zp6KE0\nqxpCsnGa3anFHt0L4fF7ZxrBXCxs0pOZSIEPl+743bLxYsikIPepjELwTQxoarko\nbGZUBTG/u0BsarHUSDq5U5PMn335ONbrEL+LRaKw2jwqrXkqEhRGkvsZt+g4WmzO\ncD88OjrocG8Ulpaf5meYeyV4vUQ/da3DsywZDVDnDSYL7JtBEKmabqY22zX/m0tS\nRPAUBIspAgMBAAECggEABfWP7VV/27EZUabfsYsUW9NbDMlHaX0CKs4fpmpa9n2g\nDz6uPZGnBF66uy+GVnNwNzNwQ1s/4Nm+7Gu/Uf3fnFDXpEsahL+w5/z8csEpeECM\ndmX4tejJtoH2wfjhrsz6rg6lNykaGEcHoi68cgxVwW9Kx2YoX/EUk6/mgJZiuAHA\nuaxaJWeVwJyl2PgfRzI1XRoLrUrk41P6X2bqsC1BS3hjFbK/mH1OXZGMyXvdZz9k\nsO7GYzpciq724KS2CVh5GHBK3iFMv6AWuWbhc6J3pHndA0PvH/SI5IHo5VUJId8V\nqUMsVFqz2uJcQVpHZNJUDjFhhdOrGhn+lvxqE4LBcwKBgQDj2x9yzavXbo1sMl4p\nd3jc0rt41x6LR6/oun9ESQ3QmIs18jLEmGQxfZ3mqq8dJToq12q6IBKGfsQaVy1I\n+xaYSpC40k/sQowIwb4z8QoVF5S/VP8E3uV1pX87rz8HWDOuWHu2816e4EhEZOdY\nfZpvTnBNpU12aYPOlSSYfTNtnwKBgQDCDe5a1n3vGZSp0NC0AgN2mmzYSZx0Ty6q\n/MWhGSTDb8uJZtIhlpZ7ETAUOw5C2dRfxSMbegWHcZmRoi9oPONRw89QlzRVcmsx\nZ8jfqoZn3WfUh2yUIAfGL7pVneAA/CP0PyNGoZfz+9aVfZk5lOeqQ9SQUp8sPjTY\nWfyKPitCNwKBgAdnzcPbb2RXEX2cvXa3jVQP/UvWIgYA1HTJ6uz7Otm2u3+LWZ8O\nHOOG46Tlkz9tQFC4I53dAP0iDZmVj8E5d+iHM+Dt5O8W0ppOQbJKeTtqQsldJ9Su\nseJ6+IGmFnRUp4lZEtxFWKPtQiwG44X6vxQzBm9fmf7pOwFx03ipSQydAoGAD6bc\nAMuoIK7phMDo9HvtF5XhDZjyW5c/Zl84+YNzqafMvOpkLH1e6dI7FIam4dF8BbV6\n3W58H66T+mEgfcHbe+7VO+TWPcYay0NZumCgsqPzCftaUKA8wEl9OAah2LJ9m+ez\nyrCh9vXrGuekgjZ2cQ9Dh9iCKiliTckES4o0JwUCgYEAuq4EeM1PSyGxf/BmGgXj\niZmXoTKx3KvSjcyI8X2w9kK3xFHqdaby741nklnv9rwGVYkeuvzT3+o/DIXG/mLU\nf8w4vW8WShCUxBIzY2pepHCrqaeLhOsliKMb1cG7pTvc/nuVpCsU645szgbwTEoX\npGflRpn2l5sUbiQ20Vm+wV4=\n-----END PRIVATE KEY-----\n",
+  "client_email": "dvc-storage-access@mlops-steetsigns.iam.gserviceaccount.com",
+  "client_id": "111380297901438377933",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/dvc-storage-access%40mlops-steetsigns.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

@@ -13,6 +13,10 @@ on:
 jobs:
   run_data_checker:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
@@ -40,7 +44,6 @@ jobs:
           uv run invoke dataset-statistics-check > data_statistics.md
 
           for file in plots/*.png plots/*.jpg; do
-            # Sicherstellen, dass die Datei wirklich existiert (falls der Ordner leer wäre)
             [ -e "$file" ] || continue
             filename=$(basename "$file")
             echo "![ $filename ](./plots/$filename)" >> data_statistics.md

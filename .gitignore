@@ -20,3 +20,5 @@ yolo26x.pt
 /wandb/
 # Ignore coverage runs, as it's similar to cache/tests artifacts.
 /.coverage
+
+/plots/

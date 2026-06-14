@@ -323,7 +323,7 @@ def _assign_dataset_items(
     assignments: dict[SplitName, list[DatasetItem]] = {split_name: [] for split_name in SPLIT_NAMES}
 
     for item in _ordered_items_for_split(items=items, total_class_counts=total_class_counts, seed=seed):
-        candidate_splits = [
+        candidate_splits: list[SplitName] = [
             split_name for split_name in SPLIT_NAMES if len(assignments[split_name]) < target_split_sizes[split_name]
         ]
         best_split = max(

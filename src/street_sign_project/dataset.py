@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import torch
 import typer
 from cv2.typing import MatLike
+from loguru import logger
 from torch import Tensor
 from torch.utils.data import Dataset
 
@@ -66,11 +67,25 @@ class YoloDataSet(Dataset):
         if image is None:
             raise ValueError(f"Image {str(item.image_path)} could not be loaded")
 
+        if item.label_path is None:
+            return image, {"Boxes": torch.tensor([]), "classes": torch.tensor([])}
+
         boxes = []
         classes = []
+        label_path = item.label_path
+        if not Path(item.image_path).stem == Path(label_path).stem:
+            logger.warning(f"Bild und Label an index {index} stimmen nicht überein. Suche nach korrektem Label...")
+            for label_p in Path(item.label_path).parent.glob("*.txt"):
+                if Path(item.image_path).stem == label_p.stem:
+                    label_path = label_p
+                    logger.info("Correct label path found.")
+                    break
+                raise ValueError(
+                    f"Correct label for {Path(item.image_path).name} not found in {Path(item.label_path).parent}"
+                )
 
-        if item.label_path is not None and item.label_path.exists():
-            with open(item.label_path, "r") as labels:
+        if label_path is not None and label_path.exists():
+            with open(label_path, "r") as labels:
                 for label in labels.readlines():
                     label_split = label.strip().split()
                     if label_split[4] is None or not label_split:
@@ -107,24 +122,28 @@ def dataset_statistics(datadir: str = "data") -> None:
     print(f"Validation dataset: {valid_dataset.name}")
     print(f"Number of images: {len(valid_dataset)}")
     print(f"Image shape: {valid_dataset[0][0].shape}")
+    print(train_dataset.items[0].image_path)
+    print(train_dataset.items[0].label_path)
 
-    plot_image_label(train_dataset.image_paths[:5], train_dataset.label_paths[:5])
+    plot_image_label(train_dataset.items[:5], save_dir="plots")
 
     train_label_distribution = torch.bincount(_get_label_classes(train_dataset.label_paths), minlength=73)
     test_label_distribution = torch.bincount(_get_label_classes(test_dataset.label_paths), minlength=73)
 
-    plt.bar(torch.arange(10), train_label_distribution)
+    Path("plots/").mkdir(exist_ok=True)
+
+    plt.bar(torch.arange(len(train_label_distribution)), train_label_distribution)
     plt.title("Train label distribution")
     plt.xlabel("Label")
     plt.ylabel("Count")
-    plt.savefig("train_label_distribution.png")
+    plt.savefig("plots/train_label_distribution.png")
     plt.close()
 
-    plt.bar(torch.arange(10), test_label_distribution)
+    plt.bar(torch.arange(len(test_label_distribution)), test_label_distribution)
     plt.title("Test label distribution")
     plt.xlabel("Label")
     plt.ylabel("Count")
-    plt.savefig("test_label_distribution.png")
+    plt.savefig("plots/test_label_distribution.png")
     plt.close()
 
 

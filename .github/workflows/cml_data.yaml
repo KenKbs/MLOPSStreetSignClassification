@@ -37,4 +37,23 @@ jobs:
 
       - name: Check data statistics
         run: |
-          uv run invoke dataset-statistics-check
+          uv run invoke dataset-statistics-check > data_statistics.md
+
+          # echo '![](./plots/train_label_distribution.png "Train label distribution")' >> data_statistics.md
+          # echo '![](./plots/test_label_distribution.png "Test label distribution")' >> data_statistics.md
+
+          for file in plots/*.png plots/*.jpg; do
+            # Sicherstellen, dass die Datei wirklich existiert (falls der Ordner leer wäre)
+            [ -e "$file" ] || continue
+            filename=$(basename "$file")
+            echo "![ $filename ](./plots/$filename)" >> data_statistics.md
+          done
+
+      - name: Setup cml
+        uses: iterative/setup-cml@v2
+
+      - name: Comment on PR
+        env:
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cml comment create data_statistics.md --watermark-title="Data Checker"

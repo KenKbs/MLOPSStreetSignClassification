@@ -46,9 +46,6 @@ jobs:
             echo "![ $filename ](./plots/$filename)" >> data_statistics.md
           done
 
-      - name: Setup cml
-        uses: iterative/setup-cml@v2
-
       - name: Comment on PR
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}

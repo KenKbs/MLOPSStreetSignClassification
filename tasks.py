@@ -60,7 +60,7 @@ def train(
     wandb_mode: str | None = None,
     wandb_dir: str | None = None,
     auto_save: bool = True,
-    auto_cleanup: bool = True,
+    auto_cleanup: bool = False,
 ) -> None:
     """
     Train model.
@@ -230,5 +230,5 @@ def create_models_quality_yaml(ctx: Context) -> None:
 
 @task
 def plot_images(ctx: Context) -> None:
-    """creating a yaml for saving of 3 best models"""
+    """plotting example images"""
     ctx.run(f"uv run src/{PROJECT_NAME}/visualize.py plot-image-pred", echo=True, pty=not WINDOWS)

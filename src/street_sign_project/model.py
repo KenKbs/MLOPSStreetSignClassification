@@ -230,6 +230,22 @@ class YOLOv26:
             }
         )
 
+        ##### Saving
+        if model_path is None:
+            save_dir = project_root() / "models"
+            model_path = save_dir / f"{name_string}.pt"
+        else:
+            model_path = Path(model_path)
+
+        logger.info(f"Saving model locally to {model_path}")
+        self.save_model(file_path=model_path)
+
+        artifact = wandb.Artifact(
+            name=name_string, type="model", description=f"YOLO Model trained for {epochs} epochs."
+        )
+        artifact.add_file(str(model_path))
+        wandb.log_artifact(artifact)
+
         #####
         # hier wird jetzt versucht, dass immer die besten 3 Modelle gespeichert werden
         # dafür das neue Modell mit der korrekten Models quality.yaml abgleichen
@@ -254,30 +270,36 @@ class YOLOv26:
             precision_50: float = tp_global / (
                 tp_global + fp_global
             )  # vereinfachte, da normale AP50 ein Mittelwert über alle Konfidenzschwellen ist
-        current_models = list(AP_dict.keys())
-        current_values = list(AP_dict.values())
-        min_idx = int(torch.tensor(current_values + [precision_50]).argmin().item())
-        if min_idx != 3:
-            if len(current_models) == 3:
-                worst_model = current_models[min_idx]
-                worst_model_path = project_root() / "models" / worst_model
-                logger.info(
-                    f"Trained model has precision_50 of {precision_50}. Old Model {worst_model} is the worst model with precision_50 of {current_values[min_idx]} and is deleted"
-                )
-                if worst_model_path.exists():
-                    worst_model_path.unlink()
-                else:
-                    raise ValueError("Model to be deleted is not existing in the models folder.")
-                del AP_dict[worst_model]  # Altes Modell aus AP_dict löschen
-            else:
-                logger.info("Less than 3 models saved, so deleting none.")
+        AP_dict[f"{name_string}.pt"] = precision_50
+        with open(str(MODELS_QUALITY_YAML), "w") as f:
+            yaml.safe_dump(AP_dict, f)
 
-            AP_dict[name_string] = precision_50
-            with open(str(MODELS_QUALITY_YAML), "w") as f:
-                yaml.safe_dump(AP_dict, f)
+        ############ Automatisches Löschen schlechter Modelle auskommentiert, da unnötig
 
-        else:
-            logger.info(f"Trained model has precision_50 of {precision_50} and is therefore not saved")
+        #        current_models = list(AP_dict.keys())
+        #        current_values = list(AP_dict.values())
+        #        min_idx = int(torch.tensor(current_values + [precision_50]).argmin().item())
+        #        if min_idx != 3:
+        #            if len(current_models) == 3:
+        #                worst_model = current_models[min_idx]
+        #                worst_model_path = project_root() / "models" / worst_model
+        #                logger.info(
+        #                    f"Trained model has precision_50 of {precision_50}. Old Model {worst_model} is the worst model with precision_50 of {current_values[min_idx]} and is deleted"
+        #                )
+        #                if worst_model_path.exists():
+        #                    worst_model_path.unlink()
+        #                else:
+        #                    raise ValueError("Model to be deleted is not existing in the models folder.")
+        #                del AP_dict[worst_model]  # Altes Modell aus AP_dict löschen
+        #            else:
+        #                logger.info("Less than 3 models saved, so deleting none.")
+        #
+        #            AP_dict[f"{name_string}.pt"] = precision_50
+        #            with open(str(MODELS_QUALITY_YAML), "w") as f:
+        #                yaml.safe_dump(AP_dict, f)
+        #
+        #        else:
+        #            logger.info(f"Trained model has precision_50 of {precision_50} and is therefore not saved")
 
         return train_results
 

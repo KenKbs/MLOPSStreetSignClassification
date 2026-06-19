@@ -3,10 +3,9 @@
 import os
 import time
 
+import wandb
 from street_sign_project.model import YOLOv26
 from torch import rand
-
-import wandb
 
 
 def load_model(model_checkpoint):

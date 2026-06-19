@@ -78,5 +78,8 @@ lint.ignore = [
   "W505", # ignore doc/comment line length
 ]
 
+[tool.ruff.lint.isort]    #lokalem ruff sagen, dass wandb von einer third party ist, weil er das aktuell anders einstuft
+known-third-party = ["wandb"]
+
 [tool.coverage.run]
 omit = ["tests/*"]

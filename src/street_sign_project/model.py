@@ -5,7 +5,7 @@
 
 from datetime import datetime
 from pathlib import Path
-from typing import Literal
+from typing import Literal, Self
 
 import matplotlib.pyplot as plt
 import torch
@@ -65,6 +65,14 @@ class YOLOv26:
                 raise ValueError("model does not exist in the models folder")
             self.model = YOLO(str(model_path))
             logger.info(f"Model {self.model_name} loading completed")
+
+    @classmethod
+    def load_from_checkpoint(cls, checkpoint_path: Path | str) -> Self:
+        """Loads a Model based on a path to the model. returns a YOLOv26 Model object"""
+        instanz = cls.__new__(cls)  # leere Instanz erstmal und dann füööen
+        instanz.model = YOLO(checkpoint_path)
+        instanz.model_name = f"{Path(checkpoint_path).stem}.pt"
+        return instanz
 
     def train(
         self,

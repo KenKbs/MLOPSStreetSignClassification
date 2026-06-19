@@ -70,31 +70,35 @@ def evaluate_tp_fp_fn(preds: Results, labels: list[list[float]], iou_threshold: 
 def models_quality_yaml():
     from street_sign_project.model import YOLOv26  # darf nicht oben stehen, da sonst import zyklus
 
-    logger.info("Creating...")
-    quality_dict = {}
+    if MODELS_QUALITY_YAML.exists():
+        with open(str(MODELS_QUALITY_YAML), "r", encoding="utf-8") as file:
+            quality_dict = yaml.safe_load(file)
+    else:
+        quality_dict = {}
     for model_path in MODELS_PATH.glob("*.pt"):
-        try:
-            model = YOLOv26(model_path.name)
-        except ValueError as e:
-            raise RuntimeError("Failed") from e
-        tp_global, fp_global = 0, 0
-        for image in TEST_IMAGES.glob("*.jpg"):
-            label_path = TEST_LABELS / f"{image.stem}.txt"
-            labels = []
-            if label_path.exists():
-                with open(label_path, "r") as f:
-                    for line in f.readlines():
-                        labels.append([float(x) for x in line.strip().split()])
-            preds = model.predict(image)
-            tp, fp, _ = evaluate_tp_fp_fn(preds, labels, iou_threshold=0.5)
-            tp_global += tp
-            fp_global += fp
-            print(tp)
-        if (tp_global + fp_global) > 0:
-            precision_50 = tp_global / (tp_global + fp_global)
-        else:
-            precision_50 = 0.0
-        quality_dict[model_path.name] = precision_50
+        if model_path.name not in quality_dict.keys():
+            try:
+                model = YOLOv26(model_path.name)
+            except ValueError as e:
+                raise RuntimeError("Failed") from e
+            tp_global, fp_global = 0, 0
+            for image in TEST_IMAGES.glob("*.jpg"):
+                label_path = TEST_LABELS / f"{image.stem}.txt"
+                labels = []
+                if label_path.exists():
+                    with open(label_path, "r") as f:
+                        for line in f.readlines():
+                            labels.append([float(x) for x in line.strip().split()])
+                preds = model.predict(image)
+                tp, fp, _ = evaluate_tp_fp_fn(preds, labels, iou_threshold=0.5)
+                tp_global += tp
+                fp_global += fp
+                print(tp)
+            if (tp_global + fp_global) > 0:
+                precision_50 = tp_global / (tp_global + fp_global)
+            else:
+                precision_50 = 0.0
+            quality_dict[model_path.name] = precision_50
     while len(quality_dict) > 3:
         current_models = list(quality_dict.keys())
         current_values = list(quality_dict.values())

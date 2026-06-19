@@ -1,0 +1,62 @@
+# workflow in github that activates whenever the alias "staging" is added to a model in the model registry
+# to add a model to the registry and set this up, go to the project artefacts and add the relevant model to the registry (button in top left corner)
+# then create a automation and set it up in the same way as the automation in the test_registry/test_collection/v0 by clicking on "view details" and adding an automation
+
+# What this workflow does:
+# It gets the name of the model that triggert the start of this workflow, outputs it and saves it in an environment variable in GitHub
+
+name: Check staged model
+
+on:
+  repository_dispatch:
+    types: staged_model # to only activate when model has staging alias
+
+jobs:
+  identify_event:
+    runs-on: ubuntu-latest
+    outputs:
+      model_name: ${{ steps.set_output.outputs.model_name }}
+    steps:
+      - name: Check event type
+        run: |
+          echo "Event type: repository_dispatch"
+          echo "Payload Data: ${{ toJson(github.event.client_payload) }}"
+
+      - name: Setting model environment variable and output
+        id: set_output
+        run: |
+          echo "model_name=${{ github.event.client_payload.artifact_version_string }}" >> $GITHUB_OUTPUT
+
+  test_model:
+    runs-on: ubuntu-latest
+    needs: identify_event
+    env:
+      WANDB_API_KEY: ${{ secrets.WANDB_API_KEY }}
+      WANDB_ENTITY: ${{ secrets.WANDB_ENTITY }}
+      WANDB_PROJECT: ${{ secrets.WANDB_PROJECT }}
+      MODEL_NAME: ${{ needs.identify_event.outputs.model_name }}
+    steps:
+      - name: Echo model name
+        run: |
+          echo "Model name: $MODEL_NAME"
+
+      - name: Checkout code
+        uses: actions/checkout@v5 # das checkout lädt sich den Code den es für die actions braucht. Problem ist, dass der wandb trigger immer nur dem main branch checkt, wo der code für development noch nicht liegt
+        with:
+          ref: continuous_ml # das sagt Github, dass der Code auf dem continuous_ml branch liegt und von dort für den Test gezogen wird
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.11
+          cache: "pip"
+          cache-dependency-path: setup.py
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip list
+
+      - name: Test model
+        run: |
+          pytest tests/performancetests/test_model.py

@@ -54,9 +54,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install -r requirements.txt
-          pip list
+          uv sync --dev --locked
 
       - name: Test model
         run: |
-          pytest tests/performancetests/test_model.py
+          uv run pytest tests/performancetests/test_model.py

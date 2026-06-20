@@ -1,6 +1,8 @@
 import os
+import pstats
 import re
 from datetime import datetime
+from pathlib import Path
 from shlex import quote
 
 from hydra import compose, initialize
@@ -19,6 +21,19 @@ PYTHON_VERSION = "3.12"
 def _hydra_override_args(overrides: dict[str, object]) -> str:
     """Build Hydra CLI override arguments from non-empty values."""
     return " ".join(f"{key}={quote(str(value))}" for key, value in overrides.items() if value is not None)
+
+
+def _default_profile_output_path() -> Path:
+    """Build the default cProfile output path for a training run."""
+    timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+    return Path("reports") / "profiling" / f"train-{timestamp}.prof"
+
+
+def _print_profile_stats(profile_path: Path, limit: int) -> None:
+    """Print terminal summaries for a cProfile output file."""
+    for sort_by, title in (("cumulative", "Top cumulative time"), ("time", "Top self time")):
+        print(f"\n{title} from {profile_path}")
+        pstats.Stats(str(profile_path)).strip_dirs().sort_stats(sort_by).print_stats(limit)
 
 
 # Project commands
@@ -106,10 +121,16 @@ def train(
         trained_model.save_model(project_root() / "models" / f"{trained_model.name_string}.pt")
 
 
-@task
+@task(auto_shortflags=False)
 def profile_train(
     ctx: Context,
     output_path: str | None = None,
+    terminal_stats: bool = True,
+    stats_limit: int = 30,
+    snakeviz: bool = True,
+    snakeviz_server: bool = False,
+    snakeviz_host: str = "127.0.0.1",
+    snakeviz_port: int = 8080,
     data_yaml: str | None = None,
     model_path: str | None = None,
     base_model_name: str | None = None,
@@ -132,10 +153,11 @@ def profile_train(
     Profile one training run with cProfile.
     WATCH OUT: Model is not saved
     """
-    ctx.run("mkdir -p reports/profiling", echo=True, pty=not WINDOWS)
     if output_path is None:
-        timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
-        output_path = f"reports/profiling/train-{timestamp}.prof"
+        profile_path = _default_profile_output_path()
+    else:
+        profile_path = Path(output_path)
+    profile_path.parent.mkdir(parents=True, exist_ok=True)
     override_args = _hydra_override_args(
         {
             "paths.data_yaml": data_yaml,
@@ -157,10 +179,17 @@ def profile_train(
             "wandb.dir": wandb_dir,
         }
     )
-    command = f"uv run python -m cProfile -o {quote(output_path)} src/{PROJECT_NAME}/train.py"
+    command = f"uv run python -m cProfile -o {quote(str(profile_path))} src/{PROJECT_NAME}/train.py"
     if override_args:
         command = f"{command} {override_args}"
     ctx.run(command, echo=True, pty=not WINDOWS)
+    if terminal_stats:
+        _print_profile_stats(profile_path, stats_limit)
+    if snakeviz:
+        snakeviz_args = f"--hostname {quote(snakeviz_host)} --port {snakeviz_port}"
+        if snakeviz_server:
+            snakeviz_args = f"{snakeviz_args} --server"
+        ctx.run(f"uv run snakeviz {snakeviz_args} {quote(str(profile_path))}", echo=True, pty=not WINDOWS)
 
 
 @task

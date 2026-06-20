@@ -77,6 +77,8 @@ lint.ignore = [
   "E501", # Lint line length handled by formatter
   "W505", # ignore doc/comment line length
 ]
+[tool.ruff.lint.isort]
+known-third-party=["wandb"]
 
 [tool.coverage.run]
 omit = ["tests/*"]

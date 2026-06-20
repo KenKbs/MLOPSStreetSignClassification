@@ -14,7 +14,7 @@ jobs:
       fail-fast: false # bricht nicht ab wenn eine zelle failed
       matrix:
         os: ["ubuntu-latest", "windows-latest"]
-        python-version: ["3.10", "3.11", "3.12"]
+        python-version: ["3.12", "3.13"]
 
     steps:
       - name: Checkout
@@ -23,7 +23,7 @@ jobs:
       - name: Setup uv
         uses: astral-sh/setup-uv@v7 # vordefinierte Action in GitHub, installiert uv
         with:
-          python-version: 3.12
+          python-version: ${{ matrix.python-version }}
           enable-cache: true
           cache-dependency-glob: "uv.lock"
 

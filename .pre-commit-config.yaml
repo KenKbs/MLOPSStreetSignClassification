@@ -12,7 +12,7 @@ repos:
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.4.7
-    hooks:
-      - id: ruff-format # automatically does the ruff formatting
+    hooks: # FIRST Fix, THEN format (as fixing can f-up formatting again)
       - id: ruff # überprüft Code auf logische Fehler
         args: ["--fix"]
+      - id: ruff-format # automatically does the ruff formatting

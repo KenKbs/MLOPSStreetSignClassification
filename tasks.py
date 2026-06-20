@@ -18,6 +18,7 @@ PROJECT_NAME = "street_sign_project"
 PYTHON_VERSION = "3.12"
 
 
+# Helper functions
 def _hydra_override_args(overrides: dict[str, object]) -> str:
     """Build Hydra CLI override arguments from non-empty values."""
     return " ".join(f"{key}={quote(str(value))}" for key, value in overrides.items() if value is not None)
@@ -179,6 +180,7 @@ def profile_train(
             "wandb.dir": wandb_dir,
         }
     )
+    # Long running comand, invoke is active until snakeViz server is stopped with CTRL+C
     command = f"uv run python -m cProfile -o {quote(str(profile_path))} src/{PROJECT_NAME}/train.py"
     if override_args:
         command = f"{command} {override_args}"

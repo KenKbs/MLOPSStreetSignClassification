@@ -20,3 +20,6 @@ yolo26x.pt
 /wandb/
 # Ignore coverage runs, as it's similar to cache/tests artifacts.
 /.coverage
+
+# Ignore Profiling runs (because depends on each machine where it was run)
+/reports/profiling

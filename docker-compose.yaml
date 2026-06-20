@@ -1,0 +1,26 @@
+services:
+  train:
+    build:
+      context: .
+      dockerfile: dockerfiles/train.dockerfile
+    image: street-sign-train:latest
+    env_file:
+      - .env
+    volumes:
+      - ./data:/app/data:ro
+      - ./models:/app/models
+      - ./reports:/app/reports
+      - ./wandb:/app/wandb
+    command: # Wires those to to uv run invoke train
+      - --wandb-dir=/app/wandb
+      - --device=auto
+      - --epochs=1
+
+  evaluate:
+    build:
+      context: .
+      dockerfile: dockerfiles/evaluate.dockerfile
+    image: street-sign-evaluate:latest
+    volumes:
+      - ./data:/app/data:ro
+      - ./models:/app/models

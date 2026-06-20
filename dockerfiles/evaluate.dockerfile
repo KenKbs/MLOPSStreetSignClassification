@@ -11,18 +11,16 @@ COPY pyproject.toml pyproject.toml
 COPY LICENSE LICENSE
 COPY README.md README.md
 
-# Install only third party dependencies --> put this here to avoid rebuilding all time if code changes slightly
 ENV UV_LINK_MODE=copy
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --frozen --no-install-project
 
-# Now "install" our code --> faster if code changes as everything above should be cached
 COPY src src/
-COPY configs/ configs/
 COPY tasks.py tasks.py
-COPY data/dataset.yaml data/dataset.yaml
 
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --frozen
 
-ENTRYPOINT ["uv", "run", "invoke", "train"]
+RUN mkdir -p data/preprocessed/test/images data/preprocessed/test/labels models
+
+ENTRYPOINT ["uv", "run", "invoke", "create-models-quality-yaml"]

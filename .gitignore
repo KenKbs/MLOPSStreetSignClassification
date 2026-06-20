@@ -23,3 +23,6 @@ yolo26x.pt
 
 # Ignore Profiling runs (because depends on each machine where it was run)
 /reports/profiling
+
+# Ignore .env file (contains your private keys etc.)
+.env

@@ -211,26 +211,23 @@ def test_coverage(ctx: Context) -> None:
 def docker_build(ctx: Context, progress: str = "plain") -> None:
     """Build docker images."""
     ctx.run(
-        f"docker build -t train:latest . -f dockerfiles/train.dockerfile --progress={progress}",
+        f"docker compose build train --progress={progress}",
         echo=True,
         pty=not WINDOWS,
     )
-    ctx.run(
-        f"docker build -t api:latest . -f dockerfiles/api.dockerfile --progress={progress}", echo=True, pty=not WINDOWS
-    )
-
-
-# Documentation commands
-@task
-def build_docs(ctx: Context) -> None:
-    """Build documentation."""
-    ctx.run("uv run mkdocs build --config-file docs/mkdocs.yaml --site-dir build", echo=True, pty=not WINDOWS)
+    ctx.run(f"docker compose build evaluate --progress={progress}", echo=True, pty=not WINDOWS)
 
 
 @task
-def serve_docs(ctx: Context) -> None:
-    """Serve documentation."""
-    ctx.run("uv run mkdocs serve --config-file docs/mkdocs.yaml", echo=True, pty=not WINDOWS)
+def docker_train(ctx: Context) -> None:
+    """Run the training Docker container."""
+    ctx.run("docker compose run --rm train", echo=True, pty=not WINDOWS)
+
+
+@task
+def docker_evaluate(ctx: Context) -> None:
+    """Run the evaluation Docker container."""
+    ctx.run("docker compose run --rm evaluate", echo=True, pty=not WINDOWS)
 
 
 @task
@@ -263,3 +260,16 @@ def create_models_quality_yaml(ctx: Context) -> None:
 def plot_images(ctx: Context) -> None:
     """plotting example images"""
     ctx.run(f"uv run src/{PROJECT_NAME}/visualize.py plot-image-pred", echo=True, pty=not WINDOWS)
+
+
+# Documentation commands
+@task
+def build_docs(ctx: Context) -> None:
+    """Build documentation."""
+    ctx.run("uv run mkdocs build --config-file docs/mkdocs.yaml --site-dir build", echo=True, pty=not WINDOWS)
+
+
+@task
+def serve_docs(ctx: Context) -> None:
+    """Serve documentation."""
+    ctx.run("uv run mkdocs serve --config-file docs/mkdocs.yaml", echo=True, pty=not WINDOWS)

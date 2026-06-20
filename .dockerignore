@@ -1,0 +1,28 @@
+.git
+.venv
+__pycache__
+.pytest_cache
+.ruff_cache
+.mypy_cache
+.coverage
+
+# Don't copy .env files (they should not be copied to image)
+# They rather get injected at runtime (see compose)
+.env
+secrets/
+
+# Ignore data folders, because we mount them from host
+data/raw/
+data/preprocessed/
+
+# Same with model files (so we can also use the models)
+models/*.pt
+
+# reports and wandb get mounted by host
+reports/logs/
+reports/profiling/
+wandb/
+
+# Don't need those
+runs/
+outputs/

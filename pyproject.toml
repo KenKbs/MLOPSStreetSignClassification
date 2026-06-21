@@ -30,7 +30,7 @@ dependencies = [
     "pytorch-lightning>=2.6.5",
     "torch",
     "torchvision",
-    "typer==0.15.1",
+    "typer>=0.16.0",
     "ultralytics>=8.4.51",
     "uvicorn==0.34.0",
     "wandb>=0.27.0",
@@ -77,8 +77,9 @@ lint.ignore = [
   "E501", # Lint line length handled by formatter
   "W505", # ignore doc/comment line length
 ]
-[tool.ruff.lint.isort]
-known-third-party=["wandb"]
+
+[tool.ruff.lint.isort]    #lokalem ruff sagen, dass wandb von einer third party ist, weil er das aktuell anders einstuft
+known-third-party = ["wandb"]
 
 [tool.coverage.run]
 omit = ["tests/*"]

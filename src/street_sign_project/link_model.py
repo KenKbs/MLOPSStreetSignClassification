@@ -46,4 +46,4 @@ def link_model(
 
 
 if __name__ == "__main__":
-    typer.run(link_model)
+    app()

@@ -91,4 +91,4 @@ jobs:
 
       - name: Add production alias
         run: |
-          uv run src/{PROJECT_NAME}/link_model.py $MODEL_NAME -a production
+          uv run src/street_sign_project/link_model.py $MODEL_NAME -a production

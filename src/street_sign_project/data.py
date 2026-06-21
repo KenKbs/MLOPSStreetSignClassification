@@ -201,7 +201,9 @@ def _validate_split_ratios(train_ratio: float, valid_ratio: float, test_ratio: f
 def _target_split_sizes(total_items: int, ratios: dict[SplitName, float]) -> dict[SplitName, int]:
     """Calculate exact split sizes from fractional ratios. To create Train,val,test split"""
     raw_sizes = {split_name: total_items * ratios[split_name] for split_name in SPLIT_NAMES}
-    split_sizes = {split_name: int(raw_sizes[split_name]) for split_name in SPLIT_NAMES}  # Abrunden über int() wichtig
+    split_sizes: dict[SplitName, int] = {
+        split_name: int(raw_sizes[split_name]) for split_name in SPLIT_NAMES
+    }  # Abrunden über int() wichtig
     remaining_items = total_items - sum(split_sizes.values())
     remainder_order = sorted(
         SPLIT_NAMES,
@@ -313,15 +315,15 @@ def _assign_dataset_items(
     for item in items:
         total_class_counts.update(item.class_counts)
 
-    target_class_counts = {
+    target_class_counts: dict[SplitName, dict[int, float]] = {
         split_name: {class_id: class_count * ratios[split_name] for class_id, class_count in total_class_counts.items()}
         for split_name in SPLIT_NAMES
     }
-    current_class_counts = {split_name: Counter() for split_name in SPLIT_NAMES}
+    current_class_counts: dict[SplitName, Counter] = {split_name: Counter() for split_name in SPLIT_NAMES}
     assignments: dict[SplitName, list[DatasetItem]] = {split_name: [] for split_name in SPLIT_NAMES}
 
     for item in _ordered_items_for_split(items=items, total_class_counts=total_class_counts, seed=seed):
-        candidate_splits = [
+        candidate_splits: list[SplitName] = [
             split_name for split_name in SPLIT_NAMES if len(assignments[split_name]) < target_split_sizes[split_name]
         ]
         best_split = max(

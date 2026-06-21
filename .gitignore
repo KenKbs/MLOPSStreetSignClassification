@@ -9,7 +9,8 @@ yolo26s.pt
 yolo26m.pt
 yolo26l.pt
 yolo26x.pt
-/reports/logs
+/reports/logs/
+!/reports/logs/models/
 #/models/
 !/models/YOLO_eps100_bs8_lr0.005_fr10_x.pt.dvc
 !/models/YOLO_eps420_bs8_lr0.005_fr10_x.pt.dvc
@@ -21,6 +22,7 @@ yolo26x.pt
 # Ignore coverage runs, as it's similar to cache/tests artifacts.
 /.coverage
 
+/plots/
 # Ignore Profiling runs (because depends on each machine where it was run)
 /reports/profiling
 

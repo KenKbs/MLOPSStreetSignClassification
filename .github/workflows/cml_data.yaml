@@ -1,0 +1,56 @@
+name: DVC Workflow
+
+on:
+  push:
+    branches:
+      - main
+      - continuous_ml #for running on the dev branch
+    paths:
+      - "**/*.dvc"
+      - ".dvc/**"
+      - "**/dev_testing.txt" # for development without dvc pushes
+
+jobs:
+  run_data_checker:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          python-version: 3.12
+
+      - name: Install dependencies
+        run: |
+          uv sync --dev --locked
+
+      - name: Auth with GCP
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Pull data
+        run: |
+          uv run dvc pull --no-run-cache
+
+      - name: Check data statistics
+        run: |
+          uv run invoke dataset-statistics-check > data_statistics.md
+
+          for file in plots/*.png plots/*.jpg; do
+            [ -e "$file" ] || continue
+            filename=$(basename "$file")
+            echo "![ $filename ](./plots/$filename)" >> data_statistics.md
+          done
+
+      - name: Comment on PR
+        env:
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          npx @dvcorg/cml comment create data_statistics.md --watermark-title="Data Checker"

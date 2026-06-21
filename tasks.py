@@ -262,6 +262,12 @@ def plot_images(ctx: Context) -> None:
     ctx.run(f"uv run src/{PROJECT_NAME}/visualize.py plot-image-pred", echo=True, pty=not WINDOWS)
 
 
+@task
+def dataset_statistics_check(ctx: Context) -> None:
+    """running the dataset statistics (for automation via GitHub with cml_data.yaml)"""
+    ctx.run(f"uv run src/{PROJECT_NAME}/dataset.py dataset-statistics", echo=True, pty=not WINDOWS)
+
+
 # Documentation commands
 @task
 def build_docs(ctx: Context) -> None:

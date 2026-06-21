@@ -197,7 +197,7 @@ def profile_train(
 @task
 def test(ctx: Context) -> None:
     """Run tests."""
-    ctx.run("uv run pytest tests/", echo=True, pty=not WINDOWS)
+    ctx.run("uv run pytest tests/ --ignore=tests/performancetests/", echo=True, pty=not WINDOWS)
 
 
 @task

@@ -1,10 +1,18 @@
 import os
+from typing import List, Optional
 
 import typer
 import wandb
 
+app = typer.Typer()
 
-def link_model(artifact_path: str, aliases: list[str] | None = None) -> None:
+
+@app.command()
+def link_model(
+    artifact_path: str,
+    # noqa so that ruff understands the typer.Option
+    aliases: Optional[List[str]] = typer.Option(None, "--aliases", "-a"),  # noqa: B008
+) -> None:
     """
     Stage a specific model to the model registry.
 

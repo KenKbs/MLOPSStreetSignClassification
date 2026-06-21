@@ -36,11 +36,13 @@ def link_model(
         api_key=os.getenv("WANDB_API_KEY"),
         overrides={"entity": os.getenv("WANDB_ENTITY"), "project": os.getenv("WANDB_PROJECT")},
     )
-    _, _, artifact_name_version = artifact_path.split("/")
+    artifact_name_version = artifact_path.split("/")[-1]
     artifact_name, _ = artifact_name_version.split(":")
 
+    target_registry_path = f"{os.getenv('WANDB_ENTITY')}/model-registry/{artifact_name}"
     artifact = api.artifact(artifact_path)
-    artifact.link(target_path=f"{os.getenv('WANDB_ENTITY')}/model-registry/{artifact_name}", aliases=aliases)
+    # artifact.link(target_path=target_registry_path, aliases=aliases)
+    artifact.aliases = aliases
     artifact.save()
     typer.echo(f"Artifact {artifact_path} linked to {aliases}")
 

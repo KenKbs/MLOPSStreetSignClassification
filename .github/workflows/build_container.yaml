@@ -1,0 +1,47 @@
+name: Build evaluate container
+
+on:
+  push:
+    branches: [main]
+    paths: # Only run if something in those paths changed --> so we don't trigger expensive builds on readme change
+      - ".gcloudignore"
+      - ".github/workflows/build_container.yaml"
+      - "cloudbuild.yaml"
+      - "dockerfiles/evaluate.dockerfile"
+      - "pyproject.toml"
+      - "src/**"
+      - "tasks.py"
+      - "uv.lock"
+  workflow_dispatch: # Adds manual "run workflow" button in GH
+
+jobs:
+  build-evaluate-container:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+        # log in into GCP service account using GH secrets
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          project_id: mlops-steetsigns
+          credentials_json: ${{ secrets.GCP_CLOUDBUILD_TRIGGER }}
+
+      # Install gcloud CLI / SDK on runner
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: mlops-steetsigns
+
+      # Submit cloud build
+      - name: Submit Cloud Build
+        run: |
+          gcloud builds submit . \
+            --config=cloudbuild.yaml \
+            --gcs-source-staging-dir=gs://mlops-steetsigns_cloudbuild/source \
+            --project=mlops-steetsigns

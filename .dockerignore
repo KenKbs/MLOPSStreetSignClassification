@@ -9,6 +9,8 @@ __pycache__
 # Don't copy .env files (they should not be copied to image)
 # They rather get injected at runtime (see compose)
 .env
+GCP_Account_Key.json
+gha-creds-*.json
 secrets/
 
 # Ignore data folders, because we mount them from host

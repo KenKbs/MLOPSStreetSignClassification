@@ -1,0 +1,25 @@
+# Like gitignore, but for google-cloud
+.git
+.venv
+__pycache__
+.pytest_cache
+.ruff_cache
+.mypy_cache
+.coverage
+
+# Never push secrets anywhere ^.^
+.env
+GCP_Account_Key.json
+secrets/
+
+# for docker files, they get injected at runtime
+.dvc/cache/
+data/raw/
+data/preprocessed/
+models/*.pt
+reports/logs/
+reports/profiling/
+wandb/
+
+runs/
+outputs/

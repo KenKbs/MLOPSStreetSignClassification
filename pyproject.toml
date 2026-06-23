@@ -16,7 +16,7 @@ classifiers = [
   "Programming Language :: Python :: 3",
 ]
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python=">=3.12,<3.14"
 dependencies = [
     "dvc>=3.67.1",
     "dvc-gs>=3.0.2",
@@ -25,9 +25,12 @@ dependencies = [
     "hydra-core>=1.3.2",
     "invoke>=2.2.0",
     "loguru>=0.7.3",
+    "opencv-python-headless>=4.13.0.92",
     "pandas>=3.0.3",
     "plotly>=6.7.0",
+    "python-multipart>=0.0.32",
     "pytorch-lightning>=2.6.5",
+    "requests>=2.34.2",
     "torch",
     "torchvision",
     "typer>=0.16.0",

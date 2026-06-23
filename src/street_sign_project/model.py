@@ -45,7 +45,7 @@ class YOLOv26:
         function for initializing a model object based on either a pretrained model (e.g. yolo26n.pt) or a locally saved model
 
         Params:
-        local_model_name: if not none, a local model from the models folder will be loaded. if none, a pretrained model will be loaded
+        local_model_name: if not none, a local model from the models folder will be loaded. if none, a pretrained model will be loaded. Needs to end with .pt
         model_size: size of pretrained model
         """
         if local_model_name is None or local_model_name == "None":

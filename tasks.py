@@ -279,3 +279,9 @@ def build_docs(ctx: Context) -> None:
 def serve_docs(ctx: Context) -> None:
     """Serve documentation."""
     ctx.run("uv run mkdocs serve --config-file docs/mkdocs.yaml", echo=True, pty=not WINDOWS)
+
+
+@task
+def start_API(ctx: Context) -> None:
+    """Start API, can be viewed under http://localhost:8000/docs/"""
+    ctx.run("uvicorn --reload --port 8000 street_sign_project.main:app", echo=True, pty=not WINDOWS)

@@ -1,0 +1,34 @@
+substitutions:
+  _REGION: europe-west3
+  _REPOSITORY: docker-registry
+  _IMAGE_NAME: street-sign-evaluate
+
+steps:
+  - name: gcr.io/cloud-builders/docker # Use GC Docker builder Container
+    env:
+      - DOCKER_BUILDKIT=1
+    args:
+      - build
+      - --file
+      - dockerfiles/evaluate.dockerfile
+      - --tag # First tag the build with Build ID
+      - ${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPOSITORY}/${_IMAGE_NAME}:${BUILD_ID}
+      - --tag # Second tag the build with latest version
+      - ${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPOSITORY}/${_IMAGE_NAME}:latest
+      - .
+
+  # We push 2 images, just with different naming, still counts as 1 image, because it's 1 version with 2 tags
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - push
+      - ${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPOSITORY}/${_IMAGE_NAME}:${BUILD_ID}
+
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - push
+      - ${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPOSITORY}/${_IMAGE_NAME}:latest
+
+# Declare build outputs to cloudbuild --> nicer for GC UI/logs
+images:
+  - ${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPOSITORY}/${_IMAGE_NAME}:${BUILD_ID}
+  - ${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPOSITORY}/${_IMAGE_NAME}:latest

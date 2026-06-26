@@ -1,0 +1,26 @@
+# Like gitignore, but for google-cloud
+.git
+.venv
+__pycache__
+.pytest_cache
+.ruff_cache
+.mypy_cache
+.coverage
+
+# Never push secrets anywhere ^.^
+.env
+GCP_Account_Key.json
+gha-creds-*.json # GH actions creats temporary auth file --> don't push that to cloud
+secrets/
+
+# for docker files, they get injected at runtime test
+.dvc/cache/
+data/raw/
+data/preprocessed/
+models/*.pt
+reports/logs/
+reports/profiling/
+wandb/
+
+runs/
+outputs/

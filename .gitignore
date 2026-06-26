@@ -41,3 +41,6 @@ yolo26x.pt
 !/API_uploads/terminal_requests/.gitkeep
 
 GCP_Account_Key.json
+
+# GH actions creats temporary auth file --> don't push that
+gha-creds-*.json

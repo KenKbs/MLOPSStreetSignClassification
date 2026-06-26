@@ -28,3 +28,16 @@ yolo26x.pt
 
 # Ignore .env file (contains your private keys etc.)
 .env
+
+# irgnore folder for  trying stuff
+/trying_out_stuff/
+
+# API Uploads
+/API_uploads/input/*
+/API_uploads/output/*
+/API_uploads/terminal_requests/*
+!/API_uploads/input/.gitkeep
+!/API_uploads/output/.gitkeep
+!/API_uploads/terminal_requests/.gitkeep
+
+GCP_Account_Key.json

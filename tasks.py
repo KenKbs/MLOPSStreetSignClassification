@@ -210,12 +210,9 @@ def test_coverage(ctx: Context) -> None:
 @task
 def docker_build(ctx: Context, progress: str = "plain") -> None:
     """Build docker images."""
-    ctx.run(
-        f"docker compose build train --progress={progress}",
-        echo=True,
-        pty=not WINDOWS,
-    )
-    ctx.run(f"docker compose build evaluate --progress={progress}", echo=True, pty=not WINDOWS)
+    ctx.run(f"docker compose --progress={progress} build train", echo=True, pty=not WINDOWS)
+    ctx.run(f"docker compose --progress={progress} build evaluate", echo=True, pty=not WINDOWS)
+    ctx.run(f"docker compose --progress={progress} build api", echo=True, pty=not WINDOWS)
 
 
 @task
@@ -228,6 +225,12 @@ def docker_train(ctx: Context) -> None:
 def docker_evaluate(ctx: Context) -> None:
     """Run the evaluation Docker container."""
     ctx.run("docker compose run --rm evaluate", echo=True, pty=not WINDOWS)
+
+
+@task
+def docker_api(ctx: Context) -> None:
+    """Run the API Docker container."""
+    ctx.run("docker compose run --rm --service-ports api", echo=True, pty=not WINDOWS)
 
 
 @task

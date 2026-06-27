@@ -17,8 +17,7 @@ secrets/
 data/raw/
 data/preprocessed/
 
-# Same with model files (so we can also use the models)
-models/*.pt
+# Model files are intentionally included so the API image can bake the selected .pt file.
 
 # reports and wandb get mounted by host
 reports/logs/

@@ -234,6 +234,12 @@ def docker_api(ctx: Context) -> None:
 
 
 @task
+def deploy_api(ctx: Context) -> None:
+    """Build, push, and deploy the API Docker container to Cloud Run."""
+    ctx.run("./scripts/deploy_api_cloudrun.sh", echo=True, pty=not WINDOWS)
+
+
+@task
 def tune(ctx: Context) -> None:
     """tuning the model. See configs/sweep.yaml for changing the params"""
     output = ctx.run("uv run wandb sweep configs/sweep.yaml", echo=True, pty=not WINDOWS)

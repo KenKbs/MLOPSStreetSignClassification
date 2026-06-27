@@ -15,6 +15,9 @@
 * The project uses `invoke` for task management. To see available tasks, use `uv run invoke --list` or refer to the
     `tasks.py` file.
   * To run the API Docker container locally, use `uv run invoke docker-api`.
+* To build, push, and deploy the API container to Cloud Run, use `./scripts/deploy_api_cloudrun.sh`.
+  * Override defaults with environment variables such as `PROJECT_ID`, `REGION`, `REPOSITORY`, `SERVICE_NAME`,
+    `MODEL_NAME`, `TAG`, `CPU`, `MEMORY`, and `ALLOW_UNAUTHENTICATED`.
 * The project uses `pre-commit` for managing pre-commit hooks. To run all hooks on all files, use
     `uv run pre-commit run --all-files`. For more information, refer to the `.pre-commit-config.yaml` file.
 

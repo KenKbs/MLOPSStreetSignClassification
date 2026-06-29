@@ -20,6 +20,7 @@ LATEST_IMAGE="${REGISTRY_HOST}/${PROJECT_ID}/${REPOSITORY}/${IMAGE_NAME}:latest"
 LOCAL_IMAGE="${IMAGE_NAME}:${TAG}"
 LOCAL_LATEST_IMAGE="${IMAGE_NAME}:latest"
 
+# Sanity checks
 if [[ ! -f "${MODEL_PATH}" ]]; then
   echo "Model file not found: ${MODEL_PATH}" >&2
   echo "Pull it first, for example: uv run dvc pull ${MODEL_PATH}.dvc" >&2
@@ -36,9 +37,11 @@ command -v gcloud >/dev/null || {
   exit 1
 }
 
+# Allow local docker to use GC
 echo "Configuring Docker authentication for ${REGISTRY_HOST}"
 gcloud auth configure-docker "${REGISTRY_HOST}" --quiet
 
+# Build image
 echo "Building ${LOCAL_IMAGE} with ${MODEL_PATH}"
 docker build \
   --file dockerfiles/api.dockerfile \
@@ -49,6 +52,7 @@ docker build \
   --tag "${LATEST_IMAGE}" \
   .
 
+# Push image
 echo "Pushing ${REMOTE_IMAGE}"
 docker push "${REMOTE_IMAGE}"
 
@@ -60,6 +64,7 @@ if [[ "${ALLOW_UNAUTHENTICATED}" == "true" ]]; then
   auth_args=(--allow-unauthenticated)
 fi
 
+# Deploy image
 echo "Deploying ${SERVICE_NAME} to Cloud Run in ${REGION}"
 gcloud run deploy "${SERVICE_NAME}" \
   --image "${REMOTE_IMAGE}" \
@@ -76,6 +81,7 @@ gcloud run deploy "${SERVICE_NAME}" \
   "${auth_args[@]}" \
   --quiet
 
+# Deploymnet alone not enough, need to route traffic to latest version
 echo "Routing all traffic to the latest revision"
 gcloud run services update-traffic "${SERVICE_NAME}" \
   --project "${PROJECT_ID}" \

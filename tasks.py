@@ -207,6 +207,26 @@ def test_coverage(ctx: Context) -> None:
     ctx.run("uv run coverage report -m -i", echo=True, pty=not WINDOWS)
 
 
+@task(auto_shortflags=False)
+def stress_api(
+    ctx: Context,
+    host: str = "http://localhost:8000",
+    users: int = 500,
+    runtime: str = "2m",
+    spawn_rate: float = 10.0,
+    ui: bool = False,
+) -> None:
+    """Run the Locust API stress test."""
+    locustfile = quote("tests/performancetests/locustfile.py")
+    command = f"uv run locust -f {locustfile} --host {quote(host)}"
+    if ui:
+        ctx.run(command, echo=True, pty=not WINDOWS)
+        return
+
+    command = f"{command} --headless --users {users} --spawn-rate {spawn_rate} --run-time {quote(runtime)}"
+    ctx.run(command, echo=True, pty=not WINDOWS)
+
+
 @task
 def docker_build(ctx: Context, progress: str = "plain") -> None:
     """Build docker images."""

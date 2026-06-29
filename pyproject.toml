@@ -54,6 +54,7 @@ dev = [
     "dvc-gs>=3.0.2",
     "snakeviz>=2.2.2",
     "httpx>=0.28.1",
+    "locust>=2.44.4",
 ]
 
 

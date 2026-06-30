@@ -1,0 +1,35 @@
+service: "street_sign_project.bentoml_api:StreetSignClassifierService"
+name: "street-sign-classifier"
+description: "BentoML service for street sign object detection."
+include:
+  - "src/street_sign_project/**/*.py"
+  - "models/YOLO_eps420_bs8_lr0.005_fr10_x.pt"
+  - "pyproject.toml"
+  - "README.md"
+  - "LICENSE"
+python:
+  packages:
+    - "bentoml>=1.4.39"
+    - "loguru>=0.7.3"
+    - "matplotlib"
+    - "numpy"
+    - "opencv-python-headless>=4.13.0.92"
+    - "pillow"
+    - "pyyaml"
+    - "torch==2.11.0+cpu"
+    - "torchvision==0.26.0+cpu"
+    - "typer>=0.16.0"
+    - "ultralytics>=8.4.51"
+    - "wandb>=0.27.0"
+  extra_index_url:
+    - "https://download.pytorch.org/whl/cpu" # We only use smaller CPU image for inference
+  lock_packages: false
+  is_src_layout: true
+docker:
+  python_version: "3.12"
+  system_packages:
+    - "build-essential"
+    - "gcc"
+    - "libgl1"
+    - "libglib2.0-0"
+    - "libxcb1"

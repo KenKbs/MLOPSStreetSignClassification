@@ -253,10 +253,51 @@ def docker_api(ctx: Context) -> None:
     ctx.run("docker compose run --rm --service-ports api", echo=True, pty=not WINDOWS)
 
 
+@task(name="start-bento", auto_shortflags=False)
+def start_bento(
+    ctx: Context,
+    bento: str = "street-sign-classifier:latest",
+    image_tag: str = "street-sign-bento-api:latest",
+    host_port: int = 3000,
+    container_port: int = 3000,
+    progress: str = "plain",
+) -> None:
+    """Build, containerize, and run the BentoML API Docker image locally."""
+    ctx.run("uv run bentoml build", echo=True, pty=not WINDOWS)
+    ctx.run(
+        f"uv run bentoml containerize {quote(bento)} --image-tag {quote(image_tag)} --opt progress={quote(progress)}",
+        echo=True,
+        pty=not WINDOWS,
+    )
+    ctx.run(f"docker run --rm -p {host_port}:{container_port} {quote(image_tag)}", echo=True, pty=not WINDOWS)
+
+
+@task(name="test-bento", auto_shortflags=False)
+def test_bento(
+    ctx: Context,
+    host: str = "http://localhost:3000",
+    image: str | None = None,
+    output: str | None = None,
+) -> None:
+    """Send one smoke-test image to the running BentoML API service."""
+    command = f"uv run python tests/apitests/bentoml_client.py --host {quote(host)}"
+    if image is not None:
+        command = f"{command} --image {quote(image)}"
+    if output is not None:
+        command = f"{command} --output {quote(output)}"
+    ctx.run(command, echo=True, pty=not WINDOWS)
+
+
 @task
 def deploy_api(ctx: Context) -> None:
     """Build, push, and deploy the API Docker container to Cloud Run."""
     ctx.run("./scripts/deploy_api_cloudrun.sh", echo=True, pty=not WINDOWS)
+
+
+@task(name="deploy-bento")
+def deploy_bento(ctx: Context) -> None:
+    """Build, push, and deploy the BentoML API Docker container to Cloud Run."""
+    ctx.run("./scripts/deploy_bento_cloudrun.sh", echo=True, pty=not WINDOWS)
 
 
 @task

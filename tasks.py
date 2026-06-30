@@ -253,20 +253,27 @@ def docker_api(ctx: Context) -> None:
     ctx.run("docker compose run --rm --service-ports api", echo=True, pty=not WINDOWS)
 
 
-@task(name="start-bentoAPI", aliases=("start-bentoapi",), auto_shortflags=False)
-def start_bento_api(ctx: Context, host: str = "0.0.0.0", port: int = 3000, reload: bool = False) -> None:
-    """Start the BentoML API service."""
-    command = (
-        "uv run bentoml serve street_sign_project.bentoml_api:StreetSignClassifierService "
-        f"--host {quote(host)} --port {port}"
+@task(name="start-bento", auto_shortflags=False)
+def start_bento(
+    ctx: Context,
+    bento: str = "street-sign-classifier:latest",
+    image_tag: str = "street-sign-bento-api:latest",
+    host_port: int = 3000,
+    container_port: int = 3000,
+    progress: str = "plain",
+) -> None:
+    """Build, containerize, and run the BentoML API Docker image locally."""
+    ctx.run("uv run bentoml build", echo=True, pty=not WINDOWS)
+    ctx.run(
+        f"uv run bentoml containerize {quote(bento)} --image-tag {quote(image_tag)} --opt progress={quote(progress)}",
+        echo=True,
+        pty=not WINDOWS,
     )
-    if reload:
-        command = f"{command} --reload"
-    ctx.run(command, echo=True, pty=not WINDOWS)
+    ctx.run(f"docker run --rm -p {host_port}:{container_port} {quote(image_tag)}", echo=True, pty=not WINDOWS)
 
 
-@task(name="test-bentoAPI", aliases=("test-bentoapi",), auto_shortflags=False)
-def test_bento_api(
+@task(name="test-bento", auto_shortflags=False)
+def test_bento(
     ctx: Context,
     host: str = "http://localhost:3000",
     image: str | None = None,
@@ -281,43 +288,16 @@ def test_bento_api(
     ctx.run(command, echo=True, pty=not WINDOWS)
 
 
-@task(name="build-bento", auto_shortflags=False)
-def build_bento(ctx: Context) -> None:
-    """Build the BentoML service bundle."""
-    ctx.run("uv run bentoml build", echo=True, pty=not WINDOWS)
-
-
-@task(name="containerize-bento", auto_shortflags=False)
-def containerize_bento(
-    ctx: Context,
-    bento: str = "street-sign-classifier:latest",
-    image_tag: str = "street-sign-bento-api:latest",
-    progress: str = "plain",
-) -> None:
-    """Build a Docker image from the latest BentoML service bundle."""
-    command = (
-        f"uv run bentoml containerize {quote(bento)} "
-        f"--image-tag {quote(image_tag)} --opt progress={quote(progress)}"
-    )
-    ctx.run(command, echo=True, pty=not WINDOWS)
-
-
-@task(name="docker-bentoAPI", aliases=("docker-bentoapi",), auto_shortflags=False)
-def docker_bento_api(
-    ctx: Context,
-    image_tag: str = "street-sign-bento-api:latest",
-    host_port: int = 3000,
-    container_port: int = 3000,
-) -> None:
-    """Run the BentoML API Docker image locally."""
-    command = f"docker run --rm -p {host_port}:{container_port} {quote(image_tag)}"
-    ctx.run(command, echo=True, pty=not WINDOWS)
-
-
 @task
 def deploy_api(ctx: Context) -> None:
     """Build, push, and deploy the API Docker container to Cloud Run."""
     ctx.run("./scripts/deploy_api_cloudrun.sh", echo=True, pty=not WINDOWS)
+
+
+@task(name="deploy-bento")
+def deploy_bento(ctx: Context) -> None:
+    """Build, push, and deploy the BentoML API Docker container to Cloud Run."""
+    ctx.run("./scripts/deploy_bento_cloudrun.sh", echo=True, pty=not WINDOWS)
 
 
 @task

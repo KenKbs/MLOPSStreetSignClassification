@@ -15,6 +15,11 @@
 * The project uses `invoke` for task management. To see available tasks, use `uv run invoke --list` or refer to the
     `tasks.py` file.
   * To run the API Docker container locally, use `uv run invoke docker-api`.
+  * To start the BentoML API locally, use `uv run invoke start-bentoAPI`.
+  * To send one smoke-test request to the running BentoML API, use `uv run invoke test-bentoAPI`.
+  * To build the BentoML service bundle, use `uv run invoke build-bento`.
+  * To build a Docker image from the latest BentoML service bundle, use `uv run invoke containerize-bento`.
+  * To run the BentoML API Docker image locally, use `uv run invoke docker-bentoAPI`.
   * To run the default headless API stress test, use `uv run invoke stress-test`.
   * To start the Locust UI for API stress testing, use `uv run invoke stress-test --ui`.
 * To build, push, and deploy the API container to Cloud Run, use `./scripts/deploy_api_cloudrun.sh`.

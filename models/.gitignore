@@ -3,3 +3,4 @@
 /models_quality.yaml
 /YOLO_eps2_bs16_lr0.005_fr10_n.pt
 YOLO_eps30_bs16_lr0.005_fr10_n.pt
+/YOLO_eps200_bs16_lr0.005_fr5_x.pt

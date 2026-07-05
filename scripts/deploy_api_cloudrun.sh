@@ -11,7 +11,7 @@ MONITORING_BUCKET="${MONITORING_BUCKET:-mlops-street-signs-prod-data}"
 MONITORING_PREFIX="${MONITORING_PREFIX:-production}"
 PORT="${PORT:-8000}"
 CPU="${CPU:-1}"
-MEMORY="${MEMORY:-2Gi}"
+MEMORY="${MEMORY:-4Gi}"
 ALLOW_UNAUTHENTICATED="${ALLOW_UNAUTHENTICATED:-true}"
 TAG="${TAG:-$(date +%Y%m%d-%H%M%S)-$(git rev-parse --short HEAD 2>/dev/null || echo local)}"
 

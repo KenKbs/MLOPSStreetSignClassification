@@ -45,6 +45,36 @@ def upload_file_to_gcs(local_path: Path, bucket_name: str, blob_name: str, conte
     return f"gs://{bucket_name}/{blob_name}"
 
 
+def download_blob_text(bucket_name: str, blob_name: str) -> str:
+    """Download one text object from Google Cloud Storage.
+
+    Args:
+        bucket_name: GCS bucket name without the ``gs://`` prefix.
+        blob_name: Object name inside the GCS bucket.
+
+    Returns:
+        Text contents of the object.
+    """
+    client = _storage_client()
+    bucket = client.bucket(bucket_name)
+    blob = bucket.blob(blob_name)
+    return blob.download_as_text()
+
+
+def list_blob_names(bucket_name: str, prefix: str) -> list[str]:
+    """List object names from Google Cloud Storage under a prefix.
+
+    Args:
+        bucket_name: GCS bucket name without the ``gs://`` prefix.
+        prefix: Object prefix to list.
+
+    Returns:
+        Sorted object names under the prefix.
+    """
+    client = _storage_client()
+    return sorted(blob.name for blob in client.list_blobs(bucket_name, prefix=prefix))
+
+
 def upload_reference_features(
     local_path: Path,
     bucket_name: str | None = None,

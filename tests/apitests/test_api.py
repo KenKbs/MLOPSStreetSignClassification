@@ -17,6 +17,18 @@ def test_openapi_schema_includes_image_input_route() -> None:
 
     assert response.status_code == 200
     assert "/image_input/" in response.json()["paths"]
+    assert "/monitoring/" in response.json()["paths"]
+
+
+def test_monitoring_route_returns_evidently_html(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Test that the monitoring route returns the generated Evidently HTML report."""
+    monkeypatch.setattr(fast_api, "build_cloud_evidently_drift_report_html", lambda: "<html>drift</html>")
+
+    response = client.get("/monitoring/")
+
+    assert response.status_code == 200
+    assert response.headers["content-type"].startswith("text/html")
+    assert response.text == "<html>drift</html>"
 
 
 class _Scalar:

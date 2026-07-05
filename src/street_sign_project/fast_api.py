@@ -6,10 +6,11 @@ from contextlib import asynccontextmanager
 from uuid import uuid4
 
 import cv2
-from fastapi import BackgroundTasks, FastAPI, File, UploadFile
-from fastapi.responses import FileResponse
+from fastapi import BackgroundTasks, FastAPI, File, HTTPException, UploadFile
+from fastapi.responses import FileResponse, HTMLResponse
 
 from street_sign_project.model import YOLOv26
+from street_sign_project.monitoring.drift_report import build_cloud_evidently_drift_report_html
 from street_sign_project.monitoring.production_records import summarize_predictions, write_monitoring_record
 from street_sign_project.utils import project_root
 
@@ -86,3 +87,13 @@ async def cv_model(background_tasks: BackgroundTasks, data: UploadFile = File(..
     )
 
     return FileResponse(str(output_image_path), media_type="image/jpeg")
+
+
+@app.get("/monitoring/", response_class=HTMLResponse)
+def monitoring_report() -> HTMLResponse:
+    """Build and return an Evidently drift report from cloud monitoring data."""
+    try:
+        report_html = build_cloud_evidently_drift_report_html()
+    except ValueError as error:
+        raise HTTPException(status_code=404, detail=str(error)) from error
+    return HTMLResponse(content=report_html)

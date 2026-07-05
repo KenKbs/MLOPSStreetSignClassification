@@ -4,7 +4,10 @@ import cv2
 import numpy as np
 import pandas as pd
 import pytest
-from street_sign_project.monitoring.reference_features import generate_reference_features
+from street_sign_project.monitoring.reference_features import (
+    generate_and_upload_reference_features,
+    generate_reference_features,
+)
 
 
 def _write_test_image(path: Path, value: int) -> None:
@@ -56,3 +59,25 @@ def test_generate_reference_features_rejects_empty_image_dir(tmp_path: Path) -> 
 
     with pytest.raises(ValueError, match="No supported images found"):
         generate_reference_features(image_dir=image_dir, output_path=tmp_path / "features.csv")
+
+
+def test_generate_and_upload_reference_features_keeps_local_csv_when_upload_fails(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    """Test that upload failures do not prevent local reference CSV generation."""
+    image_dir = tmp_path / "images"
+    image_dir.mkdir()
+    _write_test_image(image_dir / "first.jpg", 10)
+    output_path = tmp_path / "reference_features.csv"
+
+    def fail_upload(local_path: Path) -> None:
+        """Raise an upload failure."""
+        raise RuntimeError("upload failed")
+
+    monkeypatch.setattr("street_sign_project.monitoring.reference_features.upload_reference_features", fail_upload)
+
+    generated_path = generate_and_upload_reference_features(image_dir=image_dir, output_path=output_path)
+
+    assert generated_path == output_path
+    assert output_path.exists()

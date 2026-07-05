@@ -138,3 +138,36 @@ def test_write_monitoring_record_creates_local_jsonl_record(tmp_path: Path) -> N
     assert output_path == output_dir / "request-123.jsonl"
     assert record["request_id"] == "request-123"
     assert record["width"] == 4
+
+
+def test_write_monitoring_record_keeps_local_record_when_upload_fails(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    """Test that GCS upload failures do not prevent local monitoring writes."""
+    image_path = tmp_path / "input.jpg"
+    output_image_path = tmp_path / "output.jpg"
+    output_dir = tmp_path / "monitoring"
+    _write_test_image(image_path)
+
+    def fail_upload(local_path: Path) -> None:
+        """Raise an upload failure."""
+        raise RuntimeError("upload failed")
+
+    monkeypatch.setattr("street_sign_project.monitoring.production_records.upload_production_record", fail_upload)
+
+    output_path = write_monitoring_record(
+        image_path=image_path,
+        prediction_summary={
+            "prediction_count": 0,
+            "mean_confidence": 0.0,
+            "max_confidence": 0.0,
+            "predicted_classes": "",
+        },
+        request_id="request-123",
+        model_name="model.pt",
+        output_image_path=output_image_path,
+        output_dir=output_dir,
+    )
+
+    assert output_path.exists()

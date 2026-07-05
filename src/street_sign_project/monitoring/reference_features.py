@@ -5,8 +5,10 @@ from pathlib import Path
 import cv2
 import pandas as pd
 import typer
+from loguru import logger
 
 from street_sign_project.monitoring.image_features import extract_image_features
+from street_sign_project.monitoring.storage import upload_reference_features
 from street_sign_project.utils import project_root
 
 app = typer.Typer()
@@ -67,6 +69,33 @@ def generate_reference_features(image_dir: Path = DEFAULT_IMAGE_DIR, output_path
     return output_path
 
 
+def generate_and_upload_reference_features(
+    image_dir: Path = DEFAULT_IMAGE_DIR,
+    output_path: Path = DEFAULT_OUTPUT_PATH,
+) -> Path:
+    """Generate reference features locally and upload them to GCS when configured.
+
+    Args:
+        image_dir: Directory containing reference images.
+        output_path: CSV path where extracted features should be written.
+
+    Returns:
+        Path to the generated CSV file.
+    """
+    # Save locally
+    generated_path = generate_reference_features(image_dir=image_dir, output_path=output_path)
+
+    # Try to upload to GC bucket
+    try:
+        gcs_uri = upload_reference_features(generated_path)
+    except Exception as error:
+        logger.warning(f"Failed to upload reference features to GCS: {error}")
+    else:
+        if gcs_uri is not None:
+            print(f"Uploaded reference features to {gcs_uri}")
+    return generated_path
+
+
 # Typer entry point
 @app.command()
 def generate(
@@ -74,7 +103,8 @@ def generate(
     output_path: Path = DEFAULT_OUTPUT_PATH,
 ) -> None:
     """Generate reference image features for data drift monitoring."""
-    generated_path = generate_reference_features(image_dir=image_dir, output_path=output_path)
+    print(f"Generating reference features for data drift monitoring...")
+    generated_path = generate_and_upload_reference_features(image_dir=image_dir, output_path=output_path)
     print(f"Saved reference features to {generated_path}")
 
 

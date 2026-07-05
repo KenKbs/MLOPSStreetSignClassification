@@ -6,8 +6,10 @@ from pathlib import Path
 from typing import Any
 
 import cv2
+from loguru import logger
 
 from street_sign_project.monitoring.image_features import ImageFeatureValue, extract_image_features
+from street_sign_project.monitoring.storage import upload_production_record
 from street_sign_project.utils import project_root
 
 # Default Output dir (inside container / wherever API runs)
@@ -146,4 +148,12 @@ def write_monitoring_record(
         output_image_path=output_image_path,
         original_filename=original_filename,
     )
-    return write_production_record(record=record, output_dir=output_dir)
+    # Write locally
+    output_path = write_production_record(record=record, output_dir=output_dir)
+
+    # Try to upload to cloud
+    try:
+        upload_production_record(output_path)
+    except Exception as error:
+        logger.warning(f"Failed to upload monitoring record to GCS: {error}")
+    return output_path

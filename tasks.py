@@ -342,9 +342,16 @@ def dataset_statistics_check(ctx: Context) -> None:
 
 
 @task(name="create-datadrift-reference")
-def create_datadrift_reference(ctx: Context) -> None:
+def create_datadrift_reference(
+    ctx: Context,
+    bucket: str = "mlops-street-signs-prod-data",
+) -> None:
     """Generate reference image features for data drift monitoring."""
-    ctx.run(f"uv run src/{PROJECT_NAME}/monitoring/reference_features.py", echo=True, pty=not WINDOWS)
+    ctx.run(
+        f"MONITORING_BUCKET={quote(bucket)} uv run src/{PROJECT_NAME}/monitoring/reference_features.py",
+        echo=True,
+        pty=not WINDOWS,
+    )
 
 
 # Documentation commands

@@ -1,5 +1,5 @@
 from fastapi.testclient import TestClient
-from street_sign_project.main import app
+from street_sign_project.fast_api import app
 
 client = TestClient(app)
 

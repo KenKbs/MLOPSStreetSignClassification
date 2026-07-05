@@ -26,6 +26,8 @@ yolo26x.pt
 # Ignore Profiling runs (because depends on each machine where it was run)
 /reports/profiling
 
+# Ignore datadrift_reference_features.csv as it's too big for precommit
+/reports/datadrift_reference_features.csv
 # Ignore .env file (contains your private keys etc.)
 .env
 

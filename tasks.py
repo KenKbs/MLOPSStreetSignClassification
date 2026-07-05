@@ -341,6 +341,12 @@ def dataset_statistics_check(ctx: Context) -> None:
     ctx.run(f"uv run src/{PROJECT_NAME}/dataset.py dataset-statistics", echo=True, pty=not WINDOWS)
 
 
+@task(name="create-datadrift-reference")
+def create_datadrift_reference(ctx: Context) -> None:
+    """Generate reference image features for data drift monitoring."""
+    ctx.run(f"uv run src/{PROJECT_NAME}/monitoring/reference_features.py", echo=True, pty=not WINDOWS)
+
+
 # Documentation commands
 @task
 def build_docs(ctx: Context) -> None:

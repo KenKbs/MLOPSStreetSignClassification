@@ -207,7 +207,7 @@ def test_coverage(ctx: Context) -> None:
     ctx.run("uv run coverage report -m -i", echo=True, pty=not WINDOWS)
 
 
-@task(auto_shortflags=False)
+@task(auto_shortflags=False, aliases=("stress-API",))
 def stress_api(
     ctx: Context,
     host: str = "http://localhost:8000",
@@ -288,10 +288,13 @@ def test_bento(
     ctx.run(command, echo=True, pty=not WINDOWS)
 
 
-@task
-def deploy_api(ctx: Context) -> None:
+@task(auto_shortflags=False)
+def deploy_api(ctx: Context, model: str | None = None) -> None:
     """Build, push, and deploy the API Docker container to Cloud Run."""
-    ctx.run("./scripts/deploy_api_cloudrun.sh", echo=True, pty=not WINDOWS)
+    command = "./scripts/deploy_api_cloudrun.sh"
+    if model is not None:
+        command = f"MODEL_NAME={quote(model)} {command}"
+    ctx.run(command, echo=True, pty=not WINDOWS)
 
 
 @task(name="deploy-bento")
@@ -338,6 +341,19 @@ def dataset_statistics_check(ctx: Context) -> None:
     ctx.run(f"uv run src/{PROJECT_NAME}/dataset.py dataset-statistics", echo=True, pty=not WINDOWS)
 
 
+@task(name="create-datadrift-reference")
+def create_datadrift_reference(
+    ctx: Context,
+    bucket: str = "mlops-street-signs-prod-data",
+) -> None:
+    """Generate reference image features for data drift monitoring."""
+    ctx.run(
+        f"MONITORING_BUCKET={quote(bucket)} uv run src/{PROJECT_NAME}/monitoring/reference_features.py",
+        echo=True,
+        pty=not WINDOWS,
+    )
+
+
 # Documentation commands
 @task
 def build_docs(ctx: Context) -> None:
@@ -351,7 +367,12 @@ def serve_docs(ctx: Context) -> None:
     ctx.run("uv run mkdocs serve --config-file docs/mkdocs.yaml", echo=True, pty=not WINDOWS)
 
 
-@task
-def start_API(ctx: Context) -> None:
+@task(name="start-api", aliases=("start-API",), auto_shortflags=False)
+def start_API(ctx: Context, model: str | None = None, reload: bool = False) -> None:
     """Start API, can be viewed under http://localhost:8000/docs/"""
-    ctx.run("uvicorn --reload --port 8000 street_sign_project.main:app", echo=True, pty=not WINDOWS)
+    command = "uv run uvicorn --port 8000 street_sign_project.fast_api:app"
+    if reload:
+        command = f"{command} --reload --reload-dir src/street_sign_project"
+    if model is not None:
+        command = f"MODEL_NAME={quote(model)} {command}"
+    ctx.run(command, echo=True, pty=not WINDOWS)

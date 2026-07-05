@@ -25,4 +25,4 @@ RUN mkdir -p API_uploads/input API_uploads/output API_uploads/terminal_requests 
 COPY models/${API_MODEL_NAME} models/${API_MODEL_NAME}
 ENV MODEL_NAME=${API_MODEL_NAME}
 
-ENTRYPOINT ["uv", "run", "uvicorn", "street_sign_project.main:app", "--host", "0.0.0.0", "--port", "8000"]
+ENTRYPOINT ["uv", "run", "uvicorn", "street_sign_project.fast_api:app", "--host", "0.0.0.0", "--port", "8000"]

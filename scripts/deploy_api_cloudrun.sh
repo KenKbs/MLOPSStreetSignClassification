@@ -7,9 +7,11 @@ REPOSITORY="${REPOSITORY:-docker-registry}"
 IMAGE_NAME="${IMAGE_NAME:-street-sign-api}"
 SERVICE_NAME="${SERVICE_NAME:-street-sign-api}"
 MODEL_NAME="${MODEL_NAME:-YOLO_eps420_bs8_lr0.005_fr10_x.pt}"
+MONITORING_BUCKET="${MONITORING_BUCKET:-mlops-street-signs-prod-data}"
+MONITORING_PREFIX="${MONITORING_PREFIX:-production}"
 PORT="${PORT:-8000}"
 CPU="${CPU:-1}"
-MEMORY="${MEMORY:-2Gi}"
+MEMORY="${MEMORY:-4Gi}"
 ALLOW_UNAUTHENTICATED="${ALLOW_UNAUTHENTICATED:-true}"
 TAG="${TAG:-$(date +%Y%m%d-%H%M%S)-$(git rev-parse --short HEAD 2>/dev/null || echo local)}"
 
@@ -75,7 +77,7 @@ gcloud run deploy "${SERVICE_NAME}" \
   --cpu "${CPU}" \
   --memory "${MEMORY}" \
   --cpu-throttling \
-  --set-env-vars "MODEL_NAME=${MODEL_NAME}" \
+  --set-env-vars "MODEL_NAME=${MODEL_NAME},MONITORING_BUCKET=${MONITORING_BUCKET},MONITORING_PREFIX=${MONITORING_PREFIX}" \
   --min-instances=0 \
   --max-instances=1 \
   "${auth_args[@]}" \

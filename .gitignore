@@ -26,6 +26,8 @@ yolo26x.pt
 # Ignore Profiling runs (because depends on each machine where it was run)
 /reports/profiling
 
+# Ignore datadrift_reference_features.csv as it's too big for precommit
+/reports/datadrift_reference_features.csv
 # Ignore .env file (contains your private keys etc.)
 .env
 
@@ -36,6 +38,7 @@ yolo26x.pt
 /API_uploads/input/*
 /API_uploads/output/*
 /API_uploads/terminal_requests/*
+/API_uploads/monitoring/*
 !/API_uploads/input/.gitkeep
 !/API_uploads/output/.gitkeep
 !/API_uploads/terminal_requests/.gitkeep

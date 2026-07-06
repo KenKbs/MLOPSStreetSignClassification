@@ -368,7 +368,7 @@ def serve_docs(ctx: Context) -> None:
 
 
 @task(name="start-api", aliases=("start-API",), auto_shortflags=False)
-def start_API(ctx: Context, model: str | None = None, reload: bool = False) -> None:
+def start_API(ctx: Context, model: str | None = None, reload: bool = True) -> None:
     """Start API, can be viewed under http://localhost:8000/docs/"""
     command = "uv run uvicorn --port 8000 street_sign_project.fast_api:app"
     if reload:

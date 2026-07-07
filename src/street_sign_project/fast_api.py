@@ -92,7 +92,10 @@ async def cv_model(background_tasks: BackgroundTasks, data: UploadFile = File(..
         xyxy = box.xyxy[0]
         cv2.rectangle(img, (int(xyxy[0]), int(xyxy[1])), (int(xyxy[2]), int(xyxy[3])), (0, 255, 0), 2)
         lbl = f"{class_name}: {round(box.conf[0].item(), 2)}"
-        cv2.rectangle(img, (int(xyxy[0]), int(xyxy[1]) - 15), (int(xyxy[0] + 300), int(xyxy[1]) + 5), (0, 0, 0), -1)
+        (text_width, _), _ = cv2.getTextSize(lbl, cv2.FONT_HERSHEY_COMPLEX, 0.7, 1)
+        cv2.rectangle(
+            img, (int(xyxy[0]), int(xyxy[1]) - 15), (int(xyxy[0] + text_width), int(xyxy[1]) + 5), (0, 0, 0), -1
+        )
         cv2.putText(img, lbl, (int(xyxy[0]), int(xyxy[1])), cv2.FONT_HERSHEY_COMPLEX, 0.7, (255, 255, 255), 1)
 
     # Save the image

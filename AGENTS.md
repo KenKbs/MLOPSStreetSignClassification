@@ -15,6 +15,7 @@
 * The project uses `invoke` for task management. To see available tasks, use `uv run invoke --list` or refer to the
     `tasks.py` file.
   * To run the API Docker container locally, use `uv run invoke docker-api`.
+  * To start the Streamlit frontend locally, use `uv run invoke start-frontend`.
   * To build, containerize, and run the BentoML API Docker image locally, use `uv run invoke start-bento`.
   * To send one smoke-test request to the running BentoML API, use `uv run invoke test-bento`.
   * To run the default headless API stress test, use `uv run invoke stress-test`.

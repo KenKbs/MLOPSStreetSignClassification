@@ -10,7 +10,7 @@ MODEL_NAME="${MODEL_NAME:-YOLO_eps420_bs8_lr0.005_fr10_x.pt}"
 MONITORING_BUCKET="${MONITORING_BUCKET:-mlops-street-signs-prod-data}"
 MONITORING_PREFIX="${MONITORING_PREFIX:-production}"
 PORT="${PORT:-8000}"
-CPU="${CPU:-1}"
+CPU="${CPU:-2}"
 MEMORY="${MEMORY:-4Gi}"
 ALLOW_UNAUTHENTICATED="${ALLOW_UNAUTHENTICATED:-true}"
 TAG="${TAG:-$(date +%Y%m%d-%H%M%S)-$(git rev-parse --short HEAD 2>/dev/null || echo local)}"
@@ -92,3 +92,8 @@ gcloud run services update-traffic "${SERVICE_NAME}" \
   --quiet
 
 echo "Deployment complete: ${REMOTE_IMAGE}"
+
+echo "Info about running service:"
+gcloud run services describe "${SERVICE_NAME}" \
+  --region "${REGION}" \
+  --project "${PROJECT_ID}"

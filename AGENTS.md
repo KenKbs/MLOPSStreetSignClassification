@@ -15,7 +15,8 @@
 * The project uses `invoke` for task management. To see available tasks, use `uv run invoke --list` or refer to the
     `tasks.py` file.
   * To run the API Docker container locally, use `uv run invoke docker-api`.
-  * To start the Streamlit frontend locally, use `uv run invoke start-frontend`.
+  * To start the Streamlit frontend locally, use `uv run invoke start-local-frontend`.
+  * To deploy the Streamlit frontend to Cloud Run, use `uv run invoke deploy-frontend` or `./scripts/deploy_frontend_cloudrun.sh`.
   * To build, containerize, and run the BentoML API Docker image locally, use `uv run invoke start-bento`.
   * To send one smoke-test request to the running BentoML API, use `uv run invoke test-bento`.
   * To run the default headless API stress test, use `uv run invoke stress-test`.
@@ -23,6 +24,9 @@
 * To build, push, and deploy the API container to Cloud Run, use `./scripts/deploy_api_cloudrun.sh`.
   * Override defaults with environment variables such as `PROJECT_ID`, `REGION`, `REPOSITORY`, `SERVICE_NAME`,
     `MODEL_NAME`, `TAG`, `CPU`, `MEMORY`, and `ALLOW_UNAUTHENTICATED`.
+* To build, push, and deploy the Streamlit frontend container to Cloud Run, use `./scripts/deploy_frontend_cloudrun.sh`.
+  * Override defaults with environment variables such as `PROJECT_ID`, `REGION`, `REPOSITORY`, `SERVICE_NAME`,
+    `API_SERVICE_NAME`, `API_URL`, `TAG`, `CPU`, `MEMORY`, and `ALLOW_UNAUTHENTICATED`.
 * To build, push, and deploy the BentoML API container to Cloud Run, use `uv run invoke deploy-bento` or
   `./scripts/deploy_bento_cloudrun.sh`.
   * Override defaults with environment variables such as `PROJECT_ID`, `REGION`, `REPOSITORY`, `SERVICE_NAME`,

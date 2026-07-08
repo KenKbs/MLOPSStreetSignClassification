@@ -12,6 +12,11 @@ DEFAULT_API_URL = "http://localhost:8000"
 PREDICT_ENDPOINT = "/image_input/"
 
 
+def _api_url_locked() -> bool:
+    """Return whether the API URL should be fixed from the environment."""
+    return os.getenv("STREAMLIT_LOCK_API_URL", "false").lower() == "true"
+
+
 def _api_base_url() -> str:
     """Return the configured API base URL without trailing slash."""
     return os.getenv("API_URL", DEFAULT_API_URL).rstrip("/")
@@ -32,7 +37,14 @@ def main() -> None:
     st.title("Street Sign Prediction Frontend")
 
     st.sidebar.header("API Settings")
-    api_base_url = st.sidebar.text_input("FastAPI URL", value=_api_base_url(), help="Example: http://localhost:8000")
+    default_api_url = _api_base_url()
+    if _api_url_locked():
+        st.sidebar.caption("API URL is managed by the deployment environment.")
+        api_base_url = st.sidebar.text_input("FastAPI URL", value=default_api_url, disabled=True)
+    else:
+        api_base_url = st.sidebar.text_input(
+            "FastAPI URL", value=default_api_url, help="Example: http://localhost:8000"
+        )
     timeout_seconds = st.sidebar.number_input("Request timeout (seconds)", min_value=1.0, max_value=120.0, value=30.0)
 
     uploaded_file = st.file_uploader("Upload an image", type=["jpg", "jpeg", "png"])
@@ -53,7 +65,11 @@ def main() -> None:
                 timeout_seconds=float(timeout_seconds),
             )
         except requests.HTTPError as error:
-            st.error(f"API returned an error: {error.response.status_code} {error.response.text}")
+            response = error.response
+            if response is None:
+                st.error(f"API returned an error: {error}")
+            else:
+                st.error(f"API returned an error: {response.status_code} {response.text}")
             return
         except requests.RequestException as error:
             st.error(f"Could not reach API at {api_base_url}: {error}")

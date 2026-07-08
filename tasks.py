@@ -48,7 +48,8 @@ def _is_port_open(host: str, port: int, timeout_seconds: float = 0.5) -> bool:
 
 
 def _start_local_api_detached(ctx: Context, port: int, model: str | None = None, reload: bool = False) -> None:
-    """Start local FastAPI server as a detached process."""
+    """Start local FastAPI server as a detached process.
+    This helper function is needed to be able to start the local API and the local frontend in the same command"""
     command = f"uv run uvicorn --port {port} street_sign_project.fast_api:app"
     if reload:
         command = f"{command} --reload --reload-dir src/{PROJECT_NAME}"
@@ -412,7 +413,7 @@ def start_local_API(ctx: Context, model: str | None = None, reload: bool = False
 
 
 @task(name="start-local-frontend", aliases=("start-local-streamlit",), auto_shortflags=False)
-def start_frontend(
+def start_local_frontend(
     ctx: Context,
     api_url: str = "http://localhost:8000",
     port: int = 8501,
@@ -441,6 +442,21 @@ def start_frontend(
     ctx.run(command, echo=True, pty=not WINDOWS)
 
 
+@task(name="deploy-frontend", auto_shortflags=False)
+def deploy_frontend(
+    ctx: Context,
+    api_service_name: str | None = None,
+    api_url: str | None = None,
+) -> None:
+    """Build, push, and deploy the Streamlit frontend to Cloud Run."""
+    command = "./scripts/deploy_frontend_cloudrun.sh"
+    if api_service_name is not None:
+        command = f"API_SERVICE_NAME={quote(api_service_name)} {command}"
+    if api_url is not None:
+        command = f"API_URL={quote(api_url)} {command}"
+    ctx.run(command, echo=True, pty=not WINDOWS)
+
+
 @task(name="deploy-api-finn")
 def deploy_api_finn(ctx: Context) -> None:
     """Build, push, and deploy the API Docker container to Cloud Run."""
@@ -452,4 +468,11 @@ def deploy_api_finn(ctx: Context) -> None:
 def stop_api_finn(ctx: Context) -> None:
     """Stop the API in Cloud Run."""
     command = "gcloud run services delete street-sign-api-finn --region=europe-west3 --project=streetsignproject"
+    ctx.run(command, echo=True, pty=not WINDOWS)
+
+
+@task(name="stop-frontend-cloud")
+def stop_frontend_cloud(ctx: Context) -> None:
+    """Stop the Streamlit frontend in Cloud Run."""
+    command = "gcloud run services delete street-sign-frontend --region=europe-west3 --project=streetsignproject"
     ctx.run(command, echo=True, pty=not WINDOWS)

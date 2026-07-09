@@ -22,6 +22,7 @@ RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --frozen
 
 RUN mkdir -p API_uploads/input API_uploads/output API_uploads/terminal_requests models
+COPY data/dataset.yaml data/dataset.yaml
 COPY models/${API_MODEL_NAME} models/${API_MODEL_NAME}
 ENV MODEL_NAME=${API_MODEL_NAME}
 

@@ -3,9 +3,11 @@
 import os
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
+from pathlib import Path
 from uuid import uuid4
 
 import cv2
+import yaml
 from fastapi import BackgroundTasks, FastAPI, File, HTTPException, UploadFile
 from fastapi.responses import FileResponse, HTMLResponse
 
@@ -15,10 +17,27 @@ from street_sign_project.monitoring.production_records import summarize_predicti
 from street_sign_project.utils import project_root
 
 DEFAULT_MODEL_NAME = "YOLO_eps420_bs8_lr0.005_fr10_x.pt"
+DATASET_YAML_PATH = project_root() / "data" / "dataset.yaml"
 INPUT_DIR = project_root() / "API_uploads" / "input"
 OUTPUT_DIR = project_root() / "API_uploads" / "output"
 
 model: YOLOv26
+class_name_by_id: dict[int, str] = {}
+
+
+def _load_class_name_mapping(dataset_yaml_path: Path) -> dict[int, str]:
+    """Load class-id-to-name mapping from a YOLO dataset yaml file."""
+    if not dataset_yaml_path.exists():
+        return {}
+
+    with dataset_yaml_path.open(encoding="utf-8") as file:
+        dataset_cfg = yaml.safe_load(file) or {}
+
+    names = dataset_cfg.get("names", {})
+    if not isinstance(names, dict):
+        return {}
+
+    return {int(class_id): str(class_name) for class_id, class_name in names.items()}
 
 
 def _model_name() -> str:
@@ -30,8 +49,9 @@ def _model_name() -> str:
 async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
     """Load the YOLO model when the FastAPI application starts."""
     print("Starting Application")
-    global model
+    global model, class_name_by_id
     model = YOLOv26(local_model_name=_model_name())
+    class_name_by_id = _load_class_name_mapping(DATASET_YAML_PATH)
     yield
     print("Closing Application")
     del model
@@ -65,11 +85,18 @@ async def cv_model(background_tasks: BackgroundTasks, data: UploadFile = File(..
 
     # TODO put into separate "draw_image" function or so
     for box in pred.boxes:
+        class_id = int(box.cls[0].item())
+        class_name = class_name_by_id.get(
+            class_id, str(class_id)
+        )  # take name of class ID. If class ID not in mapping, take the Calss ID as Name
         xyxy = box.xyxy[0]
         cv2.rectangle(img, (int(xyxy[0]), int(xyxy[1])), (int(xyxy[2]), int(xyxy[3])), (0, 255, 0), 2)
-        lbl = f"{int(box.cls[0].item())}: {round(box.conf[0].item(), 2)}"
-        cv2.rectangle(img, (int(xyxy[0]), int(xyxy[1])), (int(xyxy[0] + 80), int(xyxy[1] + 12)), (0, 0, 0), -1)
-        cv2.putText(img, lbl, (int(xyxy[0]), int(xyxy[1] + 12)), cv2.FONT_HERSHEY_COMPLEX, 0.6, (0, 255, 0), 1)
+        lbl = f"{class_name}: {round(box.conf[0].item(), 2)}"
+        (text_width, _), _ = cv2.getTextSize(lbl, cv2.FONT_HERSHEY_COMPLEX, 0.7, 1)
+        cv2.rectangle(
+            img, (int(xyxy[0]), int(xyxy[1]) - 15), (int(xyxy[0] + text_width), int(xyxy[1]) + 5), (0, 0, 0), -1
+        )
+        cv2.putText(img, lbl, (int(xyxy[0]), int(xyxy[1])), cv2.FONT_HERSHEY_COMPLEX, 0.7, (255, 255, 255), 1)
 
     # Save the image
     cv2.imwrite(str(output_image_path), img)

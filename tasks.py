@@ -1,9 +1,12 @@
 import os
 import pstats
 import re
+import socket
+import time
 from datetime import datetime
 from pathlib import Path
 from shlex import quote
+from urllib.parse import urlparse
 
 from hydra import compose, initialize
 from invoke.context import Context
@@ -35,6 +38,37 @@ def _print_profile_stats(profile_path: Path, limit: int) -> None:
     for sort_by, title in (("cumulative", "Top cumulative time"), ("time", "Top self time")):
         print(f"\n{title} from {profile_path}")
         pstats.Stats(str(profile_path)).strip_dirs().sort_stats(sort_by).print_stats(limit)
+
+
+def _is_port_open(host: str, port: int, timeout_seconds: float = 0.5) -> bool:
+    """Check whether a TCP host:port is reachable."""
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+        sock.settimeout(timeout_seconds)
+        return sock.connect_ex((host, port)) == 0
+
+
+def _start_local_api_detached(ctx: Context, port: int, model: str | None = None, reload: bool = False) -> None:
+    """Start local FastAPI server as a detached process.
+    This helper function is needed to be able to start the local API and the local frontend in the same command"""
+    command = f"uv run uvicorn --port {port} street_sign_project.fast_api:app"
+    if reload:
+        command = f"{command} --reload --reload-dir src/{PROJECT_NAME}"
+    if model is not None:
+        command = f"MODEL_NAME={quote(model)} {command}"
+
+    if WINDOWS:
+        detached_command = f"start /B {command}"
+    else:
+        detached_command = f"nohup {command} >/tmp/street-sign-api-{port}.log 2>&1 &"
+
+    ctx.run(detached_command, echo=True, pty=False)
+
+    for _ in range(20):
+        if _is_port_open("127.0.0.1", port):
+            return
+        time.sleep(0.5)
+
+    logger.warning(f"API startup was triggered but port {port} is not reachable yet.")
 
 
 # Project commands
@@ -367,12 +401,78 @@ def serve_docs(ctx: Context) -> None:
     ctx.run("uv run mkdocs serve --config-file docs/mkdocs.yaml", echo=True, pty=not WINDOWS)
 
 
-@task(name="start-api", aliases=("start-API",), auto_shortflags=False)
-def start_API(ctx: Context, model: str | None = None, reload: bool = False) -> None:
+@task(name="start-local-api", aliases=("start-API",), auto_shortflags=False)
+def start_local_API(ctx: Context, model: str | None = None, reload: bool = False, port: int = 8000) -> None:
     """Start API, can be viewed under http://localhost:8000/docs/"""
-    command = "uv run uvicorn --port 8000 street_sign_project.fast_api:app"
+    command = f"uv run uvicorn --port {port} street_sign_project.fast_api:app"
     if reload:
         command = f"{command} --reload --reload-dir src/street_sign_project"
     if model is not None:
         command = f"MODEL_NAME={quote(model)} {command}"
+    ctx.run(command, echo=True, pty=not WINDOWS)
+
+
+@task(name="start-local-frontend", aliases=("start-local-streamlit",), auto_shortflags=False)
+def start_local_frontend(
+    ctx: Context,
+    api_url: str = "http://localhost:8000",
+    port: int = 8501,
+    start_api: bool = True,
+    api_reload: bool = False,
+    model: str | None = None,
+) -> None:
+    """Start the Streamlit frontend for image upload and prediction display.
+    has to be started via uvx because otherwise there is a dependency conflict with FastAPI"""
+    if start_api:
+        parsed = urlparse(api_url)
+        api_host = parsed.hostname or "localhost"
+        api_port = parsed.port or 8000
+        if api_host in {"localhost", "127.0.0.1"}:
+            if _is_port_open("127.0.0.1", api_port):
+                logger.info(f"Local API already running on {api_host}:{api_port}.")
+            else:
+                _start_local_api_detached(ctx, port=api_port, model=model, reload=api_reload)
+        else:
+            logger.warning(f"start_api=True ignored because api_url points to non-local host '{api_host}'.")
+
+    command = (
+        f"API_URL={quote(api_url)} uvx --with requests --from streamlit streamlit run src/{PROJECT_NAME}/streamlit_app.py "
+        f"--server.port {port}"
+    )
+    ctx.run(command, echo=True, pty=not WINDOWS)
+
+
+@task(name="deploy-frontend", auto_shortflags=False)
+def deploy_frontend(
+    ctx: Context,
+    api_service_name: str | None = None,
+    api_url: str | None = None,
+) -> None:
+    """Build, push, and deploy the Streamlit frontend to Cloud Run."""
+    command = "./scripts/deploy_frontend_cloudrun.sh"
+    if api_service_name is not None:
+        command = f"API_SERVICE_NAME={quote(api_service_name)} {command}"
+    if api_url is not None:
+        command = f"API_URL={quote(api_url)} {command}"
+    ctx.run(command, echo=True, pty=not WINDOWS)
+
+
+@task(name="deploy-api-finn")
+def deploy_api_finn(ctx: Context) -> None:
+    """Build, push, and deploy the API Docker container to Cloud Run."""
+    command = "PROJECT_ID=streetsignproject IMAGE_NAME=street-sign-api-finn SERVICE_NAME=street-sign-api-finn MODEL_NAME=YOLO_eps200_bs16_lr0.005_fr5_x.pt MONITORING_BUCKET=monitoring_bucket_finn ./scripts/deploy_api_cloudrun.sh"
+    ctx.run(command, echo=True, pty=not WINDOWS)
+
+
+@task(name="stop-api-finn")
+def stop_api_finn(ctx: Context) -> None:
+    """Stop the API in Cloud Run."""
+    command = "gcloud run services delete street-sign-api-finn --region=europe-west3 --project=streetsignproject"
+    ctx.run(command, echo=True, pty=not WINDOWS)
+
+
+@task(name="stop-frontend-cloud")
+def stop_frontend_cloud(ctx: Context) -> None:
+    """Stop the Streamlit frontend in Cloud Run."""
+    command = "gcloud run services delete street-sign-frontend --region=europe-west3 --project=streetsignproject"
     ctx.run(command, echo=True, pty=not WINDOWS)

@@ -21,7 +21,13 @@
   * To send one smoke-test request to the running BentoML API, use `uv run invoke test-bento`.
   * To run the default headless API stress test, use `uv run invoke stress-test`.
   * To start the Locust UI for API stress testing, use `uv run invoke stress-test --ui`.
-* To build, push, and deploy the API container to Cloud Run, use `./scripts/deploy_api_cloudrun.sh`.
+* The primary API deployment runs through `.github/workflows/deploy_api.yaml` on relevant pushes to `main` or by
+  manually starting the workflow. It tests the project, pulls the configured model from DVC, builds the API image with
+  Cloud Build, and deploys it to Cloud Run.
+  * Configure the `GCP_API_DEPLOY_CREDENTIALS` GitHub Actions secret and the repository variables documented in the
+    workflow.
+* To build, push, and deploy the API container to Cloud Run locally as a fallback, use
+  `./scripts/deploy_api_cloudrun.sh`.
   * Override defaults with environment variables such as `PROJECT_ID`, `REGION`, `REPOSITORY`, `SERVICE_NAME`,
     `MODEL_NAME`, `TAG`, `CPU`, `MEMORY`, and `ALLOW_UNAUTHENTICATED`.
 * To build, push, and deploy the Streamlit frontend container to Cloud Run, use `./scripts/deploy_frontend_cloudrun.sh`.

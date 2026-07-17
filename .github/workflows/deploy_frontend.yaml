@@ -1,0 +1,124 @@
+name: Test, build, and deploy Streamlit frontend
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".dockerignore"
+      - ".gcloudignore"
+      - ".github/workflows/deploy_frontend.yaml"
+      - "cloudbuild_frontend.yaml"
+      - "dockerfiles/frontend.dockerfile"
+      - "pyproject.toml"
+      - "src/street_sign_project/streamlit_app.py"
+      - "tasks.py"
+      - "uv.lock"
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-streamlit-production
+  cancel-in-progress: false
+
+env:
+  PROJECT_ID: ${{ vars.GCP_PROJECT_ID || 'mlops-steetsigns' }}
+  REGION: ${{ vars.GCP_REGION || 'europe-west3' }}
+  REPOSITORY: ${{ vars.GAR_REPOSITORY || 'docker-registry' }}
+  IMAGE_NAME: ${{ vars.FRONTEND_IMAGE_NAME || 'street-sign-frontend' }}
+  SERVICE_NAME: ${{ vars.CLOUD_RUN_FRONTEND_SERVICE || 'street-sign-frontend' }}
+  API_URL: ${{ vars.FRONTEND_API_URL || 'https://street-sign-api-205178077520.europe-west3.run.app/' }}
+  PORT: ${{ vars.FRONTEND_PORT || '8080' }}
+  CPU: ${{ vars.FRONTEND_CPU || '1' }}
+  MEMORY: ${{ vars.FRONTEND_MEMORY || '1Gi' }}
+  MIN_INSTANCES: ${{ vars.FRONTEND_MIN_INSTANCES || '0' }}
+  MAX_INSTANCES: ${{ vars.FRONTEND_MAX_INSTANCES || '1' }}
+  ALLOW_UNAUTHENTICATED: ${{ vars.FRONTEND_ALLOW_UNAUTHENTICATED || 'true' }}
+  CLOUD_BUILD_STAGING_BUCKET: ${{ vars.CLOUD_BUILD_STAGING_BUCKET || 'mlops-steetsigns_cloudbuild' }}
+  IMAGE_TAG: ${{ github.sha }}
+
+jobs:
+  deploy-frontend:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          python-version: "3.12"
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+
+      - name: Install dependencies
+        run: uv sync --dev --locked
+
+      - name: Run tests
+        run: uv run invoke test
+
+      - name: Prepare frontend build context
+        shell: bash
+        run: |
+          build_context="${RUNNER_TEMP}/street-sign-frontend-build-context"
+          mkdir -p "${build_context}"
+          git archive HEAD | tar -x -C "${build_context}"
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+          credentials_json: ${{ secrets.GCP_API_DEPLOY_CREDENTIALS }}
+
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+
+      - name: Build and push frontend image with Cloud Build
+        shell: bash
+        run: |
+          build_context="${RUNNER_TEMP}/street-sign-frontend-build-context"
+          substitutions="_REGION=${REGION},_REPOSITORY=${REPOSITORY},_IMAGE_NAME=${IMAGE_NAME}"
+          substitutions="${substitutions},_IMAGE_TAG=${IMAGE_TAG}"
+          gcloud builds submit "${build_context}" \
+            --config="${build_context}/cloudbuild_frontend.yaml" \
+            --gcs-source-staging-dir="gs://${CLOUD_BUILD_STAGING_BUCKET}/source" \
+            --project="${PROJECT_ID}" \
+            --substitutions="${substitutions}"
+
+      - name: Deploy frontend to Cloud Run
+        shell: bash
+        run: |
+          remote_image="${REGION}-docker.pkg.dev/${PROJECT_ID}/${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}"
+          runtime_env="API_URL=${API_URL},STREAMLIT_LOCK_API_URL=true"
+          auth_args=(--no-allow-unauthenticated)
+          if [[ "${ALLOW_UNAUTHENTICATED}" == "true" ]]; then
+            auth_args=(--allow-unauthenticated)
+          fi
+
+          gcloud run deploy "${SERVICE_NAME}" \
+            --image "${remote_image}" \
+            --project "${PROJECT_ID}" \
+            --region "${REGION}" \
+            --platform managed \
+            --port "${PORT}" \
+            --cpu "${CPU}" \
+            --memory "${MEMORY}" \
+            --cpu-throttling \
+            --set-env-vars "${runtime_env}" \
+            --min-instances "${MIN_INSTANCES}" \
+            --max-instances "${MAX_INSTANCES}" \
+            "${auth_args[@]}" \
+            --quiet
+
+          gcloud run services update-traffic "${SERVICE_NAME}" \
+            --project "${PROJECT_ID}" \
+            --region "${REGION}" \
+            --to-latest \
+            --quiet
+
+          gcloud run services describe "${SERVICE_NAME}" \
+            --project "${PROJECT_ID}" \
+            --region "${REGION}"

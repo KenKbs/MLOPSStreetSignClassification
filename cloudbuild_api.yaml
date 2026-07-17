@@ -1,4 +1,4 @@
-substitutions:
+substitutions: # Default repository level variables are used
   _REGION: europe-west3
   _REPOSITORY: docker-registry
   _IMAGE_NAME: street-sign-api

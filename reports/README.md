@@ -570,12 +570,11 @@ as an optimised ML deployment artifact.
 > Answer:
 
 Yes, we deployed both locally and in the cloud. Locally the API runs with
-`uv run invoke start-local-api` (`localhost:8000`, docs at `/docs`). For the cloud we wrapped the API image and
-pushed it to Artifact Registry, then deployed it to **Cloud Run** with `scripts/deploy_api_cloudrun.sh` (also exposed as
-`uv run invoke deploy-api`). The script builds the image with the chosen `MODEL_NAME`, pushes it, deploys it and
-routes all traffic to the latest revision. The frontend was designed using **Streamlit** and can be deployed locally
-with 'uv run invoke start-local-frontend' or in the cloud with 'uv run invoke deploy-api' or 'uv run invoke deploy-api-finn'
-and then 'uv run invoke deploy-frontend'
+`uv run invoke start-local-api` (`localhost:8000`, docs at `/docs`). The production deployment is automated by a
+GitHub Actions workflow. It runs the test suite, downloads the configured model from DVC, submits the FastAPI image to
+Google Cloud Build, pushes commit-specific and `latest` tags to Artifact Registry, and deploys the immutable commit tag
+to Cloud Run. `scripts/deploy_api_cloudrun.sh` remains available as a local fallback. The Streamlit frontend can be
+started with `uv run invoke start-local-frontend` and deployed separately with `uv run invoke deploy-frontend`.
 
 ### Question 25
 

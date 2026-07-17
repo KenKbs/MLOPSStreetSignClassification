@@ -10,7 +10,8 @@ __pycache__
 # Never push secrets anywhere ^.^
 .env
 GCP_Account_Key.json
-gha-creds-*.json # GH actions creats temporary auth file --> don't push that to cloud
+# GitHub Actions creates temporary authentication files.
+gha-creds-*.json
 secrets/
 
 # for docker files, they get injected at runtime test

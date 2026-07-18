@@ -71,8 +71,8 @@ uv run invoke profile-train   # profile one training run with cProfile + snakevi
 uv run invoke start-local-api   # serve on http://localhost:8000 (docs at /docs)
 ```
 
-The API exposes `POST /image_input/` (upload an image, receive an annotated image) and
-`GET /monitoring/` (an Evidently data-drift report).
+The API exposes `GET /` (a welcome message), `POST /image_input/` (upload an image, receive an annotated image),
+`GET /metrics` (Prometheus application metrics), and `GET /monitoring/` (an Evidently data-drift report).
 
 ### Streamlit frontend
 

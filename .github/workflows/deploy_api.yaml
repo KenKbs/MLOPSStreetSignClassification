@@ -1,0 +1,155 @@
+name: Test, build, and deploy FastAPI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".dvc/config"
+      - ".dockerignore"
+      - ".gcloudignore"
+      - ".github/workflows/deploy_api.yaml"
+      - "cloudbuild_api.yaml"
+      - "data/dataset.yaml"
+      - "dockerfiles/api.dockerfile"
+      - "models/*.pt.dvc"
+      - "pyproject.toml"
+      - "src/**"
+      - "uv.lock"
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-fastapi-production
+  cancel-in-progress: false
+
+env:
+  PROJECT_ID: ${{ vars.GCP_PROJECT_ID || 'mlops-steetsigns' }}
+  REGION: ${{ vars.GCP_REGION || 'europe-west3' }}
+  REPOSITORY: ${{ vars.GAR_REPOSITORY || 'docker-registry' }}
+  IMAGE_NAME: ${{ vars.API_IMAGE_NAME || 'street-sign-api' }}
+  SERVICE_NAME: ${{ vars.CLOUD_RUN_API_SERVICE || 'street-sign-api' }}
+  MODEL_NAME: ${{ vars.API_MODEL_NAME || 'YOLO_eps420_bs8_lr0.005_fr10_x.pt' }}
+  MONITORING_BUCKET: ${{ vars.MONITORING_BUCKET || 'mlops-street-signs-prod-data' }}
+  MONITORING_PREFIX: ${{ vars.MONITORING_PREFIX || 'production' }}
+  PORT: ${{ vars.API_PORT || '8000' }}
+  CPU: ${{ vars.CLOUD_RUN_CPU || '2' }}
+  MEMORY: ${{ vars.CLOUD_RUN_MEMORY || '4Gi' }}
+  MIN_INSTANCES: ${{ vars.CLOUD_RUN_MIN_INSTANCES || '0' }}
+  MAX_INSTANCES: ${{ vars.CLOUD_RUN_MAX_INSTANCES || '1' }}
+  ALLOW_UNAUTHENTICATED: ${{ vars.ALLOW_UNAUTHENTICATED || 'true' }}
+  CLOUD_BUILD_STAGING_BUCKET: ${{ vars.CLOUD_BUILD_STAGING_BUCKET || 'mlops-steetsigns_cloudbuild' }}
+  IMAGE_TAG: ${{ github.sha }}
+
+jobs:
+  deploy-api:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          python-version: "3.12"
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+
+      - name: Install dependencies
+        run: uv sync --dev --locked
+
+      - name: Run tests
+        run: uv run invoke test
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+          credentials_json: ${{ secrets.GCP_API_DEPLOY_CREDENTIALS }}
+
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+
+      - name: Pull API model from DVC
+        shell: bash
+        run: |
+          if [[ ! "${MODEL_NAME}" =~ ^[A-Za-z0-9._-]+\.pt$ ]]; then
+            echo "Invalid API_MODEL_NAME: ${MODEL_NAME}" >&2
+            exit 1
+          fi
+
+          model_pointer="models/${MODEL_NAME}.dvc"
+          if [[ ! -f "${model_pointer}" ]]; then
+            echo "DVC model pointer not found: ${model_pointer}" >&2
+            exit 1
+          fi
+
+          uv run dvc pull "${model_pointer}"
+          test -f "models/${MODEL_NAME}"
+
+      - name: Prepare API build context
+        shell: bash
+        run: |
+          build_context="${RUNNER_TEMP}/street-sign-api-build-context"
+          mkdir -p "${build_context}"
+          git archive HEAD | tar -x -C "${build_context}"
+          mkdir -p "${build_context}/models"
+          cp "models/${MODEL_NAME}" "${build_context}/models/${MODEL_NAME}"
+          sed -i '\|^models/\*\.pt$|d' "${build_context}/.gcloudignore"
+
+          model_count="$(find "${build_context}/models" -maxdepth 1 -type f -name '*.pt' | wc -l)"
+          if [[ "${model_count}" -ne 1 ]]; then
+            echo "Expected exactly one model in the API build context, found ${model_count}." >&2
+            exit 1
+          fi
+
+      - name: Build and push API image with Cloud Build
+        shell: bash
+        run: |
+          build_context="${RUNNER_TEMP}/street-sign-api-build-context"
+          substitutions="_REGION=${REGION},_REPOSITORY=${REPOSITORY},_IMAGE_NAME=${IMAGE_NAME}"
+          substitutions="${substitutions},_IMAGE_TAG=${IMAGE_TAG},_MODEL_NAME=${MODEL_NAME}"
+          gcloud builds submit "${build_context}" \
+            --config="${build_context}/cloudbuild_api.yaml" \
+            --gcs-source-staging-dir="gs://${CLOUD_BUILD_STAGING_BUCKET}/source" \
+            --project="${PROJECT_ID}" \
+            --substitutions="${substitutions}"
+
+      - name: Deploy API to Cloud Run
+        shell: bash
+        run: |
+          remote_image="${REGION}-docker.pkg.dev/${PROJECT_ID}/${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}"
+          runtime_env="MODEL_NAME=${MODEL_NAME},MONITORING_BUCKET=${MONITORING_BUCKET}"
+          runtime_env="${runtime_env},MONITORING_PREFIX=${MONITORING_PREFIX}"
+          auth_args=(--no-allow-unauthenticated)
+          if [[ "${ALLOW_UNAUTHENTICATED}" == "true" ]]; then
+            auth_args=(--allow-unauthenticated)
+          fi
+
+          gcloud run deploy "${SERVICE_NAME}" \
+            --image "${remote_image}" \
+            --project "${PROJECT_ID}" \
+            --region "${REGION}" \
+            --platform managed \
+            --port "${PORT}" \
+            --cpu "${CPU}" \
+            --memory "${MEMORY}" \
+            --cpu-throttling \
+            --set-env-vars "${runtime_env}" \
+            --min-instances "${MIN_INSTANCES}" \
+            --max-instances "${MAX_INSTANCES}" \
+            "${auth_args[@]}" \
+            --quiet
+
+          gcloud run services update-traffic "${SERVICE_NAME}" \
+            --project "${PROJECT_ID}" \
+            --region "${REGION}" \
+            --to-latest \
+            --quiet
+
+          gcloud run services describe "${SERVICE_NAME}" \
+            --project "${PROJECT_ID}" \
+            --region "${REGION}"

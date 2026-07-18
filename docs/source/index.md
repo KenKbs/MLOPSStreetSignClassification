@@ -1,39 +1,87 @@
-# street_sign_project
+# Street Sign Project
 
-Documentation for **street_sign_project** — an end-to-end MLOps pipeline for **traffic-sign
-detection and classification**, built for the DTU course *02476 Machine Learning Operations*.
+The project serves a YOLO street-sign detector through FastAPI and deploys it to Google Cloud Run.
 
-## What the project does
+## API deployment
 
-The project fine-tunes a **YOLO (v26, Ultralytics)** object-detection model to detect and classify
-traffic signs in images. Two public datasets — the German *GTSDB* and an Italian street-sign set —
-are merged into a single canonical label space of **73 sign classes** (see
-`configs/street_sign_class_mapping.csv`), split deterministically into train/validation/test, and
-used to train a model that is then served through a web API and a browser frontend.
+The `Test, build, and deploy FastAPI` GitHub Actions workflow is the primary production deployment path. On relevant
+pushes to `main`, or when started manually, it:
 
-## MLOps stack
+1. installs the locked development environment and runs the test suite;
+2. downloads the configured API model from the DVC GCS remote;
+3. submits the FastAPI container build to Google Cloud Build;
+4. pushes commit-specific and `latest` image tags to Artifact Registry; and
+5. deploys the commit-specific image to Cloud Run.
 
-| Concern | Tooling |
-| --- | --- |
-| Environment & dependencies | `uv` (`pyproject.toml` + `uv.lock`) |
-| Configuration | `Hydra` (`configs/config.yaml`), `wandb` sweeps (`configs/sweep.yaml`) |
-| Data & model versioning | `DVC` with a Google Cloud Storage remote |
-| Experiment tracking & registry | `Weights & Biases` (metrics, artifacts, staging → production) |
-| Code quality | `ruff` (lint + format), `mypy`, `pre-commit` |
-| Testing | `pytest` (unit, API, performance), `coverage`, `locust` |
-| CI/CD | GitHub Actions (tests, lint, pre-commit, data checker, model staging, cloud build) |
-| Containers | Docker (train / evaluate / API / frontend) + Cloud Build |
-| Serving | `FastAPI`, a specialised `BentoML` service, and a `Streamlit` frontend on Cloud Run |
-| Monitoring | `Evidently` data-drift reports over image features collected in production |
+Configure the service-account JSON as the `GCP_API_DEPLOY_CREDENTIALS` repository secret. Grant that service account
+`roles/storage.objectViewer` on the DVC bucket, `roles/storage.objectUser` on the Cloud Build staging bucket,
+`roles/cloudbuild.builds.editor` and `roles/run.admin` on the project, `roles/artifactregistry.reader` on the image
+repository, and `roles/iam.serviceAccountUser` on the Cloud Run runtime service account. The Cloud Build service account
+needs `roles/artifactregistry.writer` on the image repository. The Cloud Run runtime service account needs
+`roles/storage.objectUser` on the monitoring bucket.
 
-## Where to go next
+The workflow supports these optional repository variables:
 
-- **[Getting started](getting_started.md)** — install the environment and run the most common
-  commands (data, training, testing, API, frontend, docker, deployment).
-- **API reference** — auto-generated documentation of the Python code, grouped into
-  [Data pipeline](reference/data.md), [Model & training](reference/models.md),
-  [Serving & APIs](reference/serving.md), [Monitoring](reference/monitoring.md) and
-  [Utilities](reference/utilities.md).
+| Variable                     | Default                             |
+| ---------------------------- | ----------------------------------- |
+| `GCP_PROJECT_ID`             | `mlops-steetsigns`                  |
+| `GCP_REGION`                 | `europe-west3`                      |
+| `GAR_REPOSITORY`             | `docker-registry`                   |
+| `API_IMAGE_NAME`             | `street-sign-api`                   |
+| `CLOUD_RUN_API_SERVICE`      | `street-sign-api`                   |
+| `API_MODEL_NAME`             | `YOLO_eps420_bs8_lr0.005_fr10_x.pt` |
+| `MONITORING_BUCKET`          | `mlops-street-signs-prod-data`      |
+| `MONITORING_PREFIX`          | `production`                        |
+| `API_PORT`                   | `8000`                              |
+| `CLOUD_RUN_CPU`              | `2`                                 |
+| `CLOUD_RUN_MEMORY`           | `4Gi`                               |
+| `CLOUD_RUN_MIN_INSTANCES`    | `0`                                 |
+| `CLOUD_RUN_MAX_INSTANCES`    | `1`                                 |
+| `ALLOW_UNAUTHENTICATED`      | `true`                              |
+| `CLOUD_BUILD_STAGING_BUCKET` | `mlops-steetsigns_cloudbuild`       |
 
-The full project write-up (design decisions, cloud setup, results) lives in the exam report at
-`reports/README.md`.
+For local fallback deployment, use:
+
+```bash
+uv run invoke deploy-api
+```
+
+## Frontend deployment
+
+The `Test, build, and deploy Streamlit frontend` GitHub Actions workflow is the primary production frontend deployment
+path. On relevant pushes to `main`, or when started manually, it:
+
+1. installs the locked development environment and runs the test suite;
+2. submits the Streamlit container build to Google Cloud Build;
+3. pushes commit-specific and `latest` image tags to Artifact Registry; and
+4. deploys the commit-specific image to Cloud Run with the production API URL locked in the runtime environment.
+
+The workflow uses the same `GCP_API_DEPLOY_CREDENTIALS` repository secret and service account as the API workflow. The
+service account needs `roles/storage.objectUser` on the Cloud Build staging bucket, `roles/cloudbuild.builds.editor` and
+`roles/run.admin` on the project, `roles/artifactregistry.reader` on the image repository, and
+`roles/iam.serviceAccountUser` on the Cloud Run runtime service account. The Cloud Build service account needs
+`roles/artifactregistry.writer` on the image repository.
+
+The workflow supports these optional repository variables:
+
+| Variable                         | Default                                                      |
+| -------------------------------- | ------------------------------------------------------------ |
+| `GCP_PROJECT_ID`                 | `mlops-steetsigns`                                           |
+| `GCP_REGION`                     | `europe-west3`                                               |
+| `GAR_REPOSITORY`                 | `docker-registry`                                            |
+| `FRONTEND_IMAGE_NAME`            | `street-sign-frontend`                                       |
+| `CLOUD_RUN_FRONTEND_SERVICE`     | `street-sign-frontend`                                       |
+| `FRONTEND_API_URL`               | `https://street-sign-api-205178077520.europe-west3.run.app/` |
+| `FRONTEND_PORT`                  | `8080`                                                       |
+| `FRONTEND_CPU`                   | `1`                                                          |
+| `FRONTEND_MEMORY`                | `1Gi`                                                        |
+| `FRONTEND_MIN_INSTANCES`         | `0`                                                          |
+| `FRONTEND_MAX_INSTANCES`         | `1`                                                          |
+| `FRONTEND_ALLOW_UNAUTHENTICATED` | `true`                                                       |
+| `CLOUD_BUILD_STAGING_BUCKET`     | `mlops-steetsigns_cloudbuild`                                |
+
+For local fallback deployment, use:
+
+```bash
+uv run invoke deploy-frontend
+```

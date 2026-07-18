@@ -1,0 +1,4207 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="Kenny_Finn">
+      
+      
+      
+        <link rel="prev" href="../serving/">
+      
+      
+        <link rel="next" href="../utilities/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+    
+    
+      
+        <title>Monitoring - street_sign_project</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#monitoring" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="street_sign_project" class="md-header__button md-logo" aria-label="street_sign_project" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            street_sign_project
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Monitoring
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="street_sign_project" class="md-nav__button md-logo" aria-label="street_sign_project" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    street_sign_project
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting_started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Model & training
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../serving/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Serving & APIs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Monitoring
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Monitoring
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#monitoringimage_features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        monitoring.image_features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#street_sign_project.monitoring.image_features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        image_features
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="image_features">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#street_sign_project.monitoring.image_features.extract_image_features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        extract_image_features
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#monitoringproduction_records" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        monitoring.production_records
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#street_sign_project.monitoring.production_records" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        production_records
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="production_records">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#street_sign_project.monitoring.production_records.create_production_record" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        create_production_record
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#street_sign_project.monitoring.production_records.summarize_predictions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        summarize_predictions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#street_sign_project.monitoring.production_records.write_monitoring_record" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        write_monitoring_record
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#street_sign_project.monitoring.production_records.write_production_record" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        write_production_record
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#monitoringreference_features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        monitoring.reference_features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#street_sign_project.monitoring.reference_features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        reference_features
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="reference_features">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#street_sign_project.monitoring.reference_features.generate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        generate
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#street_sign_project.monitoring.reference_features.generate_and_upload_reference_features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        generate_and_upload_reference_features
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#street_sign_project.monitoring.reference_features.generate_reference_features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        generate_reference_features
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#monitoringstorage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        monitoring.storage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#street_sign_project.monitoring.storage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        storage
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="storage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#street_sign_project.monitoring.storage.download_blob_text" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        download_blob_text
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#street_sign_project.monitoring.storage.list_blob_names" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        list_blob_names
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#street_sign_project.monitoring.storage.production_record_blob_name" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        production_record_blob_name
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#street_sign_project.monitoring.storage.upload_file_to_gcs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        upload_file_to_gcs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#street_sign_project.monitoring.storage.upload_production_record" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        upload_production_record
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#street_sign_project.monitoring.storage.upload_reference_features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        upload_reference_features
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#monitoringdrift_report" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        monitoring.drift_report
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#street_sign_project.monitoring.drift_report" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        drift_report
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="drift_report">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#street_sign_project.monitoring.drift_report.build_cloud_evidently_drift_report_html" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        build_cloud_evidently_drift_report_html
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#street_sign_project.monitoring.drift_report.build_evidently_drift_report_html" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        build_evidently_drift_report_html
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#street_sign_project.monitoring.drift_report.load_production_records_from_gcs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        load_production_records_from_gcs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#street_sign_project.monitoring.drift_report.load_reference_features_from_gcs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        load_reference_features_from_gcs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#street_sign_project.monitoring.drift_report.select_image_feature_columns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        select_image_feature_columns
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../utilities/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Utilities
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#monitoringimage_features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        monitoring.image_features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#street_sign_project.monitoring.image_features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        image_features
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="image_features">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#street_sign_project.monitoring.image_features.extract_image_features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        extract_image_features
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#monitoringproduction_records" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        monitoring.production_records
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#street_sign_project.monitoring.production_records" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        production_records
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="production_records">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#street_sign_project.monitoring.production_records.create_production_record" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        create_production_record
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#street_sign_project.monitoring.production_records.summarize_predictions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        summarize_predictions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#street_sign_project.monitoring.production_records.write_monitoring_record" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        write_monitoring_record
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#street_sign_project.monitoring.production_records.write_production_record" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        write_production_record
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#monitoringreference_features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        monitoring.reference_features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#street_sign_project.monitoring.reference_features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        reference_features
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="reference_features">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#street_sign_project.monitoring.reference_features.generate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        generate
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#street_sign_project.monitoring.reference_features.generate_and_upload_reference_features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        generate_and_upload_reference_features
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#street_sign_project.monitoring.reference_features.generate_reference_features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        generate_reference_features
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#monitoringstorage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        monitoring.storage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#street_sign_project.monitoring.storage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        storage
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="storage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#street_sign_project.monitoring.storage.download_blob_text" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        download_blob_text
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#street_sign_project.monitoring.storage.list_blob_names" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        list_blob_names
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#street_sign_project.monitoring.storage.production_record_blob_name" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        production_record_blob_name
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#street_sign_project.monitoring.storage.upload_file_to_gcs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        upload_file_to_gcs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#street_sign_project.monitoring.storage.upload_production_record" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        upload_production_record
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#street_sign_project.monitoring.storage.upload_reference_features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        upload_reference_features
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#monitoringdrift_report" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        monitoring.drift_report
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#street_sign_project.monitoring.drift_report" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        drift_report
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="drift_report">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#street_sign_project.monitoring.drift_report.build_cloud_evidently_drift_report_html" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        build_cloud_evidently_drift_report_html
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#street_sign_project.monitoring.drift_report.build_evidently_drift_report_html" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        build_evidently_drift_report_html
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#street_sign_project.monitoring.drift_report.load_production_records_from_gcs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        load_production_records_from_gcs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#street_sign_project.monitoring.drift_report.load_reference_features_from_gcs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        load_reference_features_from_gcs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#street_sign_project.monitoring.drift_report.select_image_feature_columns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        select_image_feature_columns
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="monitoring">Monitoring</h1>
+<p>Data-drift monitoring: extracting image features, recording production predictions, building the
+reference feature set, Google Cloud Storage helpers and the Evidently drift report.</p>
+<h2 id="monitoringimage_features"><code>monitoring.image_features</code></h2>
+<p>Extract tabular monitoring features (size, brightness, contrast, sharpness, colour means) from an
+image.</p>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<h2 id="street_sign_project.monitoring.image_features" class="doc doc-heading">
+            <span class="doc doc-object-name doc-module-name">street_sign_project.monitoring.image_features</span>
+
+
+</h2>
+
+    <div class="doc doc-contents first">
+
+        <p>Image feature extraction for API monitoring.</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="street_sign_project.monitoring.image_features.extract_image_features" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">extract_image_features</span>
+
+
+</h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">extract_image_features</span><span class="p">(</span><span class="n">image</span><span class="p">:</span> <span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ImageFeatureValue</span><span class="p">]</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Extract tabular monitoring features from an image.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>image</code>
+            </td>
+            <td>
+                  <code><span title="numpy.ndarray">ndarray</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Image array as loaded by OpenCV. Color images are expected in BGR channel order
+(BGR = default for OpenCV).</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="dict">dict</span>[<span title="str">str</span>, <span title="street_sign_project.monitoring.image_features.ImageFeatureValue">ImageFeatureValue</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Dictionary of numeric image features for monitoring and drift detection.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="ValueError">ValueError</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If the image is empty or has an unsupported shape.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/street_sign_project/monitoring/image_features.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">extract_image_features</span><span class="p">(</span><span class="n">image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ImageFeatureValue</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract tabular monitoring features from an image.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        image: Image array as loaded by OpenCV. Color images are expected in BGR channel order</span>
+<span class="sd">            (BGR = default for OpenCV).</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Dictionary of numeric image features for monitoring and drift detection.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: If the image is empty or has an unsupported shape.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Sanity check image dimension and channels</span>
+    <span class="k">if</span> <span class="n">image</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Image is empty&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">image</span><span class="o">.</span><span class="n">ndim</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported image dimensions: </span><span class="si">{</span><span class="n">image</span><span class="o">.</span><span class="n">ndim</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">image</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">3</span> <span class="ow">and</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported channel count: </span><span class="si">{</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">height</span><span class="p">,</span> <span class="n">width</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">aspect_ratio</span> <span class="o">=</span> <span class="n">width</span> <span class="o">/</span> <span class="n">height</span>
+
+    <span class="k">if</span> <span class="n">image</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>  <span class="c1"># image = (height,width) --&gt; only greyscale image</span>
+        <span class="n">gray_image</span> <span class="o">=</span> <span class="n">image</span>
+        <span class="n">red_channel</span> <span class="o">=</span> <span class="n">image</span>
+        <span class="n">green_channel</span> <span class="o">=</span> <span class="n">image</span>
+        <span class="n">blue_channel</span> <span class="o">=</span> <span class="n">image</span>
+    <span class="k">else</span><span class="p">:</span>  <span class="c1"># image = (height,width,3) --&gt; color image</span>
+        <span class="n">blue_channel</span><span class="p">,</span> <span class="n">green_channel</span><span class="p">,</span> <span class="n">red_channel</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+        <span class="n">gray_image</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2GRAY</span><span class="p">)</span>
+
+    <span class="c1"># extract features</span>
+    <span class="n">gray_float</span> <span class="o">=</span> <span class="n">gray_image</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="n">sharpness</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">Laplacian</span><span class="p">(</span><span class="n">gray_image</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">CV_64F</span><span class="p">)</span><span class="o">.</span><span class="n">var</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;width&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">width</span><span class="p">),</span>
+        <span class="s2">&quot;height&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">height</span><span class="p">),</span>
+        <span class="s2">&quot;aspect_ratio&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">aspect_ratio</span><span class="p">),</span>
+        <span class="s2">&quot;brightness_mean&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">gray_float</span><span class="o">.</span><span class="n">mean</span><span class="p">()),</span>
+        <span class="s2">&quot;brightness_std&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">gray_float</span><span class="o">.</span><span class="n">std</span><span class="p">()),</span>
+        <span class="s2">&quot;contrast&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">gray_float</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">-</span> <span class="n">gray_float</span><span class="o">.</span><span class="n">min</span><span class="p">()),</span>
+        <span class="s2">&quot;sharpness&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">sharpness</span><span class="p">),</span>
+        <span class="s2">&quot;red_mean&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">red_channel</span><span class="o">.</span><span class="n">mean</span><span class="p">()),</span>
+        <span class="s2">&quot;green_mean&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">green_channel</span><span class="o">.</span><span class="n">mean</span><span class="p">()),</span>
+        <span class="s2">&quot;blue_mean&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">blue_channel</span><span class="o">.</span><span class="n">mean</span><span class="p">()),</span>
+    <span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div><h2 id="monitoringproduction_records"><code>monitoring.production_records</code></h2>
+<p>Summarise predictions and write per-request production monitoring records.</p>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<h2 id="street_sign_project.monitoring.production_records" class="doc doc-heading">
+            <span class="doc doc-object-name doc-module-name">street_sign_project.monitoring.production_records</span>
+
+
+</h2>
+
+    <div class="doc doc-contents first">
+
+        <p>Production monitoring records for FastAPI prediction requests.</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="street_sign_project.monitoring.production_records.create_production_record" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">create_production_record</span>
+
+
+</h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">create_production_record</span><span class="p">(</span><span class="n">image_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">prediction_summary</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ProductionRecordValue</span><span class="p">],</span> <span class="n">request_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">model_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output_image_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">original_filename</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ProductionRecordValue</span><span class="p">]</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Create one production monitoring record from image and prediction features.
+So it loads the saved image path, and saved prediction summary, and combines them into one
+dictonary, which then can be written to jsonl object as a file.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>image_path</code>
+            </td>
+            <td>
+                  <code><span title="pathlib.Path">Path</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Saved input image path.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>prediction_summary</code>
+            </td>
+            <td>
+                  <code><span title="dict">dict</span>[<span title="str">str</span>, <span title="street_sign_project.monitoring.production_records.ProductionRecordValue">ProductionRecordValue</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Flat prediction fields from <code>summarize_predictions</code>.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>request_id</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Unique request identifier.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>model_name</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Model name used to serve the prediction.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>output_image_path</code>
+            </td>
+            <td>
+                  <code><span title="pathlib.Path">Path</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Saved annotated output image path.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>original_filename</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span> | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Optional filename from the upload request.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="dict">dict</span>[<span title="str">str</span>, <span title="street_sign_project.monitoring.production_records.ProductionRecordValue">ProductionRecordValue</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Flat monitoring record ready to serialize as JSONL.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="ValueError">ValueError</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If the image cannot be loaded.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/street_sign_project/monitoring/production_records.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 69</span>
+<span class="normal"> 70</span>
+<span class="normal"> 71</span>
+<span class="normal"> 72</span>
+<span class="normal"> 73</span>
+<span class="normal"> 74</span>
+<span class="normal"> 75</span>
+<span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">create_production_record</span><span class="p">(</span>
+    <span class="n">image_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
+    <span class="n">prediction_summary</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ProductionRecordValue</span><span class="p">],</span>
+    <span class="n">request_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">model_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">output_image_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
+    <span class="n">original_filename</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ProductionRecordValue</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create one production monitoring record from image and prediction features.</span>
+<span class="sd">    So it loads the saved image path, and saved prediction summary, and combines them into one</span>
+<span class="sd">    dictonary, which then can be written to jsonl object as a file.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        image_path: Saved input image path.</span>
+<span class="sd">        prediction_summary: Flat prediction fields from ``summarize_predictions``.</span>
+<span class="sd">        request_id: Unique request identifier.</span>
+<span class="sd">        model_name: Model name used to serve the prediction.</span>
+<span class="sd">        output_image_path: Saved annotated output image path.</span>
+<span class="sd">        original_filename: Optional filename from the upload request.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Flat monitoring record ready to serialize as JSONL.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: If the image cannot be loaded.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">image</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">image_path</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">image</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Image could not be loaded: </span><span class="si">{</span><span class="n">image_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;timestamp_utc&quot;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">UTC</span><span class="p">)</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
+        <span class="s2">&quot;request_id&quot;</span><span class="p">:</span> <span class="n">request_id</span><span class="p">,</span>
+        <span class="s2">&quot;model_name&quot;</span><span class="p">:</span> <span class="n">model_name</span><span class="p">,</span>
+        <span class="s2">&quot;image_name&quot;</span><span class="p">:</span> <span class="n">original_filename</span> <span class="ow">or</span> <span class="n">image_path</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+        <span class="s2">&quot;input_image_path&quot;</span><span class="p">:</span> <span class="n">_display_path</span><span class="p">(</span><span class="n">image_path</span><span class="p">),</span>
+        <span class="s2">&quot;output_image_path&quot;</span><span class="p">:</span> <span class="n">_display_path</span><span class="p">(</span><span class="n">output_image_path</span><span class="p">),</span>
+        <span class="o">**</span><span class="n">extract_image_features</span><span class="p">(</span><span class="n">image</span><span class="p">),</span>
+        <span class="o">**</span><span class="n">prediction_summary</span><span class="p">,</span>
+    <span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="street_sign_project.monitoring.production_records.summarize_predictions" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">summarize_predictions</span>
+
+
+</h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">summarize_predictions</span><span class="p">(</span><span class="n">prediction</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ProductionRecordValue</span><span class="p">]</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Summarize a model prediction into flat monitoring fields.
+e.g. the model predicted 2 boxes, with mean confidence etc.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>prediction</code>
+            </td>
+            <td>
+                  <code><span title="typing.Any">Any</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Ultralytics prediction result with a <code>boxes</code> attribute.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="dict">dict</span>[<span title="str">str</span>, <span title="street_sign_project.monitoring.production_records.ProductionRecordValue">ProductionRecordValue</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Flat prediction summary fields for one API request.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/street_sign_project/monitoring/production_records.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">summarize_predictions</span><span class="p">(</span><span class="n">prediction</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ProductionRecordValue</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Summarize a model prediction into flat monitoring fields.</span>
+<span class="sd">    e.g. the model predicted 2 boxes, with mean confidence etc.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        prediction: Ultralytics prediction result with a ``boxes`` attribute.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Flat prediction summary fields for one API request.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">boxes</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">prediction</span><span class="p">,</span> <span class="s2">&quot;boxes&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">boxes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;prediction_count&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;mean_confidence&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+            <span class="s2">&quot;max_confidence&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+            <span class="s2">&quot;predicted_classes&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
+
+    <span class="n">confidences</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">classes</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">box</span> <span class="ow">in</span> <span class="n">boxes</span><span class="p">:</span>
+        <span class="n">confidences</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">box</span><span class="o">.</span><span class="n">conf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()))</span>
+        <span class="n">classes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">box</span><span class="o">.</span><span class="n">cls</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()))</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">confidences</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;prediction_count&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;mean_confidence&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+            <span class="s2">&quot;max_confidence&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+            <span class="s2">&quot;predicted_classes&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;prediction_count&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">confidences</span><span class="p">),</span>
+        <span class="s2">&quot;mean_confidence&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">confidences</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">confidences</span><span class="p">)),</span>
+        <span class="s2">&quot;max_confidence&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">confidences</span><span class="p">)),</span>
+        <span class="s2">&quot;predicted_classes&quot;</span><span class="p">:</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">class_id</span><span class="p">)</span> <span class="k">for</span> <span class="n">class_id</span> <span class="ow">in</span> <span class="n">classes</span><span class="p">),</span>
+    <span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="street_sign_project.monitoring.production_records.write_monitoring_record" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">write_monitoring_record</span>
+
+
+</h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">write_monitoring_record</span><span class="p">(</span><span class="n">image_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">prediction_summary</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ProductionRecordValue</span><span class="p">],</span> <span class="n">request_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">model_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output_image_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">original_filename</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">MONITORING_OUTPUT_DIR</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Create and write one production monitoring record.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/street_sign_project/monitoring/production_records.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">write_monitoring_record</span><span class="p">(</span>
+    <span class="n">image_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
+    <span class="n">prediction_summary</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ProductionRecordValue</span><span class="p">],</span>
+    <span class="n">request_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">model_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">output_image_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
+    <span class="n">original_filename</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">output_dir</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">MONITORING_OUTPUT_DIR</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create and write one production monitoring record.&quot;&quot;&quot;</span>
+    <span class="n">record</span> <span class="o">=</span> <span class="n">create_production_record</span><span class="p">(</span>
+        <span class="n">image_path</span><span class="o">=</span><span class="n">image_path</span><span class="p">,</span>
+        <span class="n">prediction_summary</span><span class="o">=</span><span class="n">prediction_summary</span><span class="p">,</span>
+        <span class="n">request_id</span><span class="o">=</span><span class="n">request_id</span><span class="p">,</span>
+        <span class="n">model_name</span><span class="o">=</span><span class="n">model_name</span><span class="p">,</span>
+        <span class="n">output_image_path</span><span class="o">=</span><span class="n">output_image_path</span><span class="p">,</span>
+        <span class="n">original_filename</span><span class="o">=</span><span class="n">original_filename</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="c1"># Write locally</span>
+    <span class="n">output_path</span> <span class="o">=</span> <span class="n">write_production_record</span><span class="p">(</span><span class="n">record</span><span class="o">=</span><span class="n">record</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="n">output_dir</span><span class="p">)</span>
+
+    <span class="c1"># Try to upload to cloud</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">upload_production_record</span><span class="p">(</span><span class="n">output_path</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to upload monitoring record to GCS: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">output_path</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="street_sign_project.monitoring.production_records.write_production_record" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">write_production_record</span>
+
+
+</h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">write_production_record</span><span class="p">(</span><span class="n">record</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ProductionRecordValue</span><span class="p">],</span> <span class="n">output_dir</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">MONITORING_OUTPUT_DIR</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Write one production monitoring record as a local JSONL file.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>record</code>
+            </td>
+            <td>
+                  <code><span title="dict">dict</span>[<span title="str">str</span>, <span title="street_sign_project.monitoring.production_records.ProductionRecordValue">ProductionRecordValue</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Flat production monitoring record.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>output_dir</code>
+            </td>
+            <td>
+                  <code><span title="pathlib.Path">Path</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Directory where the JSONL record should be written.</p>
+              </div>
+            </td>
+            <td>
+                  <code><span title="street_sign_project.monitoring.production_records.MONITORING_OUTPUT_DIR">MONITORING_OUTPUT_DIR</span></code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="pathlib.Path">Path</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Path to the written JSONL file.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/street_sign_project/monitoring/production_records.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">write_production_record</span><span class="p">(</span>
+    <span class="n">record</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ProductionRecordValue</span><span class="p">],</span>
+    <span class="n">output_dir</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">MONITORING_OUTPUT_DIR</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Write one production monitoring record as a local JSONL file.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        record: Flat production monitoring record.</span>
+<span class="sd">        output_dir: Directory where the JSONL record should be written.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Path to the written JSONL file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">output_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">output_path</span> <span class="o">=</span> <span class="n">output_dir</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">record</span><span class="p">[</span><span class="s1">&#39;request_id&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">.jsonl&quot;</span>
+    <span class="k">with</span> <span class="n">output_path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+        <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+        <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">output_path</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div><h2 id="monitoringreference_features"><code>monitoring.reference_features</code></h2>
+<p>Generate and upload the reference image-feature set used as the drift baseline.</p>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<h2 id="street_sign_project.monitoring.reference_features" class="doc doc-heading">
+            <span class="doc doc-object-name doc-module-name">street_sign_project.monitoring.reference_features</span>
+
+
+</h2>
+
+    <div class="doc doc-contents first">
+
+        <p>Generate reference image feature datasets for data drift monitoring.</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="street_sign_project.monitoring.reference_features.generate" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">generate</span>
+
+
+</h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">generate</span><span class="p">(</span><span class="n">image_dir</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">DEFAULT_IMAGE_DIR</span><span class="p">,</span> <span class="n">output_path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">DEFAULT_OUTPUT_PATH</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Generate reference image features for data drift monitoring.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/street_sign_project/monitoring/reference_features.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">generate</span><span class="p">(</span>
+    <span class="n">image_dir</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">DEFAULT_IMAGE_DIR</span><span class="p">,</span>
+    <span class="n">output_path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">DEFAULT_OUTPUT_PATH</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate reference image features for data drift monitoring.&quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Generating reference features for data drift monitoring...&quot;</span><span class="p">)</span>
+    <span class="n">generated_path</span> <span class="o">=</span> <span class="n">generate_and_upload_reference_features</span><span class="p">(</span><span class="n">image_dir</span><span class="o">=</span><span class="n">image_dir</span><span class="p">,</span> <span class="n">output_path</span><span class="o">=</span><span class="n">output_path</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Saved reference features to </span><span class="si">{</span><span class="n">generated_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="street_sign_project.monitoring.reference_features.generate_and_upload_reference_features" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">generate_and_upload_reference_features</span>
+
+
+</h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">generate_and_upload_reference_features</span><span class="p">(</span><span class="n">image_dir</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">DEFAULT_IMAGE_DIR</span><span class="p">,</span> <span class="n">output_path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">DEFAULT_OUTPUT_PATH</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Generate reference features locally and upload them to GCS when configured.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>image_dir</code>
+            </td>
+            <td>
+                  <code><span title="pathlib.Path">Path</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Directory containing reference images.</p>
+              </div>
+            </td>
+            <td>
+                  <code><span title="street_sign_project.monitoring.reference_features.DEFAULT_IMAGE_DIR">DEFAULT_IMAGE_DIR</span></code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>output_path</code>
+            </td>
+            <td>
+                  <code><span title="pathlib.Path">Path</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>CSV path where extracted features should be written.</p>
+              </div>
+            </td>
+            <td>
+                  <code><span title="street_sign_project.monitoring.reference_features.DEFAULT_OUTPUT_PATH">DEFAULT_OUTPUT_PATH</span></code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="pathlib.Path">Path</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Path to the generated CSV file.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/street_sign_project/monitoring/reference_features.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">72</span>
+<span class="normal">73</span>
+<span class="normal">74</span>
+<span class="normal">75</span>
+<span class="normal">76</span>
+<span class="normal">77</span>
+<span class="normal">78</span>
+<span class="normal">79</span>
+<span class="normal">80</span>
+<span class="normal">81</span>
+<span class="normal">82</span>
+<span class="normal">83</span>
+<span class="normal">84</span>
+<span class="normal">85</span>
+<span class="normal">86</span>
+<span class="normal">87</span>
+<span class="normal">88</span>
+<span class="normal">89</span>
+<span class="normal">90</span>
+<span class="normal">91</span>
+<span class="normal">92</span>
+<span class="normal">93</span>
+<span class="normal">94</span>
+<span class="normal">95</span>
+<span class="normal">96</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">generate_and_upload_reference_features</span><span class="p">(</span>
+    <span class="n">image_dir</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">DEFAULT_IMAGE_DIR</span><span class="p">,</span>
+    <span class="n">output_path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">DEFAULT_OUTPUT_PATH</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate reference features locally and upload them to GCS when configured.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        image_dir: Directory containing reference images.</span>
+<span class="sd">        output_path: CSV path where extracted features should be written.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Path to the generated CSV file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Save locally</span>
+    <span class="n">generated_path</span> <span class="o">=</span> <span class="n">generate_reference_features</span><span class="p">(</span><span class="n">image_dir</span><span class="o">=</span><span class="n">image_dir</span><span class="p">,</span> <span class="n">output_path</span><span class="o">=</span><span class="n">output_path</span><span class="p">)</span>
+
+    <span class="c1"># Try to upload to GC bucket</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">gcs_uri</span> <span class="o">=</span> <span class="n">upload_reference_features</span><span class="p">(</span><span class="n">generated_path</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to upload reference features to GCS: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">gcs_uri</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Uploaded reference features to </span><span class="si">{</span><span class="n">gcs_uri</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">generated_path</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="street_sign_project.monitoring.reference_features.generate_reference_features" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">generate_reference_features</span>
+
+
+</h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">generate_reference_features</span><span class="p">(</span><span class="n">image_dir</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">DEFAULT_IMAGE_DIR</span><span class="p">,</span> <span class="n">output_path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">DEFAULT_OUTPUT_PATH</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Generate a CSV of image features from a reference image directory.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>image_dir</code>
+            </td>
+            <td>
+                  <code><span title="pathlib.Path">Path</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Directory containing reference images.</p>
+              </div>
+            </td>
+            <td>
+                  <code><span title="street_sign_project.monitoring.reference_features.DEFAULT_IMAGE_DIR">DEFAULT_IMAGE_DIR</span></code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>output_path</code>
+            </td>
+            <td>
+                  <code><span title="pathlib.Path">Path</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>CSV path where extracted features should be written.</p>
+              </div>
+            </td>
+            <td>
+                  <code><span title="street_sign_project.monitoring.reference_features.DEFAULT_OUTPUT_PATH">DEFAULT_OUTPUT_PATH</span></code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="pathlib.Path">Path</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Path to the generated CSV file.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="FileNotFoundError">FileNotFoundError</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If the image directory does not exist.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="ValueError">ValueError</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If the image directory contains no supported images or an image cannot be loaded.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/street_sign_project/monitoring/reference_features.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span>
+<span class="normal">69</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">generate_reference_features</span><span class="p">(</span><span class="n">image_dir</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">DEFAULT_IMAGE_DIR</span><span class="p">,</span> <span class="n">output_path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">DEFAULT_OUTPUT_PATH</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate a CSV of image features from a reference image directory.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        image_dir: Directory containing reference images.</span>
+<span class="sd">        output_path: CSV path where extracted features should be written.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Path to the generated CSV file.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        FileNotFoundError: If the image directory does not exist.</span>
+<span class="sd">        ValueError: If the image directory contains no supported images or an image cannot be loaded.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">image_dir</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Image directory not found: </span><span class="si">{</span><span class="n">image_dir</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">image_paths</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">path</span> <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">image_dir</span><span class="o">.</span><span class="n">iterdir</span><span class="p">()</span> <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">suffix</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">IMAGE_SUFFIXES</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">image_paths</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No supported images found in </span><span class="si">{</span><span class="n">image_dir</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># Loop through all images</span>
+    <span class="k">for</span> <span class="n">image_path</span> <span class="ow">in</span> <span class="n">image_paths</span><span class="p">:</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">image_path</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">image</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Image could not be loaded: </span><span class="si">{</span><span class="n">image_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Append features to the row list</span>
+        <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;image_name&quot;</span><span class="p">:</span> <span class="n">image_path</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                <span class="s2">&quot;image_path&quot;</span><span class="p">:</span> <span class="n">_display_image_path</span><span class="p">(</span><span class="n">image_path</span><span class="p">),</span>
+                <span class="o">**</span><span class="n">extract_image_features</span><span class="p">(</span><span class="n">image</span><span class="p">),</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+
+    <span class="n">output_path</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">output_path</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div><h2 id="monitoringstorage"><code>monitoring.storage</code></h2>
+<p>Google Cloud Storage helpers for uploading and reading monitoring data.</p>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<h2 id="street_sign_project.monitoring.storage" class="doc doc-heading">
+            <span class="doc doc-object-name doc-module-name">street_sign_project.monitoring.storage</span>
+
+
+</h2>
+
+    <div class="doc doc-contents first">
+
+        <p>Storage helpers for API monitoring records.</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="street_sign_project.monitoring.storage.download_blob_text" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">download_blob_text</span>
+
+
+</h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">download_blob_text</span><span class="p">(</span><span class="n">bucket_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">blob_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Download one text object from Google Cloud Storage.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>bucket_name</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>GCS bucket name without the <code>gs://</code> prefix.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>blob_name</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Object name inside the GCS bucket.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Text contents of the object.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/street_sign_project/monitoring/storage.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">download_blob_text</span><span class="p">(</span><span class="n">bucket_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">blob_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Download one text object from Google Cloud Storage.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        bucket_name: GCS bucket name without the ``gs://`` prefix.</span>
+<span class="sd">        blob_name: Object name inside the GCS bucket.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Text contents of the object.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">client</span> <span class="o">=</span> <span class="n">_storage_client</span><span class="p">()</span>
+    <span class="n">bucket</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">bucket</span><span class="p">(</span><span class="n">bucket_name</span><span class="p">)</span>
+    <span class="n">blob</span> <span class="o">=</span> <span class="n">bucket</span><span class="o">.</span><span class="n">blob</span><span class="p">(</span><span class="n">blob_name</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">blob</span><span class="o">.</span><span class="n">download_as_text</span><span class="p">()</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="street_sign_project.monitoring.storage.list_blob_names" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">list_blob_names</span>
+
+
+</h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">list_blob_names</span><span class="p">(</span><span class="n">bucket_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>List object names from Google Cloud Storage under a prefix.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>bucket_name</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>GCS bucket name without the <code>gs://</code> prefix.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>prefix</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Object prefix to list.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="list">list</span>[<span title="str">str</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Sorted object names under the prefix.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/street_sign_project/monitoring/storage.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span>
+<span class="normal">69</span>
+<span class="normal">70</span>
+<span class="normal">71</span>
+<span class="normal">72</span>
+<span class="normal">73</span>
+<span class="normal">74</span>
+<span class="normal">75</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">list_blob_names</span><span class="p">(</span><span class="n">bucket_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;List object names from Google Cloud Storage under a prefix.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        bucket_name: GCS bucket name without the ``gs://`` prefix.</span>
+<span class="sd">        prefix: Object prefix to list.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Sorted object names under the prefix.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">client</span> <span class="o">=</span> <span class="n">_storage_client</span><span class="p">()</span>
+    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">blob</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">blob</span> <span class="ow">in</span> <span class="n">client</span><span class="o">.</span><span class="n">list_blobs</span><span class="p">(</span><span class="n">bucket_name</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="n">prefix</span><span class="p">))</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="street_sign_project.monitoring.storage.production_record_blob_name" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">production_record_blob_name</span>
+
+
+</h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">production_record_blob_name</span><span class="p">(</span><span class="n">local_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">DEFAULT_MONITORING_PREFIX</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Build the GCS object name for a production monitoring record.
+So inside the GCP buckets monitor requests are organized in
+subfolders by date!</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/street_sign_project/monitoring/storage.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">production_record_blob_name</span><span class="p">(</span><span class="n">local_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">DEFAULT_MONITORING_PREFIX</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Build the GCS object name for a production monitoring record.</span>
+<span class="sd">    So inside the GCP buckets monitor requests are organized in</span>
+<span class="sd">    subfolders by date!&quot;&quot;&quot;</span>
+    <span class="n">date_partition</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">UTC</span><span class="p">)</span><span class="o">.</span><span class="n">date</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">/date=</span><span class="si">{</span><span class="n">date_partition</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">local_path</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="street_sign_project.monitoring.storage.upload_file_to_gcs" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">upload_file_to_gcs</span>
+
+
+</h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">upload_file_to_gcs</span><span class="p">(</span><span class="n">local_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">bucket_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">blob_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">content_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Upload a local file to Google Cloud Storage.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>local_path</code>
+            </td>
+            <td>
+                  <code><span title="pathlib.Path">Path</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Local file path to upload.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>bucket_name</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>GCS bucket name without the <code>gs://</code> prefix.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>blob_name</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Object name inside the GCS bucket.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>content_type</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>MIME type for the uploaded object.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>GCS URI for the uploaded object.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/street_sign_project/monitoring/storage.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">upload_file_to_gcs</span><span class="p">(</span><span class="n">local_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">bucket_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">blob_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">content_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Upload a local file to Google Cloud Storage.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        local_path: Local file path to upload.</span>
+<span class="sd">        bucket_name: GCS bucket name without the ``gs://`` prefix.</span>
+<span class="sd">        blob_name: Object name inside the GCS bucket.</span>
+<span class="sd">        content_type: MIME type for the uploaded object.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        GCS URI for the uploaded object.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">client</span> <span class="o">=</span> <span class="n">_storage_client</span><span class="p">()</span>
+    <span class="n">bucket</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">bucket</span><span class="p">(</span><span class="n">bucket_name</span><span class="p">)</span>
+    <span class="n">blob</span> <span class="o">=</span> <span class="n">bucket</span><span class="o">.</span><span class="n">blob</span><span class="p">(</span><span class="n">blob_name</span><span class="p">)</span>
+    <span class="n">blob</span><span class="o">.</span><span class="n">upload_from_filename</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">local_path</span><span class="p">),</span> <span class="n">content_type</span><span class="o">=</span><span class="n">content_type</span><span class="p">)</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;gs://</span><span class="si">{</span><span class="n">bucket_name</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">blob_name</span><span class="si">}</span><span class="s2">&quot;</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="street_sign_project.monitoring.storage.upload_production_record" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">upload_production_record</span>
+
+
+</h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">upload_production_record</span><span class="p">(</span><span class="n">local_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">bucket_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Upload a local production monitoring record to GCS when configured.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>local_path</code>
+            </td>
+            <td>
+                  <code><span title="pathlib.Path">Path</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Local JSONL record path.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>bucket_name</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span> | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Optional GCS bucket name. Falls back to <code>MONITORING_BUCKET</code>.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>prefix</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span> | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Optional object prefix. Falls back to <code>MONITORING_PREFIX</code> or <code>production</code>.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="str">str</span> | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>GCS URI for the uploaded object, or <code>None</code> when no bucket is configured.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/street_sign_project/monitoring/storage.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">upload_production_record</span><span class="p">(</span>
+    <span class="n">local_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
+    <span class="n">bucket_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Upload a local production monitoring record to GCS when configured.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        local_path: Local JSONL record path.</span>
+<span class="sd">        bucket_name: Optional GCS bucket name. Falls back to ``MONITORING_BUCKET``.</span>
+<span class="sd">        prefix: Optional object prefix. Falls back to ``MONITORING_PREFIX`` or ``production``.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        GCS URI for the uploaded object, or ``None`` when no bucket is configured.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">configured_bucket</span> <span class="o">=</span> <span class="n">bucket_name</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="n">MONITORING_BUCKET_ENV</span><span class="p">)</span>
+    <span class="c1"># Do nothing if no configured bucket is present</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">configured_bucket</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="c1"># Get model prefix and build blob_name to save file under</span>
+    <span class="n">configured_prefix</span> <span class="o">=</span> <span class="n">prefix</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="n">MONITORING_PREFIX_ENV</span><span class="p">,</span> <span class="n">DEFAULT_MONITORING_PREFIX</span><span class="p">)</span>
+    <span class="n">blob_name</span> <span class="o">=</span> <span class="n">production_record_blob_name</span><span class="p">(</span><span class="n">local_path</span><span class="o">=</span><span class="n">local_path</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="n">configured_prefix</span><span class="p">)</span>
+
+    <span class="c1"># upload file</span>
+    <span class="k">return</span> <span class="n">upload_file_to_gcs</span><span class="p">(</span>
+        <span class="n">local_path</span><span class="o">=</span><span class="n">local_path</span><span class="p">,</span>
+        <span class="n">bucket_name</span><span class="o">=</span><span class="n">configured_bucket</span><span class="p">,</span>
+        <span class="n">blob_name</span><span class="o">=</span><span class="n">blob_name</span><span class="p">,</span>
+        <span class="n">content_type</span><span class="o">=</span><span class="s2">&quot;application/json&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="street_sign_project.monitoring.storage.upload_reference_features" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">upload_reference_features</span>
+
+
+</h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">upload_reference_features</span><span class="p">(</span><span class="n">local_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">bucket_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">blob_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">DEFAULT_REFERENCE_FEATURES_BLOB_NAME</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Upload generated reference feature data to GCS when configured.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>local_path</code>
+            </td>
+            <td>
+                  <code><span title="pathlib.Path">Path</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Local reference feature CSV path.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>bucket_name</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span> | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Optional GCS bucket name. Falls back to <code>MONITORING_BUCKET</code>.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>blob_name</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Object name inside the GCS bucket.</p>
+              </div>
+            </td>
+            <td>
+                  <code><span title="street_sign_project.monitoring.storage.DEFAULT_REFERENCE_FEATURES_BLOB_NAME">DEFAULT_REFERENCE_FEATURES_BLOB_NAME</span></code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="str">str</span> | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>GCS URI for the uploaded object, or <code>None</code> when no bucket is configured.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/street_sign_project/monitoring/storage.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">upload_reference_features</span><span class="p">(</span>
+    <span class="n">local_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
+    <span class="n">bucket_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">blob_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">DEFAULT_REFERENCE_FEATURES_BLOB_NAME</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Upload generated reference feature data to GCS when configured.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        local_path: Local reference feature CSV path.</span>
+<span class="sd">        bucket_name: Optional GCS bucket name. Falls back to ``MONITORING_BUCKET``.</span>
+<span class="sd">        blob_name: Object name inside the GCS bucket.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        GCS URI for the uploaded object, or ``None`` when no bucket is configured.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">configured_bucket</span> <span class="o">=</span> <span class="n">bucket_name</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="n">MONITORING_BUCKET_ENV</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">configured_bucket</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">return</span> <span class="n">upload_file_to_gcs</span><span class="p">(</span>
+        <span class="n">local_path</span><span class="o">=</span><span class="n">local_path</span><span class="p">,</span>
+        <span class="n">bucket_name</span><span class="o">=</span><span class="n">configured_bucket</span><span class="p">,</span>
+        <span class="n">blob_name</span><span class="o">=</span><span class="n">blob_name</span><span class="p">,</span>
+        <span class="n">content_type</span><span class="o">=</span><span class="s2">&quot;text/csv&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div><h2 id="monitoringdrift_report"><code>monitoring.drift_report</code></h2>
+<p>Build an Evidently data-drift report from the cloud monitoring data.</p>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<h2 id="street_sign_project.monitoring.drift_report" class="doc doc-heading">
+            <span class="doc doc-object-name doc-module-name">street_sign_project.monitoring.drift_report</span>
+
+
+</h2>
+
+    <div class="doc doc-contents first">
+
+        <p>Build Evidently data drift reports from cloud monitoring data.</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="street_sign_project.monitoring.drift_report.build_cloud_evidently_drift_report_html" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">build_cloud_evidently_drift_report_html</span>
+
+
+</h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">build_cloud_evidently_drift_report_html</span><span class="p">(</span><span class="n">bucket_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Load cloud monitoring data and build an Evidently drift report as HTML.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>bucket_name</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span> | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Optional GCS bucket name. Falls back to <code>MONITORING_BUCKET</code> or the production bucket.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Evidently report HTML.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/street_sign_project/monitoring/drift_report.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">build_cloud_evidently_drift_report_html</span><span class="p">(</span><span class="n">bucket_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Load cloud monitoring data and build an Evidently drift report as HTML.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        bucket_name: Optional GCS bucket name. Falls back to ``MONITORING_BUCKET`` or the production bucket.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Evidently report HTML.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">reference_data</span> <span class="o">=</span> <span class="n">load_reference_features_from_gcs</span><span class="p">(</span><span class="n">bucket_name</span><span class="o">=</span><span class="n">bucket_name</span><span class="p">)</span>
+    <span class="n">production_data</span> <span class="o">=</span> <span class="n">load_production_records_from_gcs</span><span class="p">(</span><span class="n">bucket_name</span><span class="o">=</span><span class="n">bucket_name</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">build_evidently_drift_report_html</span><span class="p">(</span><span class="n">reference_data</span><span class="o">=</span><span class="n">reference_data</span><span class="p">,</span> <span class="n">production_data</span><span class="o">=</span><span class="n">production_data</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="street_sign_project.monitoring.drift_report.build_evidently_drift_report_html" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">build_evidently_drift_report_html</span>
+
+
+</h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">build_evidently_drift_report_html</span><span class="p">(</span><span class="n">reference_data</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">,</span> <span class="n">production_data</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Build an Evidently data drift report as HTML.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>reference_data</code>
+            </td>
+            <td>
+                  <code><span title="pandas.DataFrame">DataFrame</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Reference feature data.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>production_data</code>
+            </td>
+            <td>
+                  <code><span title="pandas.DataFrame">DataFrame</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Production feature data.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Evidently report HTML.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/street_sign_project/monitoring/drift_report.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">build_evidently_drift_report_html</span><span class="p">(</span><span class="n">reference_data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">production_data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Build an Evidently data drift report as HTML.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        reference_data: Reference feature data.</span>
+<span class="sd">        production_data: Production feature data.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Evidently report HTML.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">reference_features</span><span class="p">,</span> <span class="n">production_features</span> <span class="o">=</span> <span class="n">select_image_feature_columns</span><span class="p">(</span>
+        <span class="n">reference_data</span><span class="o">=</span><span class="n">reference_data</span><span class="p">,</span>
+        <span class="n">production_data</span><span class="o">=</span><span class="n">production_data</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">report</span> <span class="o">=</span> <span class="n">Report</span><span class="p">(</span><span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="n">DataDriftPreset</span><span class="p">()])</span>
+    <span class="n">report</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">reference_data</span><span class="o">=</span><span class="n">reference_features</span><span class="p">,</span> <span class="n">current_data</span><span class="o">=</span><span class="n">production_features</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">report</span><span class="o">.</span><span class="n">get_html</span><span class="p">()</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="street_sign_project.monitoring.drift_report.load_production_records_from_gcs" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">load_production_records_from_gcs</span>
+
+
+</h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">load_production_records_from_gcs</span><span class="p">(</span><span class="n">bucket_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Load production monitoring records from GCS JSONL objects.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>bucket_name</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span> | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Optional GCS bucket name. Falls back to <code>MONITORING_BUCKET</code> or the production bucket.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>prefix</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span> | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Optional production records prefix. Falls back to <code>MONITORING_PREFIX</code> or <code>production</code>.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="pandas.DataFrame">DataFrame</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Production monitoring records.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="ValueError">ValueError</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If no production JSONL records are found.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/street_sign_project/monitoring/drift_report.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span>
+<span class="normal">69</span>
+<span class="normal">70</span>
+<span class="normal">71</span>
+<span class="normal">72</span>
+<span class="normal">73</span>
+<span class="normal">74</span>
+<span class="normal">75</span>
+<span class="normal">76</span>
+<span class="normal">77</span>
+<span class="normal">78</span>
+<span class="normal">79</span>
+<span class="normal">80</span>
+<span class="normal">81</span>
+<span class="normal">82</span>
+<span class="normal">83</span>
+<span class="normal">84</span>
+<span class="normal">85</span>
+<span class="normal">86</span>
+<span class="normal">87</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">load_production_records_from_gcs</span><span class="p">(</span>
+    <span class="n">bucket_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Load production monitoring records from GCS JSONL objects.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        bucket_name: Optional GCS bucket name. Falls back to ``MONITORING_BUCKET`` or the production bucket.</span>
+<span class="sd">        prefix: Optional production records prefix. Falls back to ``MONITORING_PREFIX`` or ``production``.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Production monitoring records.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: If no production JSONL records are found.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">configured_bucket</span> <span class="o">=</span> <span class="n">_monitoring_bucket_name</span><span class="p">(</span><span class="n">bucket_name</span><span class="p">)</span>
+    <span class="n">configured_prefix</span> <span class="o">=</span> <span class="n">prefix</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="n">MONITORING_PREFIX_ENV</span><span class="p">,</span> <span class="n">DEFAULT_MONITORING_PREFIX</span><span class="p">)</span>
+    <span class="n">blob_names</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">blob_name</span>
+        <span class="k">for</span> <span class="n">blob_name</span> <span class="ow">in</span> <span class="n">list_blob_names</span><span class="p">(</span><span class="n">bucket_name</span><span class="o">=</span><span class="n">configured_bucket</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">configured_prefix</span><span class="si">}</span><span class="s2">/date=&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">blob_name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.jsonl&quot;</span><span class="p">)</span>
+    <span class="p">]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">blob_names</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No production monitoring records found in gs://</span><span class="si">{</span><span class="n">configured_bucket</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">configured_prefix</span><span class="si">}</span><span class="s2">/&quot;</span><span class="p">)</span>
+
+    <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">blob_name</span> <span class="ow">in</span> <span class="n">blob_names</span><span class="p">:</span>
+        <span class="n">jsonl_text</span> <span class="o">=</span> <span class="n">download_blob_text</span><span class="p">(</span><span class="n">bucket_name</span><span class="o">=</span><span class="n">configured_bucket</span><span class="p">,</span> <span class="n">blob_name</span><span class="o">=</span><span class="n">blob_name</span><span class="p">)</span>
+        <span class="n">rows</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">jsonl_text</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span> <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="street_sign_project.monitoring.drift_report.load_reference_features_from_gcs" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">load_reference_features_from_gcs</span>
+
+
+</h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">load_reference_features_from_gcs</span><span class="p">(</span><span class="n">bucket_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">blob_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">DEFAULT_REFERENCE_FEATURES_BLOB_NAME</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Load reference image features from a GCS CSV object.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>bucket_name</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span> | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Optional GCS bucket name. Falls back to <code>MONITORING_BUCKET</code> or the production bucket.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>blob_name</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Reference feature object name inside the bucket.</p>
+              </div>
+            </td>
+            <td>
+                  <code><span title="street_sign_project.monitoring.storage.DEFAULT_REFERENCE_FEATURES_BLOB_NAME">DEFAULT_REFERENCE_FEATURES_BLOB_NAME</span></code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="pandas.DataFrame">DataFrame</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Reference feature data.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/street_sign_project/monitoring/drift_report.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">load_reference_features_from_gcs</span><span class="p">(</span>
+    <span class="n">bucket_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">blob_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">DEFAULT_REFERENCE_FEATURES_BLOB_NAME</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Load reference image features from a GCS CSV object.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        bucket_name: Optional GCS bucket name. Falls back to ``MONITORING_BUCKET`` or the production bucket.</span>
+<span class="sd">        blob_name: Reference feature object name inside the bucket.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Reference feature data.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">csv_text</span> <span class="o">=</span> <span class="n">download_blob_text</span><span class="p">(</span><span class="n">bucket_name</span><span class="o">=</span><span class="n">_monitoring_bucket_name</span><span class="p">(</span><span class="n">bucket_name</span><span class="p">),</span> <span class="n">blob_name</span><span class="o">=</span><span class="n">blob_name</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">StringIO</span><span class="p">(</span><span class="n">csv_text</span><span class="p">))</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="street_sign_project.monitoring.drift_report.select_image_feature_columns" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">select_image_feature_columns</span>
+
+
+</h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">select_image_feature_columns</span><span class="p">(</span><span class="n">reference_data</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">,</span> <span class="n">production_data</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Select shared numeric image feature columns for drift reporting.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>reference_data</code>
+            </td>
+            <td>
+                  <code><span title="pandas.DataFrame">DataFrame</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Reference feature data.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>production_data</code>
+            </td>
+            <td>
+                  <code><span title="pandas.DataFrame">DataFrame</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Production feature data.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="tuple">tuple</span>[<span title="pandas.DataFrame">DataFrame</span>, <span title="pandas.DataFrame">DataFrame</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Reference and production data with only shared numeric image feature columns.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="ValueError">ValueError</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If no shared image feature columns are available.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/street_sign_project/monitoring/drift_report.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">select_image_feature_columns</span><span class="p">(</span>
+    <span class="n">reference_data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">production_data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Select shared numeric image feature columns for drift reporting.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        reference_data: Reference feature data.</span>
+<span class="sd">        production_data: Production feature data.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Reference and production data with only shared numeric image feature columns.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: If no shared image feature columns are available.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">shared_columns</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">column</span>
+        <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">IMAGE_FEATURE_COLUMNS</span>
+        <span class="k">if</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">reference_data</span><span class="o">.</span><span class="n">columns</span> <span class="ow">and</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">production_data</span><span class="o">.</span><span class="n">columns</span>
+    <span class="p">]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">shared_columns</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No shared image feature columns found for drift reporting&quot;</span><span class="p">)</span>
+
+    <span class="n">reference_features</span> <span class="o">=</span> <span class="n">reference_data</span><span class="p">[</span><span class="n">shared_columns</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;coerce&quot;</span><span class="p">)</span>
+    <span class="n">production_features</span> <span class="o">=</span> <span class="n">production_data</span><span class="p">[</span><span class="n">shared_columns</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;coerce&quot;</span><span class="p">)</span>
+    <span class="n">numeric_columns</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">column</span>
+        <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">shared_columns</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">reference_features</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span><span class="o">.</span><span class="n">all</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">production_features</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+    <span class="p">]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">numeric_columns</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No shared numeric image feature columns found for drift reporting&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">reference_features</span><span class="p">[</span><span class="n">numeric_columns</span><span class="p">],</span> <span class="n">production_features</span><span class="p">[</span><span class="n">numeric_columns</span><span class="p">]</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

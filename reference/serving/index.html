@@ -1,0 +1,1782 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="Kenny_Finn">
+      
+      
+      
+        <link rel="prev" href="../models/">
+      
+      
+        <link rel="next" href="../monitoring/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+    
+    
+      
+        <title>Serving & APIs - street_sign_project</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#serving-apis" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="street_sign_project" class="md-header__button md-logo" aria-label="street_sign_project" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            street_sign_project
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Serving & APIs
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="street_sign_project" class="md-nav__button md-logo" aria-label="street_sign_project" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    street_sign_project
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting_started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Model & training
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Serving & APIs
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Serving & APIs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#fast_api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        fast_api
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#street_sign_project.fast_api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        fast_api
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="fast_api">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#street_sign_project.fast_api.cv_model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        cv_model
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#street_sign_project.fast_api.lifespan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        lifespan
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#street_sign_project.fast_api.monitoring_report" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        monitoring_report
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bentoml_api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        bentoml_api
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#street_sign_project.bentoml_api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        bentoml_api
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="bentoml_api">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#street_sign_project.bentoml_api.StreetSignClassifierService" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        StreetSignClassifierService
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="StreetSignClassifierService">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#street_sign_project.bentoml_api.StreetSignClassifierService.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        __init__
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#street_sign_project.bentoml_api.StreetSignClassifierService.image_input" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        image_input
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#streamlit_app" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        streamlit_app
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#street_sign_project.streamlit_app" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        streamlit_app
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="streamlit_app">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#street_sign_project.streamlit_app.main" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        main
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../monitoring/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Monitoring
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../utilities/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Utilities
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#fast_api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        fast_api
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#street_sign_project.fast_api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        fast_api
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="fast_api">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#street_sign_project.fast_api.cv_model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        cv_model
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#street_sign_project.fast_api.lifespan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        lifespan
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#street_sign_project.fast_api.monitoring_report" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        monitoring_report
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bentoml_api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        bentoml_api
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#street_sign_project.bentoml_api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        bentoml_api
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="bentoml_api">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#street_sign_project.bentoml_api.StreetSignClassifierService" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        StreetSignClassifierService
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="StreetSignClassifierService">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#street_sign_project.bentoml_api.StreetSignClassifierService.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        __init__
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#street_sign_project.bentoml_api.StreetSignClassifierService.image_input" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        image_input
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#streamlit_app" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        streamlit_app
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#street_sign_project.streamlit_app" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        streamlit_app
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="streamlit_app">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#street_sign_project.streamlit_app.main" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        main
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="serving-apis">Serving &amp; APIs</h1>
+<p>The FastAPI application, the specialised BentoML service and the Streamlit frontend.</p>
+<h2 id="fast_api"><code>fast_api</code></h2>
+<p>FastAPI application exposing image prediction and the Evidently monitoring report.</p>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<h2 id="street_sign_project.fast_api" class="doc doc-heading">
+            <span class="doc doc-object-name doc-module-name">street_sign_project.fast_api</span>
+
+
+</h2>
+
+    <div class="doc doc-contents first">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="street_sign_project.fast_api.cv_model" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">cv_model</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
+  </span>
+
+</h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">cv_model</span><span class="p">(</span><span class="n">background_tasks</span><span class="p">:</span> <span class="n">BackgroundTasks</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">UploadFile</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span><span class="o">...</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="n">FileResponse</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Predict street signs on an uploaded image and return an annotated image.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/street_sign_project/fast_api.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 63</span>
+<span class="normal"> 64</span>
+<span class="normal"> 65</span>
+<span class="normal"> 66</span>
+<span class="normal"> 67</span>
+<span class="normal"> 68</span>
+<span class="normal"> 69</span>
+<span class="normal"> 70</span>
+<span class="normal"> 71</span>
+<span class="normal"> 72</span>
+<span class="normal"> 73</span>
+<span class="normal"> 74</span>
+<span class="normal"> 75</span>
+<span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/image_input/&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">cv_model</span><span class="p">(</span><span class="n">background_tasks</span><span class="p">:</span> <span class="n">BackgroundTasks</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">UploadFile</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span><span class="o">...</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="n">FileResponse</span><span class="p">:</span>  <span class="c1"># noqa: B008</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Predict street signs on an uploaded image and return an annotated image.&quot;&quot;&quot;</span>
+    <span class="n">INPUT_DIR</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">OUTPUT_DIR</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">request_id</span> <span class="o">=</span> <span class="n">uuid4</span><span class="p">()</span><span class="o">.</span><span class="n">hex</span>
+    <span class="n">input_image_path</span> <span class="o">=</span> <span class="n">INPUT_DIR</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;image_</span><span class="si">{</span><span class="n">request_id</span><span class="si">}</span><span class="s2">.jpg&quot;</span>
+    <span class="n">output_image_path</span> <span class="o">=</span> <span class="n">OUTPUT_DIR</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;image_</span><span class="si">{</span><span class="n">request_id</span><span class="si">}</span><span class="s2">.jpg&quot;</span>
+
+    <span class="c1"># TODO Put into separate &quot;load_image&quot; function</span>
+    <span class="k">with</span> <span class="n">input_image_path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">image</span><span class="p">:</span>
+        <span class="n">content</span> <span class="o">=</span> <span class="k">await</span> <span class="n">data</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="n">image</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+    <span class="n">img</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">input_image_path</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">img</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Bild konnte nicht geladen werden&quot;</span><span class="p">)</span>
+    <span class="n">pred</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">input_image_path</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">pred</span><span class="o">.</span><span class="n">boxes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;pred.boxes is None, but should be a list of prediction objects&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Get prediction summary for data drift</span>
+    <span class="n">prediction_summary</span> <span class="o">=</span> <span class="n">summarize_predictions</span><span class="p">(</span><span class="n">pred</span><span class="p">)</span>
+
+    <span class="c1"># TODO put into separate &quot;draw_image&quot; function or so</span>
+    <span class="k">for</span> <span class="n">box</span> <span class="ow">in</span> <span class="n">pred</span><span class="o">.</span><span class="n">boxes</span><span class="p">:</span>
+        <span class="n">class_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">box</span><span class="o">.</span><span class="n">cls</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+        <span class="n">class_name</span> <span class="o">=</span> <span class="n">class_name_by_id</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="n">class_id</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">class_id</span><span class="p">)</span>
+        <span class="p">)</span>  <span class="c1"># take name of class ID. If class ID not in mapping, take the Calss ID as Name</span>
+        <span class="n">xyxy</span> <span class="o">=</span> <span class="n">box</span><span class="o">.</span><span class="n">xyxy</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">cv2</span><span class="o">.</span><span class="n">rectangle</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">xyxy</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">xyxy</span><span class="p">[</span><span class="mi">1</span><span class="p">])),</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">xyxy</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">xyxy</span><span class="p">[</span><span class="mi">3</span><span class="p">])),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">lbl</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">class_name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">box</span><span class="o">.</span><span class="n">conf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">(</span><span class="n">text_width</span><span class="p">,</span> <span class="n">_</span><span class="p">),</span> <span class="n">_</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">getTextSize</span><span class="p">(</span><span class="n">lbl</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">FONT_HERSHEY_COMPLEX</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">cv2</span><span class="o">.</span><span class="n">rectangle</span><span class="p">(</span>
+            <span class="n">img</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">xyxy</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">xyxy</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">-</span> <span class="mi">15</span><span class="p">),</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">xyxy</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">text_width</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">xyxy</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="p">)</span>
+        <span class="n">cv2</span><span class="o">.</span><span class="n">putText</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">lbl</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">xyxy</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">xyxy</span><span class="p">[</span><span class="mi">1</span><span class="p">])),</span> <span class="n">cv2</span><span class="o">.</span><span class="n">FONT_HERSHEY_COMPLEX</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># Save the image</span>
+    <span class="n">cv2</span><span class="o">.</span><span class="n">imwrite</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">output_image_path</span><span class="p">),</span> <span class="n">img</span><span class="p">)</span>
+
+    <span class="c1"># Add a background task to not increase latency:</span>
+    <span class="c1"># Writes the jsonl file which is later used by data drift</span>
+    <span class="n">background_tasks</span><span class="o">.</span><span class="n">add_task</span><span class="p">(</span>
+        <span class="n">write_monitoring_record</span><span class="p">,</span>
+        <span class="n">image_path</span><span class="o">=</span><span class="n">input_image_path</span><span class="p">,</span>
+        <span class="n">prediction_summary</span><span class="o">=</span><span class="n">prediction_summary</span><span class="p">,</span>
+        <span class="n">request_id</span><span class="o">=</span><span class="n">request_id</span><span class="p">,</span>
+        <span class="n">model_name</span><span class="o">=</span><span class="n">_model_name</span><span class="p">(),</span>
+        <span class="n">output_image_path</span><span class="o">=</span><span class="n">output_image_path</span><span class="p">,</span>
+        <span class="n">original_filename</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">FileResponse</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">output_image_path</span><span class="p">),</span> <span class="n">media_type</span><span class="o">=</span><span class="s2">&quot;image/jpeg&quot;</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="street_sign_project.fast_api.lifespan" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">lifespan</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
+  </span>
+
+</h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">lifespan</span><span class="p">(</span><span class="n">_app</span><span class="p">:</span> <span class="n">FastAPI</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AsyncIterator</span><span class="p">[</span><span class="kc">None</span><span class="p">]</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Load the YOLO model when the FastAPI application starts.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/street_sign_project/fast_api.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@asynccontextmanager</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">lifespan</span><span class="p">(</span><span class="n">_app</span><span class="p">:</span> <span class="n">FastAPI</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AsyncIterator</span><span class="p">[</span><span class="kc">None</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Load the YOLO model when the FastAPI application starts.&quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Starting Application&quot;</span><span class="p">)</span>
+    <span class="k">global</span> <span class="n">model</span><span class="p">,</span> <span class="n">class_name_by_id</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">YOLOv26</span><span class="p">(</span><span class="n">local_model_name</span><span class="o">=</span><span class="n">_model_name</span><span class="p">())</span>
+    <span class="n">class_name_by_id</span> <span class="o">=</span> <span class="n">_load_class_name_mapping</span><span class="p">(</span><span class="n">DATASET_YAML_PATH</span><span class="p">)</span>
+    <span class="k">yield</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Closing Application&quot;</span><span class="p">)</span>
+    <span class="k">del</span> <span class="n">model</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="street_sign_project.fast_api.monitoring_report" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">monitoring_report</span>
+
+
+</h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">monitoring_report</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">HTMLResponse</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Build and return an Evidently drift report from cloud monitoring data.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/street_sign_project/fast_api.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/monitoring/&quot;</span><span class="p">,</span> <span class="n">response_class</span><span class="o">=</span><span class="n">HTMLResponse</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">monitoring_report</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">HTMLResponse</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Build and return an Evidently drift report from cloud monitoring data.&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">report_html</span> <span class="o">=</span> <span class="n">build_cloud_evidently_drift_report_html</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">404</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">))</span> <span class="kn">from</span><span class="w"> </span><span class="nn">error</span>
+    <span class="k">return</span> <span class="n">HTMLResponse</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="n">report_html</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div><h2 id="bentoml_api"><code>bentoml_api</code></h2>
+<p>Specialised BentoML service for street-sign object detection.</p>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<h2 id="street_sign_project.bentoml_api" class="doc doc-heading">
+            <span class="doc doc-object-name doc-module-name">street_sign_project.bentoml_api</span>
+
+
+</h2>
+
+    <div class="doc doc-contents first">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="street_sign_project.bentoml_api.StreetSignClassifierService" class="doc doc-heading">
+            <span class="doc doc-object-name doc-class-name">StreetSignClassifierService</span>
+
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>BentoML service for street sign object detection.</p>
+
+
+
+
+
+
+
+
+              <details class="mkdocstrings-source">
+                <summary>Source code in <code>src/street_sign_project/bentoml_api.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span>
+<span class="normal">69</span>
+<span class="normal">70</span>
+<span class="normal">71</span>
+<span class="normal">72</span>
+<span class="normal">73</span>
+<span class="normal">74</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@bentoml</span><span class="o">.</span><span class="n">service</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;street-sign-classifier&quot;</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">StreetSignClassifierService</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;BentoML service for street sign object detection.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Load the YOLO model once when the BentoML service starts.&quot;&quot;&quot;</span>
+        <span class="n">model_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;MODEL_NAME&quot;</span><span class="p">,</span> <span class="n">DEFAULT_MODEL_NAME</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">YOLOv26</span><span class="p">(</span><span class="n">local_model_name</span><span class="o">=</span><span class="n">model_name</span><span class="p">)</span>
+
+    <span class="nd">@bentoml</span><span class="o">.</span><span class="n">api</span><span class="p">(</span><span class="n">route</span><span class="o">=</span><span class="s2">&quot;/image_input/&quot;</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">image_input</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">PILImage</span><span class="o">.</span><span class="n">Image</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageOutput</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Predict street signs on an uploaded image and return an annotated image.&quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">TemporaryDirectory</span><span class="p">()</span> <span class="k">as</span> <span class="n">tmp_dir</span><span class="p">:</span>
+            <span class="n">input_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">tmp_dir</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;input.jpg&quot;</span>
+            <span class="n">image</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s2">&quot;RGB&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">input_path</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;JPEG&quot;</span><span class="p">)</span>
+
+            <span class="n">annotated_image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_annotate_image</span><span class="p">(</span><span class="n">input_path</span><span class="p">)</span>
+            <span class="c1"># Convert BGR color (OpenCV) back to RGB to put it back to PIL image</span>
+            <span class="n">response_image</span> <span class="o">=</span> <span class="n">PILImage</span><span class="o">.</span><span class="n">fromarray</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">annotated_image</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2RGB</span><span class="p">))</span>
+            <span class="n">response_image</span><span class="o">.</span><span class="n">format</span> <span class="o">=</span> <span class="s2">&quot;JPEG&quot;</span>
+            <span class="k">return</span> <span class="n">response_image</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_annotate_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run model prediction and draw detected boxes on the input image.&quot;&quot;&quot;</span>
+        <span class="c1"># Read the image using OpenCV</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">image_path</span><span class="p">))</span>
+        <span class="c1"># Sanity checks: image &amp; prediction present?</span>
+        <span class="k">if</span> <span class="n">image</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Image could not be loaded&quot;</span><span class="p">)</span>
+
+        <span class="n">prediction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">image_path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">prediction</span><span class="o">.</span><span class="n">boxes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;pred.boxes is None, but should be a list of prediction objects&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Draw boxes and labels on the image</span>
+        <span class="k">for</span> <span class="n">box</span> <span class="ow">in</span> <span class="n">prediction</span><span class="o">.</span><span class="n">boxes</span><span class="p">:</span>
+            <span class="n">xyxy</span> <span class="o">=</span> <span class="n">box</span><span class="o">.</span><span class="n">xyxy</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">label</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">box</span><span class="o">.</span><span class="n">cls</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">())</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">box</span><span class="o">.</span><span class="n">conf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">cv2</span><span class="o">.</span><span class="n">rectangle</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">xyxy</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">xyxy</span><span class="p">[</span><span class="mi">1</span><span class="p">])),</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">xyxy</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">xyxy</span><span class="p">[</span><span class="mi">3</span><span class="p">])),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">cv2</span><span class="o">.</span><span class="n">rectangle</span><span class="p">(</span>
+                <span class="n">image</span><span class="p">,</span>
+                <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">xyxy</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">xyxy</span><span class="p">[</span><span class="mi">1</span><span class="p">])),</span>
+                <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">xyxy</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">80</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">xyxy</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">12</span><span class="p">)),</span>
+                <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">cv2</span><span class="o">.</span><span class="n">putText</span><span class="p">(</span>
+                <span class="n">image</span><span class="p">,</span>
+                <span class="n">label</span><span class="p">,</span>
+                <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">xyxy</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">xyxy</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">12</span><span class="p">)),</span>
+                <span class="n">cv2</span><span class="o">.</span><span class="n">FONT_HERSHEY_COMPLEX</span><span class="p">,</span>
+                <span class="mf">0.6</span><span class="p">,</span>
+                <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                <span class="mi">1</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">image</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="street_sign_project.bentoml_api.StreetSignClassifierService.__init__" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">__init__</span>
+
+
+</h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">__init__</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Load the YOLO model once when the BentoML service starts.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/street_sign_project/bentoml_api.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Load the YOLO model once when the BentoML service starts.&quot;&quot;&quot;</span>
+    <span class="n">model_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;MODEL_NAME&quot;</span><span class="p">,</span> <span class="n">DEFAULT_MODEL_NAME</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">YOLOv26</span><span class="p">(</span><span class="n">local_model_name</span><span class="o">=</span><span class="n">model_name</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="street_sign_project.bentoml_api.StreetSignClassifierService.image_input" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">image_input</span>
+
+
+</h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">image_input</span><span class="p">(</span><span class="n">image</span><span class="p">:</span> <span class="n">Image</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageOutput</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Predict street signs on an uploaded image and return an annotated image.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/street_sign_project/bentoml_api.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@bentoml</span><span class="o">.</span><span class="n">api</span><span class="p">(</span><span class="n">route</span><span class="o">=</span><span class="s2">&quot;/image_input/&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">image_input</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">PILImage</span><span class="o">.</span><span class="n">Image</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageOutput</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Predict street signs on an uploaded image and return an annotated image.&quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">TemporaryDirectory</span><span class="p">()</span> <span class="k">as</span> <span class="n">tmp_dir</span><span class="p">:</span>
+        <span class="n">input_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">tmp_dir</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;input.jpg&quot;</span>
+        <span class="n">image</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s2">&quot;RGB&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">input_path</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;JPEG&quot;</span><span class="p">)</span>
+
+        <span class="n">annotated_image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_annotate_image</span><span class="p">(</span><span class="n">input_path</span><span class="p">)</span>
+        <span class="c1"># Convert BGR color (OpenCV) back to RGB to put it back to PIL image</span>
+        <span class="n">response_image</span> <span class="o">=</span> <span class="n">PILImage</span><span class="o">.</span><span class="n">fromarray</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">annotated_image</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2RGB</span><span class="p">))</span>
+        <span class="n">response_image</span><span class="o">.</span><span class="n">format</span> <span class="o">=</span> <span class="s2">&quot;JPEG&quot;</span>
+        <span class="k">return</span> <span class="n">response_image</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div><h2 id="streamlit_app"><code>streamlit_app</code></h2>
+<p>Streamlit frontend that uploads images to the FastAPI prediction endpoint and shows the result.</p>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<h2 id="street_sign_project.streamlit_app" class="doc doc-heading">
+            <span class="doc doc-object-name doc-module-name">street_sign_project.streamlit_app</span>
+
+
+</h2>
+
+    <div class="doc doc-contents first">
+
+        <p>Streamlit frontend for uploading images to the FastAPI prediction endpoint.</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="street_sign_project.streamlit_app.main" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">main</span>
+
+
+</h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">main</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Render the Streamlit frontend for image upload and prediction.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/street_sign_project/streamlit_app.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span>
+<span class="normal">201</span>
+<span class="normal">202</span>
+<span class="normal">203</span>
+<span class="normal">204</span>
+<span class="normal">205</span>
+<span class="normal">206</span>
+<span class="normal">207</span>
+<span class="normal">208</span>
+<span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span>
+<span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span>
+<span class="normal">225</span>
+<span class="normal">226</span>
+<span class="normal">227</span>
+<span class="normal">228</span>
+<span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span>
+<span class="normal">234</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Render the Streamlit frontend for image upload and prediction.&quot;&quot;&quot;</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">set_page_config</span><span class="p">(</span><span class="n">page_title</span><span class="o">=</span><span class="s2">&quot;Street Sign Predictor&quot;</span><span class="p">,</span> <span class="n">page_icon</span><span class="o">=</span><span class="s2">&quot;🚦&quot;</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="s2">&quot;wide&quot;</span><span class="p">)</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &lt;style&gt;</span>
+<span class="sd">        .predict-inline-loader {</span>
+<span class="sd">            display: flex;</span>
+<span class="sd">            align-items: center;</span>
+<span class="sd">            gap: 0.55rem;</span>
+<span class="sd">            margin-top: 0.5rem;</span>
+<span class="sd">            color: #4b5563;</span>
+<span class="sd">            font-size: 0.95rem;</span>
+<span class="sd">            font-weight: 500;</span>
+<span class="sd">        }</span>
+<span class="sd">        .predict-spinner {</span>
+<span class="sd">            width: 1rem;</span>
+<span class="sd">            height: 1rem;</span>
+<span class="sd">            border: 0.15rem solid #cfd8e3;</span>
+<span class="sd">            border-top-color: #1d4ed8;</span>
+<span class="sd">            border-radius: 999px;</span>
+<span class="sd">            animation: predict-spin 0.8s linear infinite;</span>
+<span class="sd">        }</span>
+<span class="sd">        @keyframes predict-spin {</span>
+<span class="sd">            100% { transform: rotate(360deg); }</span>
+<span class="sd">        }</span>
+<span class="sd">        &lt;/style&gt;</span>
+<span class="sd">        &quot;&quot;&quot;</span><span class="p">,</span>
+        <span class="n">unsafe_allow_html</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Street Sign Prediction Frontend&quot;</span><span class="p">)</span>
+    <span class="n">_ensure_prediction_state</span><span class="p">()</span>
+
+    <span class="n">st</span><span class="o">.</span><span class="n">sidebar</span><span class="o">.</span><span class="n">header</span><span class="p">(</span><span class="s2">&quot;API Settings&quot;</span><span class="p">)</span>
+    <span class="n">default_api_url</span> <span class="o">=</span> <span class="n">_api_base_url</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">_api_url_locked</span><span class="p">():</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">sidebar</span><span class="o">.</span><span class="n">caption</span><span class="p">(</span><span class="s2">&quot;API URL is managed by the deployment environment.&quot;</span><span class="p">)</span>
+        <span class="n">api_base_url</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">sidebar</span><span class="o">.</span><span class="n">text_input</span><span class="p">(</span><span class="s2">&quot;FastAPI URL&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">default_api_url</span><span class="p">,</span> <span class="n">disabled</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">api_base_url</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">sidebar</span><span class="o">.</span><span class="n">text_input</span><span class="p">(</span><span class="s2">&quot;FastAPI URL&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">default_api_url</span><span class="p">)</span>
+    <span class="n">timeout_seconds</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">sidebar</span><span class="o">.</span><span class="n">number_input</span><span class="p">(</span><span class="s2">&quot;Request timeout (seconds)&quot;</span><span class="p">,</span> <span class="n">min_value</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mf">120.0</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mf">30.0</span><span class="p">)</span>
+
+    <span class="n">uploaded_file</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">file_uploader</span><span class="p">(</span><span class="s2">&quot;Upload an image&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;jpg&quot;</span><span class="p">,</span> <span class="s2">&quot;jpeg&quot;</span><span class="p">,</span> <span class="s2">&quot;png&quot;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">uploaded_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Upload an image to run prediction.&quot;</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="n">file_bytes</span> <span class="o">=</span> <span class="n">uploaded_file</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">subheader</span><span class="p">(</span><span class="s2">&quot;Input&quot;</span><span class="p">)</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">image</span><span class="p">(</span><span class="n">file_bytes</span><span class="p">,</span> <span class="n">caption</span><span class="o">=</span><span class="n">uploaded_file</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">use_container_width</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">_poll_prediction_result</span><span class="p">()</span>
+
+    <span class="n">predict_button_placeholder</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">empty</span><span class="p">()</span>
+    <span class="n">loader_placeholder</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">empty</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;prediction_running&quot;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">predict_button_placeholder</span><span class="o">.</span><span class="n">button</span><span class="p">(</span><span class="s2">&quot;Stop&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;secondary&quot;</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;stop_prediction&quot;</span><span class="p">):</span>
+            <span class="n">cancel_event</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;prediction_cancel_event&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">cancel_event</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">cancel_event</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;prediction_running&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;prediction_cancel_requested&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;prediction_result&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;prediction_error&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Prediction stopped.&quot;</span>
+            <span class="n">loader_placeholder</span><span class="o">.</span><span class="n">empty</span><span class="p">()</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">rerun</span><span class="p">()</span>
+
+        <span class="n">loader_placeholder</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            &lt;div class=&quot;predict-inline-loader&quot;&gt;</span>
+<span class="sd">                &lt;span class=&quot;predict-spinner&quot;&gt;&lt;/span&gt;</span>
+<span class="sd">                &lt;span&gt;Predicting...&lt;/span&gt;</span>
+<span class="sd">            &lt;/div&gt;</span>
+<span class="sd">            &quot;&quot;&quot;</span><span class="p">,</span>
+            <span class="n">unsafe_allow_html</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">predict_button_placeholder</span><span class="o">.</span><span class="n">button</span><span class="p">(</span><span class="s2">&quot;Predict&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;primary&quot;</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;run_prediction&quot;</span><span class="p">):</span>
+            <span class="n">result_queue</span><span class="p">:</span> <span class="n">queue</span><span class="o">.</span><span class="n">Queue</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bytes</span> <span class="o">|</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">Queue</span><span class="p">()</span>
+            <span class="n">cancel_event</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Event</span><span class="p">()</span>
+            <span class="n">worker</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span>
+                <span class="n">target</span><span class="o">=</span><span class="n">_prediction_worker</span><span class="p">,</span>
+                <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span>
+                    <span class="s2">&quot;api_base_url&quot;</span><span class="p">:</span> <span class="n">api_base_url</span><span class="p">,</span>
+                    <span class="s2">&quot;image_bytes&quot;</span><span class="p">:</span> <span class="n">file_bytes</span><span class="p">,</span>
+                    <span class="s2">&quot;filename&quot;</span><span class="p">:</span> <span class="n">uploaded_file</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                    <span class="s2">&quot;timeout_seconds&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">timeout_seconds</span><span class="p">),</span>
+                    <span class="s2">&quot;result_queue&quot;</span><span class="p">:</span> <span class="n">result_queue</span><span class="p">,</span>
+                    <span class="s2">&quot;cancel_event&quot;</span><span class="p">:</span> <span class="n">cancel_event</span><span class="p">,</span>
+                <span class="p">},</span>
+                <span class="n">daemon</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;prediction_running&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;prediction_cancel_requested&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;prediction_cancel_event&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cancel_event</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;prediction_queue&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">result_queue</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;prediction_result&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;prediction_error&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">worker</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">rerun</span><span class="p">()</span>
+
+    <span class="n">prediction_error</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;prediction_error&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">prediction_error</span><span class="p">:</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">prediction_error</span><span class="p">)</span>
+
+    <span class="n">result_image</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;prediction_result&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">result_image</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">subheader</span><span class="p">(</span><span class="s2">&quot;Prediction Result&quot;</span><span class="p">)</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">image</span><span class="p">(</span><span class="n">result_image</span><span class="p">,</span> <span class="n">caption</span><span class="o">=</span><span class="s2">&quot;Annotated image&quot;</span><span class="p">,</span> <span class="n">use_container_width</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">download_button</span><span class="p">(</span>
+            <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Download result image&quot;</span><span class="p">,</span>
+            <span class="n">data</span><span class="o">=</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">result_image</span><span class="p">),</span>
+            <span class="n">file_name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;pred_</span><span class="si">{</span><span class="n">uploaded_file</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">mime</span><span class="o">=</span><span class="s2">&quot;image/jpeg&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">&quot;prediction_running&quot;</span><span class="p">]:</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">rerun</span><span class="p">()</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

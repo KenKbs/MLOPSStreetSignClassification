@@ -30,6 +30,7 @@ dependencies = [
     "invoke>=2.2.0",
     "locust>=2.44.4",
     "loguru>=0.7.3",
+    "mkdocs-material>=4.8.0",
     "opencv-python-headless>=4.13.0.92",
     "pandas>=3.0.3",
     "plotly>=6.7.0",

@@ -12,8 +12,8 @@ def extract_image_features(image: np.ndarray) -> dict[str, ImageFeatureValue]:
     """Extract tabular monitoring features from an image.
 
     Args:
-        image: Image array as loaded by OpenCV. Color images are expected in BGR channel order.
-        (BGR = default for OpenCV)
+        image: Image array as loaded by OpenCV. Color images are expected in BGR channel order
+            (BGR = default for OpenCV).
 
     Returns:
         Dictionary of numeric image features for monitoring and drift detection.

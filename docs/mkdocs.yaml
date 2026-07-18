@@ -14,6 +14,7 @@ plugins:
   - mkdocstrings:
       handlers:
         python:
+          paths: ["../src"]
           options:
             show_root_heading: true
             separate_signature: true
@@ -21,3 +22,10 @@ plugins:
 
 nav:
   - Home: index.md
+  - Getting started: getting_started.md
+  - API reference:
+      - Data pipeline: reference/data.md
+      - Model & training: reference/models.md
+      - Serving & APIs: reference/serving.md
+      - Monitoring: reference/monitoring.md
+      - Utilities: reference/utilities.md

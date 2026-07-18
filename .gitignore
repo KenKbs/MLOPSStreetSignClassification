@@ -47,3 +47,9 @@ GCP_Account_Key.json
 
 # GH actions creats temporary auth file --> don't push that
 gha-creds-*.json
+
+# mkdocs documentation build output
+/build/
+/site/
+docs/build/
+docs/site/

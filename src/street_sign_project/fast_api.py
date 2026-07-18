@@ -1,15 +1,19 @@
 # file for setting up the API access to our model's predictions
 
 import os
-from collections.abc import AsyncIterator
+from collections.abc import AsyncIterator, Awaitable, Callable
 from contextlib import asynccontextmanager
+from functools import wraps
 from pathlib import Path
+from time import perf_counter
+from typing import ParamSpec
 from uuid import uuid4
 
 import cv2
 import yaml
 from fastapi import BackgroundTasks, FastAPI, File, HTTPException, UploadFile
-from fastapi.responses import FileResponse, HTMLResponse
+from fastapi.responses import FileResponse, HTMLResponse, Response
+from prometheus_client import CONTENT_TYPE_LATEST, CollectorRegistry, Counter, Histogram, generate_latest
 
 from street_sign_project.model import YOLOv26
 from street_sign_project.monitoring.drift_report import build_cloud_evidently_drift_report_html
@@ -21,8 +25,28 @@ DATASET_YAML_PATH = project_root() / "data" / "dataset.yaml"
 INPUT_DIR = project_root() / "API_uploads" / "input"
 OUTPUT_DIR = project_root() / "API_uploads" / "output"
 
+METRICS_REGISTRY = CollectorRegistry()
+
+# Define metrics to collect:
+PREDICTION_REQUESTS = Counter(
+    "street_sign_api_requests",
+    "Number of requests to the street-sign prediction endpoint",
+    registry=METRICS_REGISTRY,
+)
+PREDICTION_ERRORS = Counter(
+    "street_sign_api_errors",
+    "Number of failed requests to the street-sign prediction endpoint",
+    registry=METRICS_REGISTRY,
+)
+PREDICTION_LATENCY = Histogram(
+    "street_sign_api_prediction_latency_seconds",
+    "Time spent handling requests to the street-sign prediction endpoint",
+    registry=METRICS_REGISTRY,
+)
+
 model: YOLOv26
 class_name_by_id: dict[int, str] = {}
+P = ParamSpec("P")
 
 
 def _load_class_name_mapping(dataset_yaml_path: Path) -> dict[int, str]:
@@ -60,7 +84,40 @@ async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
 app = FastAPI(lifespan=lifespan)
 
 
+@app.get("/")
+def root() -> dict[str, str]:
+    """Return a welcome message for the API root."""
+    return {"message": "Welcome to the Street Sign Project API"}
+
+
+def track_prediction_metrics(
+    endpoint: Callable[P, Awaitable[FileResponse]],
+) -> Callable[P, Awaitable[FileResponse]]:
+    """Wrap a prediction endpoint with request, error and latency metrics."""
+
+    @wraps(endpoint)
+    async def tracked_endpoint(*args: P.args, **kwargs: P.kwargs) -> FileResponse:
+        PREDICTION_REQUESTS.inc()
+        started_at = perf_counter()
+        try:
+            return await endpoint(*args, **kwargs)
+        except Exception:
+            PREDICTION_ERRORS.inc()
+            raise
+        finally:
+            PREDICTION_LATENCY.observe(perf_counter() - started_at)
+
+    return tracked_endpoint
+
+
+@app.get("/metrics")
+def metrics() -> Response:
+    """Return application metrics in the Prometheus text format."""
+    return Response(content=generate_latest(METRICS_REGISTRY), media_type=CONTENT_TYPE_LATEST)
+
+
 @app.post("/image_input/")
+@track_prediction_metrics
 async def cv_model(background_tasks: BackgroundTasks, data: UploadFile = File(...)) -> FileResponse:  # noqa: B008
     """Predict street signs on an uploaded image and return an annotated image."""
     INPUT_DIR.mkdir(parents=True, exist_ok=True)

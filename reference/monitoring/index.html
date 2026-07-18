@@ -447,6 +447,28 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#system-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        System metrics
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#google-cloud-monitoring-and-alerting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Google Cloud monitoring and alerting
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#monitoringimage_features" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -866,6 +888,28 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#system-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        System metrics
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#google-cloud-monitoring-and-alerting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Google Cloud monitoring and alerting
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#monitoringimage_features" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1234,6 +1278,23 @@
 <h1 id="monitoring">Monitoring</h1>
 <p>Data-drift monitoring: extracting image features, recording production predictions, building the
 reference feature set, Google Cloud Storage helpers and the Evidently drift report.</p>
+<h2 id="system-metrics">System metrics</h2>
+<p>The FastAPI service exposes a custom Prometheus registry at <code>GET /metrics</code>. It contains the prediction request count,
+prediction error count, and prediction latency histogram. Start the API locally, send image requests, and inspect the
+metrics at <a href="http://localhost:8000/metrics">http://localhost:8000/metrics</a>.</p>
+<p>These Prometheus metrics are independent of Google Cloud Monitoring and are not sent to Google Cloud.</p>
+<h2 id="google-cloud-monitoring-and-alerting">Google Cloud monitoring and alerting</h2>
+<p>Cloud Run already reports request count, request latency, response codes, CPU usage, and memory usage in the service's
+<strong>Metrics</strong> tab. Invoke the deployed service a few times to confirm that these built-in charts update.</p>
+<p>Create the course alert manually in <strong>Monitoring &gt; Alerting &gt; Create policy</strong>:</p>
+<ol>
+<li>Select the <strong>Cloud Run Revision</strong> resource and <strong>Request count</strong> metric.</li>
+<li>Filter <code>service_name</code> to <code>street-sign-api</code> and <code>response_code_class</code> to <code>5xx</code>.</li>
+<li>Set the condition to trigger when the summed request count is greater than zero over five minutes.</li>
+<li>Add an email notification channel and save the policy as <code>Street Sign API 5xx responses</code>.</li>
+<li>Upload a non-image file to the prediction endpoint, then verify the 500 response, incident, and email notification.</li>
+</ol>
+<p>This alert uses Cloud Run's built-in metrics and does not depend on the <code>/metrics</code> endpoint.</p>
 <h2 id="monitoringimage_features"><code>monitoring.image_features</code></h2>
 <p>Extract tabular monitoring features (size, brightness, contrast, sharpness, colour means) from an
 image.</p>

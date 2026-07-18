@@ -873,8 +873,8 @@ uv run pre-commit run --all-files
 <h3 id="fastapi">FastAPI</h3>
 <pre><code class="language-bash">uv run invoke start-local-api   # serve on http://localhost:8000 (docs at /docs)
 </code></pre>
-<p>The API exposes <code>POST /image_input/</code> (upload an image, receive an annotated image) and
-<code>GET /monitoring/</code> (an Evidently data-drift report).</p>
+<p>The API exposes <code>GET /</code> (a welcome message), <code>POST /image_input/</code> (upload an image, receive an annotated image),
+<code>GET /metrics</code> (Prometheus application metrics), and <code>GET /monitoring/</code> (an Evidently data-drift report).</p>
 <h3 id="streamlit-frontend">Streamlit frontend</h3>
 <pre><code class="language-bash">uv run invoke start-local-frontend   # starts the API and the Streamlit UI
 </code></pre>

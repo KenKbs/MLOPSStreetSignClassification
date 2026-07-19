@@ -88,7 +88,7 @@ def html() -> None:
         text = file.read()
     text = text[43:]  # remove header
 
-    html = markdown.markdown(text)
+    html = markdown.markdown(text, extensions=["fenced_code"])
 
     with open("report.html", "w") as newfile:
         newfile.write(html)

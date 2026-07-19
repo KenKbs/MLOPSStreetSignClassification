@@ -100,9 +100,9 @@ will check the repositories and the code to verify your answers.
 - [x] Check how robust your model is towards data drifting (M27)
 - [x] Setup collection of input-output data from your deployed application (M27)
 - [x] Deploy to the cloud a drift detection API (M27)
-- [ ] Instrument your API with a couple of system metrics (M28)
+- [x] Instrument your API with a couple of system metrics (M28)
 - [ ] Setup cloud monitoring of your instrumented application (M28)
-- [ ] Create one or more alert systems in GCP to alert you if your app is not behaving correctly (M28)
+- [x] Create one or more alert systems in GCP to alert you if your app is not behaving correctly (M28)
 - [ ] If applicable, optimize the performance of your data loading using distributed data loading (M29)
 - [ ] If applicable, optimize the performance of your training pipeline by using distributed training (M30)
 - [ ] Play around with quantization, compilation and pruning for you trained models to increase inference speed (M31)
@@ -110,9 +110,9 @@ will check the repositories and the code to verify your answers.
 ### Extra
 
 - [x] Write some documentation for your application (M32)
-- [ ] Publish the documentation to GitHub Pages (M32)
+- [x] Publish the documentation to GitHub Pages (M32)
 - [x] Revisit your initial project description. Did the project turn out as you wanted?
-- [ ] Create an architectural diagram over your MLOps pipeline
+- [x] Create an architectural diagram over your MLOps pipeline
 - [x] Make sure all group members have an understanding about all parts of the project
 - [x] Uploaded all your code to GitHub
 
@@ -124,7 +124,7 @@ will check the repositories and the code to verify your answers.
 >
 > Answer:
 
-_Wo finden wir die bzw haben wir eine???_
+_Wo finden wir die bzw haben wir eine???_ --> I guess not applicable?
 
 ### Question 2
 
@@ -137,7 +137,7 @@ _Wo finden wir die bzw haben wir eine???_
 > Answer:
 
 Matrikelnummern:
-**Kenny Kubsch**:
+**Kenny Kubsch**: 13145587
 **Finn Schmidt**: 13046019
 
 ### Question 3
@@ -159,8 +159,7 @@ YOLO (version 26) object-detection model. It is the backbone of our project: we 
 on our street-sign dataset and to run inference. We also relied on **OpenCV** (`opencv-python-headless`) for reading
 images and drawing the predicted bounding boxes and class labels onto the returned images in both the FastAPI and
 BentoML services. For reading the hand-curated class-mapping spreadsheet (`street_sign_class_mapping.xlsx`) we used
-**openpyxl**. These packages were not part of the core course material but let us build a working detection pipeline
-much faster than writing the equivalent code ourselves.
+**openpyxl** (As we used two different Datasets and "combined" the classes where possible). These packages were not part of the core course material but let us build a working detection pipeline much faster than writing the equivalent code ourselves.
 
 ## Coding environment
 
@@ -216,10 +215,11 @@ template. We filled out the `src/street_sign_project/` package (renamed from `pr
 `streamlit_app.py`, `link_model.py` and `utils.py`. We also completed the `configs/` (Hydra config + sweep),
 `dockerfiles/`, `tests/`, `.github/workflows/`, `docs/` and `models/` folders and `tasks.py` (invoke commands).
 
-We deviated from / extended the template in several ways: we added a `monitoring/` sub-package (image feature
-extraction, production records, drift report, GCS storage), a `scripts/` folder with Cloud Run deployment shell
-scripts, an `API_uploads/` folder for API input/output images, a `plots/` folder for data-statistics figures and
-several extra CI workflows. Tests were split into `unittests/`, `apitests/` and `performancetests/`.
+We extended the template with a top-level `data/` directory containing DVC-tracked raw and preprocessed datasets. We
+added a `src/street_sign_project/monitoring/` sub-package for collecting image features and production records,
+accessing GCS and generating Evidently drift reports. Additional extensions include Cloud Build configurations, local
+Cloud Run deployment scripts in `scripts/`, and `API_uploads/` for local API files. Tests were separated into unit,
+API and performance-test suites.
 
 ### Question 6
 
@@ -232,10 +232,8 @@ several extra CI workflows. Tests were split into `unittests/`, `apitests/` and 
 
 We used **ruff** for both linting and formatting (line length 120, rule sets `E`, `W`, `I`, `B`, `NPY`, `PD`),
 configured in `pyproject.toml`. Formatting and lint-with-autofix run as **pre-commit hooks** and also as a dedicated
-CI workflow (`codecheck.yaml`), so no unformatted or lint-failing code reaches `main`. We added **mypy** as a dev
-dependency for static type checking, and we use **type hints throughout the codebase** (function signatures, dataclasses,
-`Literal`/`TypeAlias` types). Every function and class has a **docstring**, as required in our `AGENTS.md`
-style guide.
+CI workflow (`codecheck.yaml`), so no unformatted or lint-failing code reaches `main`. We use **type hints throughout the codebase** (function signatures, dataclasses,
+`Literal`/`TypeAlias` types). Almost all functions and classes have a **docstring**.
 
 These concepts matter in larger projects because multiple people edit the same code: consistent formatting removes
 noisy diffs and pointless style discussions, linting catches likely bugs and bad patterns early, and type hints make
@@ -256,7 +254,7 @@ project grows beyond what one person can keep in their head.
 >
 > Answer:
 
-In total we implemented **37 tests**. In the unit tests we cover the data pipeline (class-mapping loading, split-ratio
+In total we implemented **40 tests**. In the unit tests we cover the data pipeline (class-mapping loading, split-ratio
 validation, YAML/CSV creation, preprocessing), the `YOLOv26` model wrapper (input validation for `predict`, saving,
 loading) and the training orchestrator (that Hydra config values are correctly wired into `YOLOv26.train`). A large
 group of tests covers our monitoring code (image feature extraction, production records, reference features, GCS
@@ -272,7 +270,7 @@ a staged model is fast enough for deployment.
 >
 > Answer:
 
-The total code coverage of our source code is **66%** (measured with `coverage` over `src/street_sign_project`).
+The total code coverage of our source code is **67%** (measured with `coverage` over `src/street_sign_project`).
 Coverage is high for the parts that are pure logic and easy to test in isolation — the data pipeline (`data.py`, 91%),
 the monitoring modules (85–96%) and the training orchestrator (`train.py`, 93%) — and low for `model.py` (23%) and
 `evaluate.py` (20%), because those wrap Ultralytics YOLO and would require downloading real model weights and running
@@ -294,11 +292,11 @@ can capture. Coverage is a useful floor, not a proof of correctness.
 > Answer:
 
 Yes. During the project, we started working with **feature branches and pull requests** rather than committing directly to `main`. Most new
-functionalities (e.g. the API, BentoML service, data drift monitoring, cloud build) was developed on its own branch
+functionalities (e.g. the API, BentoML service, data drift monitoring, cloud build) were developed on their own branches
 and merged into `main` through a PR, which is visible in our git history (e.g. "Merge pull request for adding cloud
-trained model to dvc"). We kept a dedicated `continuous_ml` branch that our model-registry workflow checks out, so
-that the automation could run against development code that was not yet on `main`. We also enabled **Dependabot**,
-which opens weekly PRs to bump dependencies; we reviewed and merged those PRs like any other change.
+trained model to dvc"). We also used **GitHub Issues** to track project milestones and the individual items from the
+project checklist. When a checklist item was completed, we closed the corresponding issue. We enabled **Dependabot**,
+which opens weekly PRs to bump dependencies.
 
 Pull requests improved our version control because CI (tests, ruff, pre-commit) runs on every PR, so broken or
 unformatted code is caught before it reaches `main`, and because a PR gives the other team member a chance to review
@@ -322,7 +320,7 @@ models with a single `dvc pull`, instead of passing files around manually. Becau
 we can always check out an old commit and get exactly the data/model that belonged to it, which is essential for
 reproducibility of experiments. It also enabled our automated **data-checker workflow** (`cml_data.yaml`): whenever a
 `.dvc` file changes, the workflow pulls the data, computes dataset statistics and posts them as a CML comment on the
-pull request, so data changes are reviewed just like code changes.
+pull request.
 
 ### Question 11
 
@@ -339,19 +337,25 @@ pull request, so data changes are reviewed just like code changes.
 >
 > Answer:
 
-We organised our continuous integration into several dedicated GitHub Actions workflows. **`tests.yaml`** runs our
-pytest suite via `uv run invoke test` on a **matrix** of operating systems (`ubuntu-latest` and `windows-latest`) and
-Python versions (**3.12** and **3.13**), so we test four combinations; it uses the `astral-sh/setup-uv` action with
-**caching** keyed on `uv.lock` to speed up dependency installation. **`codecheck.yaml`** runs `ruff check` and
-`ruff format` as our linting/formatting step. **`pre_commits.yaml`** runs all pre-commit hooks. These run on pushes
-and pull requests to `main`/`master`.
+We organised our continuous integration into three GitHub Actions workflows. **`tests.yaml`** installs the locked
+environment with `uv` and runs our unit and API tests through `uv run invoke test`. It uses a matrix covering Ubuntu
+and Windows with Python 3.12 and 3.13. Windows with Python 3.13 is currently excluded because of dependency
+compatibility, leaving three tested combinations. The workflow uses the cache provided by `astral-sh/setup-uv`, keyed
+by `uv.lock`, to reduce installation time.
 
-Beyond classic CI we added **continuous machine learning** workflows. **`cml_data.yaml`** triggers when any `.dvc`
-file changes, pulls the data with DVC, computes dataset statistics and posts them as a CML comment on the PR.
-**`stage_model.yaml`** is triggered by a `repository_dispatch` event from the W&B model registry: it performance-tests
-a newly staged model and, on success, promotes it to the `production` alias. **`build_container.yaml`** and
-**`build_container_train.yaml`** submit Cloud Build jobs to build our Docker images, but only when relevant paths
-change (source, Dockerfiles, `uv.lock`), so we do not trigger expensive builds on cheap changes such as README edits.
+**`codecheck.yaml`** runs Ruff linting and formatting commands, while **`pre_commits.yaml`** executes the configured
+pre-commit hooks. These workflows run for pull requests targeting `main` and for relevant pushes, providing feedback
+before changes are merged.
+
+We also experimented with continuous-ML automation. **`cml_data.yaml`** reacts to pushed DVC-pointer changes, pulls
+the corresponding data from GCS and generates dataset statistics using CML. **`stage_model.yaml`** is triggered through
+a W&B model-registry event and was designed to performance-test a staged model before assigning it the `production`
+alias.
+
+Separate continuous-delivery workflows for the FastAPI API and Streamlit frontend first run the tests. The API
+workflow also pulls the DVC-selected model. They then submit the build contexts to Cloud Build, store commit-tagged
+images in Artifact Registry and deploy immutable revisions to Cloud Run. The complete local and automated deployment
+process is described in **Question 24**.
 
 An example test workflow can be seen here:
 https://github.com/KenKbs/MLOPSStreetSignClassification/actions/workflows/pre_commits.yaml
@@ -411,6 +415,29 @@ inspected in the W&B run.
 >
 > Answer:
 
+We used **Weights & Biases** to keep the configuration and results of each training run together. For every run we
+logged the learning rate, batch size, number of epochs and number of frozen layers, making it possible to compare
+experiments without relying on filenames or terminal output alone.
+
+![Final validation metrics and inference speed logged for a W&B run](figures/wandb_metrics.png)
+
+The first screenshot shows the final validation results of our 420-epoch YOLO-X experiment. We primarily tracked
+**mAP50**, **precision** and **miss rate**. The model achieved an mAP50 of approximately **0.867**, which summarizes
+detection quality across classes at an intersection-over-union threshold of 0.5. Precision was approximately
+**0.886**; high precision matters because it means that comparatively few predicted street signs are false positives.
+Recall was approximately **0.794**, corresponding to the logged miss rate of about **0.206**. We included miss rate
+because overlooked signs are an especially important failure mode for this application. The stricter mAP50-95 value
+of approximately **0.768** additionally evaluates localization over multiple IoU thresholds. The output also reports
+about **13.6 ms** inference time per image on the training machine, which helps assess whether the detector is suitable
+for an interactive API.
+
+![Per-epoch training-loss curve uploaded to W&B](figures/wandb_segmentation_lass.png)
+
+The second screenshot shows one of the per-epoch loss curves logged through our training callback. The loss decreases
+from roughly 0.9 to 0.37, with some noise during the first epochs, and then continues to decline more steadily. This
+indicates that optimization converged rather than becoming unstable. Training loss alone does not demonstrate generalization, so we interpret it together with the
+validation metrics above when comparing models.
+
 ### Question 15
 
 > **Docker is an important tool for creating containerized applications. Explain how you used docker in your**
@@ -424,19 +451,21 @@ We wrote several Docker images: a **training** image
 (`dockerfiles/train.dockerfile`), an **evaluate** image (builds the models-quality YAML), an **API** image
 (`api.dockerfile`, serves the FastAPI app) and a **frontend** image (`frontend.dockerfile`, the Streamlit app). In
 addition we build a specialised **BentoML** image via `bentoml containerize`. A `docker-compose.yaml` wires the
-train/evaluate/api services together with the right volume mounts. All Dockerfiles install dependencies in a separate,
+train/evaluate/api/frontend services together with the right volume mounts. All Dockerfiles install dependencies in a separate,
 cached layer (`uv sync --frozen --no-install-project`) before copying the source, so rebuilds are fast.
 
 Examples of how we run them:
 
 ```bash
-uv run invoke docker-build      # build train, evaluate and api images
+uv run invoke docker-build      # build train, evaluate, api and frontend images
 uv run invoke docker-train      # run one training run in a container
+uv run invoke docker-evaluate   # evaluate checkpoints and update models_quality.yaml
 uv run invoke docker-api        # serve the API on localhost:8000
+uv run invoke docker-frontend   # serve the frontend on localhost:8501
 ```
 
-Link to the API Dockerfile: `dockerfiles/api.dockerfile`. Images are also built in the cloud via Cloud Build
-(`cloudbuild.yaml`) and deployed to Cloud Run with the scripts in `scripts/`.
+Link to the API Dockerfile: `dockerfiles/api.dockerfile`. Evaluation, API and frontend images can also built in the cloud via Cloud Build (`cloudbuild.yaml`, `cloudbuild_api.yaml`, `cloudbuild_frontend.yaml`) and are also part of continous deployment GH actions workflows.
+
 
 ### Question 16
 
@@ -448,9 +477,9 @@ Link to the API Dockerfile: `dockerfiles/api.dockerfile`. Images are also built 
 > Answer:
 
 For most logic bugs we relied on our **loguru** logging (info/warning/critical messages) and on plain
-print/breakpoint debugging, plus the failing **pytest** tests which pointed us at the broken component. For the
-cloud/CI parts (W&B model-registry automation, Cloud Build, Cloud Run) we debugged mostly through the workflow logs
-and by iterating on small test commits.
+print/breakpoint debugging, plus the failing **pytest** tests which pointed us at the broken component. We tried the VS Code debugger and its breakpoint functionality, but found it less useful for long-running training and errors originating inside third-party libraries. For the
+cloud/CI parts (W&B model-registry automation, Cloud Build, Cloud Run, GH runnners) we debugged mostly through the provided logs and by iterating on small test commits.
+Moreover, team-member Kenny used LLM tools to explain unfamiliar error messages and suggest possible causes or debugging directions.
 
 We did **profile** our code: `tasks.py` contains a `profile-train` task that runs one training run under `cProfile`,
 writes a `.prof` file to `reports/profiling/` and then opens it in **snakeviz** for visual inspection.
@@ -478,6 +507,10 @@ We used the following GCP services:
 - **Cloud Run:** serves our deployed containers (FastAPI API, Streamlit frontend and the BentoML service) as
   scalable, managed HTTP services.
 - **IAM / Service Accounts:** service-account keys stored as GitHub secrets let the CI authenticate to GCP.
+- **Compute Engine:** Get a virtual machine with GPU access for training
+- **Billing** Monitor costs
+- **Monitoring / Alerts:** Monitor performance and alert when something goes wrong.
+- **Notification Channels:** Configure notification channels (like e-mail) for alerts
 
 ### Question 18
 
@@ -492,6 +525,7 @@ We used the **Compute Engine** for the compute-heavy part of the project — tra
 fine-tuning YOLO on our combined street-sign dataset is far too slow on CPU, we started a Compute Engine VM with a
 GPU and ran the training there. The resulting model was then downloaded via scp and version-controlled with DVC,
 so both members could use it. Specifications: g2-standard-4 (4 vCPUs, 16 GB Memory); 1 x NVIDIA L4 GPU.
+In addition, team member Kenny had access to a privately managed GPU server, equipped with an NVIDIA GeForce RTX 2070 super. Although this machine was not a GCP service, it followed the same training process used on the GC compute machine.
 
 ### Question 19
 
@@ -500,9 +534,18 @@ so both members could use it. Specifications: g2-standard-4 (4 vCPUs, 16 GB Memo
 >
 > Answer:
 
-Hier bitte noch kurz bilder beschreiben.
+We used two buckets for project data. **`mlops-street-signs`** is the remote storage for DVC. The first screenshot
+shows the content-addressed objects below `dvcstore/files/md5`; DVC maps the small pointer files committed to Git to
+these objects, allowing us to version the raw and preprocessed datasets and model checkpoints without storing large
+files in the repository.
 
-`![bucket](figures/bucket.png)`
+![DVC objects stored in the mlops-street-signs bucket](<figures/DVC bucket.png>)
+
+**`mlops-street-signs-prod-data`** stores data collected from the deployed API for monitoring. Its `production/`
+prefix contains dated request records, while `reference/datadrift_reference_features.csv` contains the baseline image
+features. Evidently compares the production features with this reference data to generate the drift report.
+
+![Production records and drift-reference data](<figures/Prod data bucket.png>)
 
 ### Question 20
 
@@ -511,9 +554,20 @@ Hier bitte noch kurz bilder beschreiben.
 >
 > Answer:
 
-Screenshot of artefact registry for api in `/figures/registry.png`
+We used one regional Docker repository in Google Artifact Registry, named **`docker-registry`** and located in
+`europe-west3`. Cloud Build pushes the versioned container images produced by our build and deployment workflows to
+this repository.
 
-`![registry](figures/registry.png)`
+![Top-level overview showing the docker-registry repository](<figures/Top level Overview registry.png>)
+
+The repository contains four images: **`street-sign-api`**, **`street-sign-frontend`**, **`street-sign-bento-api`** and
+**`street-sign-evaluate`**. The FastAPI and Streamlit frontend images are the two active production images deployed to
+Cloud Run. The BentoML image contains our first working deployment iteration and provides the core inference
+functionality. For the later production-data, data-drift and API-monitoring work, we continued development with
+FastAPI. The evaluation image is used as a batch utility for evaluating checkpoints and updating the model-quality
+data.
+
+![Four container images stored in docker-registry](<figures/Artefact Registry.png>)
 
 ### Question 21
 
@@ -522,7 +576,12 @@ Screenshot of artefact registry for api in `/figures/registry.png`
 >
 > Answer:
 
-`![build](figures/build.png)`
+The Cloud Build history shows **13 successful builds** between June 22 and July 19. We initially used Cloud Build for
+the evaluation image and later integrated it into the GitHub Actions deployment workflows for the FastAPI and
+Streamlit frontend images. Each build receives the prepared source context, builds the corresponding Dockerfile, tags
+the image and pushes it to the `docker-registry` Artifact Registry repository.
+
+![Successful Google Cloud Build history](<figures/Cloud Build history.png>)
 
 ### Question 22
 
@@ -535,7 +594,9 @@ Screenshot of artefact registry for api in `/figures/registry.png`
 
 Yes, we trained our model in the cloud using the **Compute Engine**. We pulled our code and the DVC-tracked data onto it, and ran the
 training with our reproducible `uv`/Hydra setup (`uv run invoke train`, using the same training code and
-`config.yaml` as locally). The resulting trained model was then downloaded via scp and version-controlled with DVC.
+`config.yaml` as locally). Depending on the training run, the resulting checkpoint was either copied back to a local
+machine with `scp` and subsequently added to DVC, or added and pushed directly from the Compute Engine VM to our DVC
+GCS remote. In both cases, only the small `.dvc` pointer file was committed to Git.
 We chose the Engine (rather than Vertex AI) because it gave us a straightforward GPU machine on which our
 existing training pipeline runs unchanged, which kept the setup simple and fully reproducible.
 
@@ -551,14 +612,18 @@ existing training pipeline runs unchanged, which kept the setup simple and fully
 > Answer:
 
 Yes, we wrote an API with **FastAPI** (`fast_api.py`). The model is loaded once on startup via a `lifespan` context
-manager. The main endpoint `POST /image_input/` accepts an uploaded image, runs `YOLOv26.predict`, draws the detected
-bounding boxes with the human-readable class names and confidence scores using OpenCV, and returns the annotated image
-as a `FileResponse`. We use FastAPI **BackgroundTasks** to write a monitoring record (image
-features + prediction summary) to GCS _after_ the response is sent, so monitoring does not add latency. A second
-endpoint `GET /monitoring/` builds and returns a data-drift report as HTML. In addition to the general
-FastAPI app we built a **specialised BentoML service** (`bentoml_api.py`), which exposes the same detection
-functionality through BentoML's `@bentoml.service`/`@bentoml.api` decorators, so the model can be packaged and served
-as an optimised ML deployment artifact.
+manager. The main endpoint, `POST /image_input/`, accepts an uploaded image, assigns it a unique request ID, runs
+`YOLOv26.predict`, draws the detected bounding boxes with human-readable class names and confidence scores using
+OpenCV, and returns the annotated image as a `FileResponse`.
+
+We use FastAPI **BackgroundTasks** to extract image features and write a monitoring record containing the prediction
+summary and request metadata to GCS after the response is sent. This keeps the monitoring work outside the critical
+response path. The `GET /monitoring/` endpoint builds and returns an Evidently data-drift report as HTML, while
+`GET /metrics` exposes Prometheus request, error and prediction-latency metrics.
+
+Before focusing on FastAPI, we implemented the same core detection functionality as a working **BentoML** service
+using its `@bentoml.service` and `@bentoml.api` decorators. For the later production-data, data-drift and API-monitoring
+work, we continued development with FastAPI.
 
 ### Question 24
 
@@ -569,12 +634,22 @@ as an optimised ML deployment artifact.
 >
 > Answer:
 
-Yes, we deployed both locally and in the cloud. Locally the API runs with
-`uv run invoke start-local-api` (`localhost:8000`, docs at `/docs`). The production deployment is automated by a
-GitHub Actions workflow. It runs the test suite, downloads the configured model from DVC, submits the FastAPI image to
-Google Cloud Build, pushes commit-specific and `latest` tags to Artifact Registry, and deploys the immutable commit tag
-to Cloud Run. `scripts/deploy_api_cloudrun.sh` remains available as a local fallback. The Streamlit frontend can be
-started with `uv run invoke start-local-frontend` and deployed separately with `uv run invoke deploy-frontend`.
+Yes, we supported three ways of running or deploying the application:
+
+**Local development:** The FastAPI service runs with `uv run invoke start-local-api` at `localhost:8000`. The Streamlit
+frontend can be started with `uv run invoke start-local-frontend`, while `docker-api` and `docker-frontend` provide
+containerized local variants.
+
+**Local cloud deployment:** The `deploy-api` and `deploy-frontend` Invoke tasks call shell scripts on the developer
+machine. These scripts build the Docker image locally, tag it with a timestamp and commit identifier, and push the
+built image to Artifact Registry. They then explicitly call `gcloud run deploy`, create a new Cloud Run revision and
+route traffic to it. This path does not use Cloud Build.
+
+**Continuous deployment:** Relevant changes pushed to `main` trigger separate GitHub Actions workflows for FastAPI
+and the frontend. The runner executes the tests; the API workflow also pulls the selected model with DVC. The source
+context is submitted to Cloud Build, which builds and pushes commit-tagged images to Artifact Registry. The workflow
+then deploys the immutable image to Cloud Run. Users access the API through its public Cloud Run URL, either directly
+or through the Streamlit frontend.
 
 ### Question 25
 
@@ -585,14 +660,25 @@ started with `uv run invoke start-local-frontend` and deployed separately with `
 >
 > Answer:
 
-Yes. For **functional testing** we used **pytest** with FastAPI's `TestClient` (`tests/apitests/test_api.py`): we
-check that the OpenAPI schema exposes the `/image_input/` and `/monitoring/` routes, that the monitoring endpoint
-returns Evidently HTML, and that an uploaded image returns an annotated `image/jpeg` response (with the model and
-drawing code mocked). These tests run in CI. For **load testing** we used **Locust** (`tests/performancetests/
-locustfile.py`), where simulated users repeatedly upload random test images to `/image_input/`. It is run with
-`uv run invoke stress-api` (headless, defaults to 500 users, spawn rate 10, 2 minutes) or with a UI via
-`--ui`. The test reports requests per second, response times and the failure rate, and fails a response if the status
-is not 200 or the content type is not `image/jpeg`.
+Yes. For **functional testing**, we used pytest with FastAPI's `TestClient` (`tests/apitests/test_api.py`). The tests
+verify the root and OpenAPI routes, image inference responses, Evidently monitoring HTML and Prometheus metrics. They
+also check background-record creation and error metrics while replacing the real model with a lightweight fake. These
+tests run automatically in CI.
+
+For **stress testing**, we used Locust (`tests/performancetests/locustfile.py`). Simulated users repeatedly select
+random test images, upload them to `POST /image_input/`, and verify that the response has status 200 and contains an
+annotated JPEG. We tested both an API running on a developer machine and the API deployed on Cloud Run. The easiest
+way to configure a test is:
+
+```bash
+uv run invoke stress-api --ui
+```
+
+The Locust UI allows us to select the local or cloud host, number of users and spawn rate. In the displayed cloud test,
+ten concurrent users produced approximately **1.33 requests per second with 0% failures**. At the end of the test, the
+median response time was approximately **5.5 seconds**, while the 95th percentile was approximately **6.1 seconds**.
+
+![Locust stress test of the Cloud Run API](<figures/Stress-test cloud api.png>)
 
 ### Question 26
 
@@ -608,8 +694,10 @@ prediction summary and writes them as a JSONL **production record** to a GCS buc
 We also generated a **reference** feature set
 from our training images. The `GET /monitoring/` endpoint loads the reference and production features from GCS and
 uses **Evidently** (`DataDriftPreset`) to build an HTML drift report, so we can see whether the images arriving in
-production differ from the training distribution. We did **not** implement system-metric instrumentation
-(request counts/latency via Prometheus) or GCP alerting, which would be the natural next step.
+production differ from the training distribution. We also instrumented the API with **Prometheus** request-count,
+error-count and prediction-latency metrics exposed through `GET /metrics`. For the deployed service, we configured a
+GCP alert based on Cloud Run `5xx` responses; when the alert is triggered, both team members receive an email
+notification.
 
 ## Overall discussion of project
 
@@ -624,11 +712,15 @@ production differ from the training distribution. We did **not** implement syste
 >
 > Answer:
 
-Finn: cloud usage was around 35$
-
-In general, working in the cloud was a very positive experience: managed services like Cloud Run and Cloud Build let
-us go from a local Docker image to a publicly reachable, autoscaling service with a single script, without having to
-manage any servers ourselves. The main downsides were the amount of configuration and IAM/permission setup.
+Our cloud usage was approximately $40 of GCP credits. The most expensive service was the GPU-enabled
+**Compute Engine** VM used for model training, because it was billed for the full time that the VM was running. Cloud
+Run and Cloud build remained comparatively inexpensive, as well as the cloud storage (GCP bucket).
+In general, working in the cloud was a very positive experience. Managed services such as Cloud Run and Cloud Build
+allowed us to move from a local Docker image to a publicly reachable service without managing the underlying servers. ("Serverless" deployment, no need to manage servers on our own)
+Container images also made the local and cloud environments more consistent. The main disadvantages were the amount
+of configuration, IAM and service-account setup, and the slower debugging cycle when failures occurred in remote build
+or deployment logs instead of directly on a development machine.
+Lastly, in the "main month" of development we used around 1.200 minutes of GH actions runner computing time with a total of 500 jobs run in one month.
 
 ### Question 28
 
@@ -640,12 +732,17 @@ manage any servers ourselves. The main downsides were the amount of configuratio
 >
 > Answer:
 
-We implemented several extras. (1) A **Streamlit frontend** (`streamlit_app.py`, deployed to Cloud Run) so that a
-non-technical user can upload an image and see the annotated predictions in the browser instead of using `curl`.
+We implemented several extras. (1) A **Streamlit frontend** (`streamlit_app.py`), deployed to Cloud Run, allows
+non-technical users to upload street images and view annotated predictions without calling the API manually.
 
-(5) A **custom stratified multi-label data split** (`data.py`) that keeps even rare street-sign classes present in
-every train/valid/test split, which normal stratification cannot do because one image can contain several classes.
-(6) A **models-quality tracking** mechanism that keeps the best models by a simplified AP@50 metric.
+(2) A custom **data-harmonization and splitting pipeline** (`data.py`) combines two datasets with different class
+definitions. A curated mapping converts their labels into one shared class taxonomy. The pooled images are then
+divided deterministically into train, validation and test sets using a multi-label-aware heuristic. Images containing
+rare classes are assigned first.
+
+(3) A **models-quality tracking** mechanism that keeps the best models by a simplified AP@50 metric.
+
+(4) Created a **GitHubPage** which contains the documentation accessible under: https://kenkbs.github.io/MLOPSStreetSignClassification/
 
 ### Question 29
 
@@ -657,26 +754,31 @@ every train/valid/test split, which normal stratification cannot do because one 
 >
 > Answer:
 
-`![overview](figures/overview.png)`
+![Street-sign MLOps architecture overview](figures/architecture_overview.png)
 
 The starting point of our system is the **local development setup**. We manage the environment with `uv`, configure
-experiments with **Hydra**, and version our large data and models with **DVC**, whose remote is a **GCS bucket**. Code
-quality is enforced locally by **pre-commit** hooks (ruff lint + format). When we commit and push to **GitHub**,
-several **GitHub Actions** workflows are triggered: a test workflow (pytest on a matrix of Ubuntu/Windows and Python
-3.12/3.13, with uv caching), a ruff code-check workflow, a pre-commit workflow, and a data-checker workflow that runs
-whenever a `.dvc` file changes and posts dataset statistics as a CML comment on the PR.
+experiments with **Hydra**, and version large datasets and trained checkpoints with **DVC**, using a GCS bucket as the
+remote storage. Code quality is supported locally through Ruff and pre-commit hooks. Changes are pushed to **GitHub**,
+where GitHub Actions runs pytest on three supported Ubuntu/Windows and Python 3.12/3.13 combinations, together with
+Ruff and pre-commit checks. We used **Invoke** to perform most common repository actions; `uv run invoke --list`
+shows all tasks that we created and used throughout the project.
 
-Training happens either locally or in the cloud: the resulting
-model was logged to **Weights & Biases** (before the test account was closed) and stored via DVC. W&B
-also acted as our **model registry**: assigning the `staging` alias to a model artifact triggered, via
-`repository_dispatch`, a workflow that performance-tests the model and, on success, promotes it to `production`.
+Training happens either locally or in the cloud: the resulting model was logged to **Weights & Biases** (before the
+test account was closed) and stored via DVC. W&B also acted as our **model registry**: assigning the `staging` alias to
+a model artifact triggered, via `repository_dispatch`, a workflow that performance-tests the model and, on success,
+promotes it to `production`. After the test account was closed, the production model is selected through the GitHub
+repository variable **`API_MODEL_NAME`**.
 
-For deployment, GitHub Actions triggers **Cloud Build** to build the API / frontend / BentoML Docker images, which are
-stored in **Artifact Registry** and deployed to **Cloud Run**. The **FastAPI** service loads the chosen model and
-exposes `/image_input/` for inference and `/monitoring/` for drift reports; a **Streamlit** frontend calls this API.
-On every request, the API writes **monitoring records** (image features + predictions) to a GCS bucket, which
-**Evidently** compares against a reference feature set to detect **data drift**. The end user interacts with the
-system either through the Streamlit frontend or directly through the API.
+For continuous deployment, the FastAPI and Streamlit workflows first run the tests. The API workflow pulls the
+selected model from DVC and includes exactly that checkpoint in the build context. **Cloud Build** builds the API and
+frontend images, pushes commit-specific and `latest` tags to **Artifact Registry**, and the workflows deploy the
+immutable commit tags to **Cloud Run**. BentoML was our first working deployment iteration and was built separately;
+later production and monitoring work focused on FastAPI.
+
+Users upload images through the Streamlit frontend or directly to `POST /image_input/`. FastAPI returns an annotated
+image and writes image features and prediction summaries to the production GCS bucket in a background task.
+**Evidently** compares these records with reference features to detect drift. The API also exposes Prometheus metrics
+through `/metrics`, while a GCP alert notifies both team members about Cloud Run `5xx` errors.
 
 ### Question 30
 
@@ -686,6 +788,33 @@ system either through the Streamlit frontend or directly through the API.
 > Recommended answer length: 200-400 words.
 >
 > Answer:
+
+Our main struggle was integrating all the components covered in the course into one complete system. The individual
+tools were usually manageable on their own, but connecting DVC, GitHub Actions, Cloud Build, Artifact Registry, Cloud
+Run and GCS required consistent authentication, configuration and data flow between several services.
+
+The most time-consuming part was configuring cloud authentication and getting the deployment workflows to run
+reliably. GitHub Actions acts as the orchestrator: the runner authenticates with GCP, accesses the DVC remote to
+retrieve the selected model, submits the container build to Cloud Build and deploys the resulting image to Cloud Run.
+A failure could originate from GitHub Actions, IAM permissions, DVC, Cloud Build or Cloud Run. Debugging was therefore
+slow because we often had to inspect logs across multiple systems before identifying the actual cause.
+
+The expiration of our W&B test account created an additional late-stage problem, as it interrupted the original
+experiment-tracking and model-registry workflow. We worked around this by using a free W&B account where possible,
+while relying on DVC and the GitHub repository variable `API_MODEL_NAME` for the final production-model selection.
+
+Collaboration also presented an initial challenge. For Kenny, this was the first time collaborating on a GitHub
+project with branches, pull requests and merge conflicts. Resolving conflicts was especially time-consuming at the
+beginning, but became easier as we adopted smaller commits, pull requests and clearer ownership of individual tasks.
+
+Refactoring and code cleanup also required more time than expected. As the system grew, previously written
+functionality had to be reorganized into separate modules and scripts, configurations had to be consolidated, and
+duplicated deployment logic had to be removed or documented.
+
+GitHub Issues helped us remain organized by tracking the project checklist and closing tasks as they were completed.
+We also experimented with a GitHub Project as a Kanban board, but concluded that the additional maintenance was
+excessive for a two-person team. Overall, most of our effort went into integration, cloud authentication and making
+the complete workflow reliable rather than implementing isolated components.
 
 ### Question 31
 
@@ -701,15 +830,24 @@ Our group had two members, **Finn Schmidt** and **Kenny Kubsch**, and the work w
 touching most parts of the codebase (both have roughly the same number of commits).
 
 Student **Finn Schmidt** focused on the `YOLOv26` model wrapper (`model.py`), the evaluation/model-quality logic, the
-W&B experiment tracking and the automated **model-registry pipeline** (`link_model.py`, `stage_model.yaml`), the **FastAPI** API, and the Streamlit frontend.
+W&B experiment tracking and the automated **model-registry pipeline** (`link_model.py`, `stage_model.yaml`), the
+`cml_data.yaml` CML data-checker workflow, the **FastAPI** API, and the Streamlit frontend.
 
-Student **Kenny Kubsch** focused on the data pipeline and preprocessing (`data.py`, class mapping and stratified
-split), the training orchestrator (`train.py`), the DVC
-data-versioning and the `cml_data` data-checker workflow, the **BentoML** API, the deployment scripts and
-Cloud Run setup, and the monitoring / data-drift subsystem.
+Student **Kenny Kubsch** focused on the custom data pipeline and preprocessing (`data.py`, class mapping and
+deterministic multi-label split), DVC/GCS data and model versioning, the Hydra configuration, and training profiling.
+He also worked on several unit tests, Locust stress testing, the BentoML API, the initial Docker and Cloud Build/Cloud Run
+deployment tooling, and the production monitoring functionality, including data collection, Evidently drift detection
+and Prometheus metrics.
 
-Both members contributed to the Docker setup, the CI workflows, the tests and the documentation, and reviewed each
+Both members contributed to the Docker setup, the CI workflows, the tests, final report and the documentation, and reviewed each
 other's pull requests.
 
 **Finn Schmidt** did not use any generative AI tools within VS Code (except for filling out the report). He only used the Gemini Browser version as an "extended Google".
-**Kenny Kubsch** did use an API access for Codex.
+**Kenny Kubsch** did use an API access for Codex (VS-Code extension), e.g. for:
+- Code review
+- Explaining changes which Finn made
+- Explaining and resolving Merge conflicts
+- Debugging support
+- Drafting Pull Requests
+- Opening GitHub Issues
+- Understanding new FrameWorks and Concepts covered in the course.

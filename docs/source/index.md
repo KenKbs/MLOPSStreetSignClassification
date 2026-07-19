@@ -2,6 +2,13 @@
 
 The project serves a YOLO street-sign detector through FastAPI and deploys it to Google Cloud Run.
 
+## System architecture
+
+![Street-sign MLOps architecture overview](assets/architecture_overview.png)
+
+The overview shows how local development, continuous integration and deployment, cloud services, model serving and
+production monitoring fit together.
+
 ## API deployment
 
 The `Test, build, and deploy FastAPI` GitHub Actions workflow is the primary production deployment path. On relevant

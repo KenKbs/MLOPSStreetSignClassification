@@ -1,3 +1,4 @@
+# Builds the evaluate container in the cloud.
 substitutions:
   _REGION: europe-west3
   _REPOSITORY: docker-registry

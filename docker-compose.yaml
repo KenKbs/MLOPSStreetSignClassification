@@ -35,3 +35,16 @@ services:
     volumes:
       - ./models:/app/models:ro
       - ./API_uploads:/app/API_uploads
+
+  frontend:
+    build:
+      context: .
+      dockerfile: dockerfiles/frontend.dockerfile
+    image: street-sign-frontend:latest
+    ports:
+      - "8501:8080"
+    environment:
+      API_URL: http://api:8000
+      STREAMLIT_LOCK_API_URL: "true"
+    depends_on:
+      - api

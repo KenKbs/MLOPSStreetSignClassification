@@ -237,7 +237,11 @@ def test(ctx: Context) -> None:
 @task
 def test_coverage(ctx: Context) -> None:
     """Run tests with coverage reporting."""
-    ctx.run("uv run coverage run -m pytest tests/", echo=True, pty=not WINDOWS)
+    ctx.run(
+        "uv run coverage run -m pytest tests/ --ignore=tests/performancetests/",
+        echo=True,
+        pty=not WINDOWS,
+    )
     ctx.run("uv run coverage report -m -i", echo=True, pty=not WINDOWS)
 
 
@@ -267,6 +271,7 @@ def docker_build(ctx: Context, progress: str = "plain") -> None:
     ctx.run(f"docker compose --progress={progress} build train", echo=True, pty=not WINDOWS)
     ctx.run(f"docker compose --progress={progress} build evaluate", echo=True, pty=not WINDOWS)
     ctx.run(f"docker compose --progress={progress} build api", echo=True, pty=not WINDOWS)
+    ctx.run(f"docker compose --progress={progress} build frontend", echo=True, pty=not WINDOWS)
 
 
 @task
@@ -285,6 +290,12 @@ def docker_evaluate(ctx: Context) -> None:
 def docker_api(ctx: Context) -> None:
     """Run the API Docker container."""
     ctx.run("docker compose run --rm --service-ports api", echo=True, pty=not WINDOWS)
+
+
+@task
+def docker_frontend(ctx: Context) -> None:
+    """Run the Streamlit frontend and its API dependency in Docker."""
+    ctx.run("docker compose up frontend", echo=True, pty=not WINDOWS)
 
 
 @task(name="start-bento", auto_shortflags=False)

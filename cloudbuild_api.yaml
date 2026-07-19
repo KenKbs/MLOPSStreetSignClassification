@@ -1,4 +1,5 @@
-substitutions: # Default repository level variables are used
+# Builds the API container
+substitutions: # Repository level variables are used to overwr. those defaults
   _REGION: europe-west3
   _REPOSITORY: docker-registry
   _IMAGE_NAME: street-sign-api

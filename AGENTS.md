@@ -15,6 +15,7 @@
 * The project uses `invoke` for task management. To see available tasks, use `uv run invoke --list` or refer to the
     `tasks.py` file.
   * To run the API Docker container locally, use `uv run invoke docker-api`.
+  * To run the Streamlit frontend and API locally with Docker, use `uv run invoke docker-frontend`.
   * To start the Streamlit frontend locally, use `uv run invoke start-local-frontend`.
   * To deploy the Streamlit frontend to Cloud Run locally, use `uv run invoke deploy-frontend` or
     `./scripts/deploy_frontend_cloudrun.sh`.

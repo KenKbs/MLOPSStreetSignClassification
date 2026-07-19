@@ -258,6 +258,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#system-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        System architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#api-deployment" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -535,6 +546,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#system-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        System architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#api-deployment" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -575,6 +597,10 @@
 
 <h1 id="street-sign-project">Street Sign Project</h1>
 <p>The project serves a YOLO street-sign detector through FastAPI and deploys it to Google Cloud Run.</p>
+<h2 id="system-architecture">System architecture</h2>
+<p><img alt="Street-sign MLOps architecture overview" src="assets/architecture_overview.png" /></p>
+<p>The overview shows how local development, continuous integration and deployment, cloud services, model serving and
+production monitoring fit together.</p>
 <h2 id="api-deployment">API deployment</h2>
 <p>The <code>Test, build, and deploy FastAPI</code> GitHub Actions workflow is the primary production deployment path. On relevant
 pushes to <code>main</code>, or when started manually, it:</p>

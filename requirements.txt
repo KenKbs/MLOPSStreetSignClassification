@@ -466,7 +466,7 @@ omegaconf==2.3.1
     #   hydra-core
 opencv-python==4.13.0.92
     # via ultralytics
-opencv-python-headless==4.13.0.92
+opencv-python-headless==5.0.0.93
     # via street-sign-project (pyproject.toml)
 opentelemetry-api==1.43.0
     # via

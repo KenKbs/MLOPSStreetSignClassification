@@ -601,6 +601,8 @@
 <p><img alt="Street-sign MLOps architecture overview" src="assets/architecture_overview.png" /></p>
 <p>The overview shows how local development, continuous integration and deployment, cloud services, model serving and
 production monitoring fit together.</p>
+<p>Training saves a checkpoint and logs metrics and the model artifact to W&amp;B. Deployment selects
+an explicit checkpoint through <code>API_MODEL_NAME</code> and DVC.</p>
 <h2 id="api-deployment">API deployment</h2>
 <p>The <code>Test, build, and deploy FastAPI</code> GitHub Actions workflow is the primary production deployment path. On relevant
 pushes to <code>main</code>, or when started manually, it:</p>
@@ -688,9 +690,6 @@ needs <code>roles/artifactregistry.writer</code> on the image repository. The Cl
 </tr>
 </tbody>
 </table>
-<p>For local fallback deployment, use:</p>
-<pre><code class="language-bash">uv run invoke deploy-api
-</code></pre>
 <h2 id="frontend-deployment">Frontend deployment</h2>
 <p>The <code>Test, build, and deploy Streamlit frontend</code> GitHub Actions workflow is the primary production frontend deployment
 path. On relevant pushes to <code>main</code>, or when started manually, it:</p>
@@ -768,9 +767,8 @@ service account needs <code>roles/storage.objectUser</code> on the Cloud Build s
 </tr>
 </tbody>
 </table>
-<p>For local fallback deployment, use:</p>
-<pre><code class="language-bash">uv run invoke deploy-frontend
-</code></pre>
+<p>The local Cloud Run deployment scripts and their Invoke tasks have been removed. Use the GitHub Actions workflows
+described above for API and frontend cloud deployments; configure deployment settings through their repository variables.</p>
 
 
 

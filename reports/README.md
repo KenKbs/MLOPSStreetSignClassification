@@ -448,18 +448,16 @@ validation metrics above when comparing models.
 >
 > Answer:
 
-We wrote several Docker images: a **training** image
-(`dockerfiles/train.dockerfile`), an **API** image
-(`api.dockerfile`, serves the FastAPI app) and a **frontend** image (`frontend.dockerfile`, the Streamlit app). In
-addition we build a specialised **BentoML** image via `bentoml containerize`. A `docker-compose.yaml` wires the
-train/api/frontend services together with the right volume mounts. All Dockerfiles install dependencies in a separate,
+We use an **API** image (`dockerfiles/api.dockerfile`, serves the FastAPI app) and a **frontend** image
+(`dockerfiles/frontend.dockerfile`, the Streamlit app). In addition we build a specialised **BentoML** image via
+`bentoml containerize`. A `docker-compose.yaml` wires the
+API and frontend services together with the right volume mounts. The API Dockerfile installs dependencies in a separate,
 cached layer (`uv sync --frozen --no-install-project`) before copying the source, so rebuilds are fast.
 
 Examples of how we run them:
 
 ```bash
-uv run invoke docker-build      # build training, API, and frontend images
-uv run invoke docker-train      # run one training run in a container
+uv run invoke docker-build      # build API and frontend images
 uv run invoke docker-api        # serve the API on localhost:8000
 uv run invoke docker-frontend   # serve the frontend on localhost:8501
 ```
@@ -467,6 +465,8 @@ uv run invoke docker-frontend   # serve the frontend on localhost:8501
 Link to the API Dockerfile: `dockerfiles/api.dockerfile`. API and frontend images can also be built in the cloud via
 Cloud Build (`cloudbuild_api.yaml`, `cloudbuild_frontend.yaml`) through GitHub Actions deployment workflows.
 The original evaluation container, its Cloud Build configuration, and its build workflow have since been removed.
+The original training container has also been removed; training runs directly on the host in the uv environment with
+`uv run invoke train`.
 Model-quality bookkeeping remains available locally through `uv run invoke create-models-quality-yaml`.
 
 
@@ -506,7 +506,8 @@ We used the following GCP services:
 - **Cloud Storage (Buckets):** stores our DVC-tracked data and models (`gs://mlops-street-signs/dvcstore`)
 - **Cloud Build:** builds our API and frontend images from `cloudbuild_api.yaml` / `cloudbuild_frontend.yaml`, triggered
   by GitHub Actions.
-- **Artifact Registry:** stores the built Docker images (API, evaluate, train, frontend, BentoML).
+- **Artifact Registry:** stores built serving images (API, frontend, BentoML); evaluation and training containers
+  have since been removed from the repository.
 - **Cloud Run:** serves our deployed containers (FastAPI API, Streamlit frontend and the BentoML service) as
   scalable, managed HTTP services.
 - **IAM / Service Accounts:** service-account keys stored as GitHub secrets let the CI authenticate to GCP.

@@ -121,6 +121,9 @@ curl -X POST \
 The Hydra defaults live in [`configs/config.yaml`](configs/config.yaml). The dataset follows the YOLO image/label
 layout described in [`data/dataset.yaml`](data/dataset.yaml).
 
+Training runs directly on the host in the uv-managed environment. Use the installation steps above to restore the
+environment and DVC data on the training machine; no training container is used.
+
 Prepare the data and recreate the dataset definition:
 
 ```bash
@@ -171,8 +174,7 @@ Use `uv run invoke stress-api --ui` to start the Locust web interface, or pass `
 ## Containers and serving options
 
 ```bash
-uv run invoke docker-build      # build training, API, and frontend images
-uv run invoke docker-train      # run training in Docker
+uv run invoke docker-build      # build API and frontend images
 uv run invoke docker-api        # serve FastAPI at http://localhost:8000
 uv run invoke docker-frontend   # serve the complete app at http://localhost:8501
 uv run invoke start-bento       # build and run the BentoML API at http://localhost:3000
@@ -229,7 +231,7 @@ The source documentation is under [`docs/source/`](docs/source/) and is automati
 ├── .github/workflows/       # CI, model checks, documentation, and Cloud Run deployment
 ├── configs/                 # Hydra training configuration, sweep, and class mappings
 ├── data/                    # DVC-tracked raw and preprocessed datasets plus YOLO dataset YAML
-├── dockerfiles/             # Training, FastAPI, and Streamlit images
+├── dockerfiles/             # FastAPI and Streamlit images
 ├── docs/                    # MkDocs site and image assets
 ├── models/                  # DVC model pointers and locally restored weights
 ├── src/street_sign_project/ # Data, training, serving, and monitoring package

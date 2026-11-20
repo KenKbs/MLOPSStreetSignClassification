@@ -14,6 +14,8 @@
     * To lint code, use `uv run ruff check . --fix`.
 * The project uses `invoke` for task management. To see available tasks, use `uv run invoke --list` or refer to the
     `tasks.py` file.
+  * To train directly on the host in the uv environment, use `uv run invoke train`. Training does not use Docker.
+  * To build the API and frontend Docker images, use `uv run invoke docker-build`.
   * To run the API Docker container locally, use `uv run invoke docker-api`.
   * To run the Streamlit frontend and API locally with Docker, use `uv run invoke docker-frontend`.
   * To start the Streamlit frontend locally, use `uv run invoke start-local-frontend`.

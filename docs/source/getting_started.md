@@ -36,8 +36,9 @@ uv run invoke create-yaml       # write data/dataset.yaml
 
 ## Training
 
-Training is configured with **Hydra** (`configs/config.yaml`) and launched through an invoke task.
-Any config value can be overridden on the command line:
+Training runs directly on the host in the uv-managed environment, without Docker. Complete the installation and
+DVC data setup above on the training machine first. Training is configured with **Hydra** (`configs/config.yaml`)
+and launched through an invoke task. Training options can be overridden on the command line:
 
 ```bash
 uv run invoke train --epochs 100 --batch-size 8 --lr0 0.005 --freeze 10
@@ -97,9 +98,9 @@ uv run invoke stress-api --ui     # Locust web UI
 ## Docker
 
 ```bash
-uv run invoke docker-build      # build the training, API, and frontend images
-uv run invoke docker-train      # run one training run in a container
+uv run invoke docker-build      # build the API and frontend images
 uv run invoke docker-api        # serve the API in a container
+uv run invoke docker-frontend   # serve the frontend and API with Compose
 ```
 
 ## Deployment (Google Cloud Run)

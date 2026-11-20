@@ -1,21 +1,4 @@
 services:
-  train:
-    build:
-      context: .
-      dockerfile: dockerfiles/train.dockerfile
-    image: street-sign-train:latest
-    env_file:
-      - .env
-    volumes:
-      - ./data:/app/data:ro
-      - ./models:/app/models
-      - ./reports:/app/reports
-      - ./wandb:/app/wandb
-    command: # Wires those to to uv run invoke train
-      - --wandb-dir=/app/wandb
-      - --device=auto
-      - --epochs=1
-
   api:
     build:
       context: .

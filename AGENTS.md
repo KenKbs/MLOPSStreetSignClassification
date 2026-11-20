@@ -21,8 +21,8 @@
   * To start the Streamlit frontend locally, use `uv run invoke start-local-frontend`.
   * To build, containerize, and run the BentoML API Docker image locally, use `uv run invoke start-bento`.
   * To send one smoke-test request to the running BentoML API, use `uv run invoke test-bento`.
-  * To run the default headless API stress test, use `uv run invoke stress-test`.
-  * To start the Locust UI for API stress testing, use `uv run invoke stress-test --ui`.
+  * To run the default headless API stress test, use `uv run invoke stress-api`.
+  * To start the Locust UI for API stress testing, use `uv run invoke stress-api --ui`.
 * The primary API deployment runs through `.github/workflows/deploy_api.yaml` on relevant pushes to `main` or by
   manually starting the workflow. It tests the project, pulls the configured model from DVC, builds the API image with
   Cloud Build, and deploys it to Cloud Run.

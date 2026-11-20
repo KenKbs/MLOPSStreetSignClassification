@@ -168,14 +168,16 @@ Use `uv run invoke stress-api --ui` to start the Locust web interface, or pass `
 ## Containers and serving options
 
 ```bash
-uv run invoke docker-build      # build training, evaluation, API, and frontend images
+uv run invoke docker-build      # build training, API, and frontend images
 uv run invoke docker-train      # run training in Docker
-uv run invoke docker-evaluate   # run evaluation in Docker
 uv run invoke docker-api        # serve FastAPI at http://localhost:8000
 uv run invoke docker-frontend   # serve the complete app at http://localhost:8501
 uv run invoke start-bento       # build and run the BentoML API at http://localhost:3000
 uv run invoke test-bento        # send a smoke-test request to BentoML
 ```
+
+The dedicated evaluation container and its automated Cloud Build workflow have been removed. Update the local
+model-quality registry with `uv run invoke create-models-quality-yaml`.
 
 ## Deployment
 
@@ -224,7 +226,7 @@ The source documentation is under [`docs/source/`](docs/source/) and is automati
 ├── .github/workflows/       # CI, model checks, documentation, and Cloud Run deployment
 ├── configs/                 # Hydra training configuration, sweep, and class mappings
 ├── data/                    # DVC-tracked raw and preprocessed datasets plus YOLO dataset YAML
-├── dockerfiles/             # Training, evaluation, FastAPI, and Streamlit images
+├── dockerfiles/             # Training, FastAPI, and Streamlit images
 ├── docs/                    # MkDocs site and image assets
 ├── models/                  # DVC model pointers and locally restored weights
 ├── src/street_sign_project/ # Data, training, serving, and monitoring package

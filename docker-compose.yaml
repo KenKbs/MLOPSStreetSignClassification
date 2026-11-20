@@ -16,15 +16,6 @@ services:
       - --device=auto
       - --epochs=1
 
-  evaluate:
-    build:
-      context: .
-      dockerfile: dockerfiles/evaluate.dockerfile
-    image: street-sign-evaluate:latest
-    volumes:
-      - ./data:/app/data:ro
-      - ./models:/app/models
-
   api:
     build:
       context: .

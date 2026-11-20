@@ -97,7 +97,7 @@ uv run invoke stress-api --ui     # Locust web UI
 ## Docker
 
 ```bash
-uv run invoke docker-build      # build the train, evaluate and api images
+uv run invoke docker-build      # build the training, API, and frontend images
 uv run invoke docker-train      # run one training run in a container
 uv run invoke docker-api        # serve the API in a container
 ```

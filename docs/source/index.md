@@ -9,6 +9,10 @@ The project serves a YOLO street-sign detector through FastAPI and deploys it to
 The overview shows how local development, continuous integration and deployment, cloud services, model serving and
 production monitoring fit together.
 
+The dedicated evaluation container and its automated Cloud Build workflow have been removed. Model-quality
+bookkeeping remains available locally through `uv run invoke create-models-quality-yaml`. The API and frontend
+Cloud Build configurations and deployment workflows remain available as described below.
+
 ## API deployment
 
 The `Test, build, and deploy FastAPI` GitHub Actions workflow is the primary production deployment path. On relevant

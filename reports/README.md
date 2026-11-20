@@ -448,23 +448,25 @@ validation metrics above when comparing models.
 > Answer:
 
 We wrote several Docker images: a **training** image
-(`dockerfiles/train.dockerfile`), an **evaluate** image (builds the models-quality YAML), an **API** image
+(`dockerfiles/train.dockerfile`), an **API** image
 (`api.dockerfile`, serves the FastAPI app) and a **frontend** image (`frontend.dockerfile`, the Streamlit app). In
 addition we build a specialised **BentoML** image via `bentoml containerize`. A `docker-compose.yaml` wires the
-train/evaluate/api/frontend services together with the right volume mounts. All Dockerfiles install dependencies in a separate,
+train/api/frontend services together with the right volume mounts. All Dockerfiles install dependencies in a separate,
 cached layer (`uv sync --frozen --no-install-project`) before copying the source, so rebuilds are fast.
 
 Examples of how we run them:
 
 ```bash
-uv run invoke docker-build      # build train, evaluate, api and frontend images
+uv run invoke docker-build      # build training, API, and frontend images
 uv run invoke docker-train      # run one training run in a container
-uv run invoke docker-evaluate   # evaluate checkpoints and update models_quality.yaml
 uv run invoke docker-api        # serve the API on localhost:8000
 uv run invoke docker-frontend   # serve the frontend on localhost:8501
 ```
 
-Link to the API Dockerfile: `dockerfiles/api.dockerfile`. Evaluation, API and frontend images can also built in the cloud via Cloud Build (`cloudbuild.yaml`, `cloudbuild_api.yaml`, `cloudbuild_frontend.yaml`) and are also part of continous deployment GH actions workflows.
+Link to the API Dockerfile: `dockerfiles/api.dockerfile`. API and frontend images can also be built in the cloud via
+Cloud Build (`cloudbuild_api.yaml`, `cloudbuild_frontend.yaml`) through GitHub Actions deployment workflows.
+The original evaluation container, its Cloud Build configuration, and its build workflow have since been removed.
+Model-quality bookkeeping remains available locally through `uv run invoke create-models-quality-yaml`.
 
 
 ### Question 16
@@ -501,7 +503,7 @@ optimise ourselves, so we focused our own optimisation on the data pipeline and 
 We used the following GCP services:
 
 - **Cloud Storage (Buckets):** stores our DVC-tracked data and models (`gs://mlops-street-signs/dvcstore`)
-- **Cloud Build:** builds our Docker images in the cloud from `cloudbuild.yaml` / `cloudbuild_train.yaml`, triggered
+- **Cloud Build:** builds our API and frontend images from `cloudbuild_api.yaml` / `cloudbuild_frontend.yaml`, triggered
   by GitHub Actions.
 - **Artifact Registry:** stores the built Docker images (API, evaluate, train, frontend, BentoML).
 - **Cloud Run:** serves our deployed containers (FastAPI API, Streamlit frontend and the BentoML service) as
@@ -560,12 +562,12 @@ this repository.
 
 ![Top-level overview showing the docker-registry repository](<figures/Top level Overview registry.png>)
 
-The repository contains four images: **`street-sign-api`**, **`street-sign-frontend`**, **`street-sign-bento-api`** and
+The screenshot records four images: **`street-sign-api`**, **`street-sign-frontend`**, **`street-sign-bento-api`** and
 **`street-sign-evaluate`**. The FastAPI and Streamlit frontend images are the two active production images deployed to
 Cloud Run. The BentoML image contains our first working deployment iteration and provides the core inference
 functionality. For the later production-data, data-drift and API-monitoring work, we continued development with
-FastAPI. The evaluation image is used as a batch utility for evaluating checkpoints and updating the model-quality
-data.
+FastAPI. The evaluation image was used as a batch utility for evaluating checkpoints and updating the model-quality
+data. Its container definition and automated build workflow have since been removed from the repository.
 
 ![Four container images stored in docker-registry](<figures/Artefact Registry.png>)
 

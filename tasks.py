@@ -267,9 +267,8 @@ def stress_api(
 
 @task
 def docker_build(ctx: Context, progress: str = "plain") -> None:
-    """Build docker images."""
+    """Build the training, API, and frontend Docker images."""
     ctx.run(f"docker compose --progress={progress} build train", echo=True, pty=not WINDOWS)
-    ctx.run(f"docker compose --progress={progress} build evaluate", echo=True, pty=not WINDOWS)
     ctx.run(f"docker compose --progress={progress} build api", echo=True, pty=not WINDOWS)
     ctx.run(f"docker compose --progress={progress} build frontend", echo=True, pty=not WINDOWS)
 
@@ -278,12 +277,6 @@ def docker_build(ctx: Context, progress: str = "plain") -> None:
 def docker_train(ctx: Context) -> None:
     """Run the training Docker container."""
     ctx.run("docker compose run --rm train", echo=True, pty=not WINDOWS)
-
-
-@task
-def docker_evaluate(ctx: Context) -> None:
-    """Run the evaluation Docker container."""
-    ctx.run("docker compose run --rm evaluate", echo=True, pty=not WINDOWS)
 
 
 @task

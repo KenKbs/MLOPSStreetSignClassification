@@ -212,7 +212,7 @@ match `uv.lock`. The same command is used in every CI workflow, so the local and
 
 We initialised the project with the [`mlops_template`](https://github.com/SkafteNicki/mlops_template) cookiecutter
 template. We filled out the `src/street_sign_project/` package (renamed from `project_name`) with `data.py`,
-`dataset.py`, `model.py`, `train.py`, `evaluate.py`, `visualize.py`, `fast_api.py`, `bentoml_api.py`,
+`dataset.py`, `model.py`, `train.py`, `visualize.py`, `fast_api.py`, `bentoml_api.py`,
 `streamlit_app.py` and `utils.py`. We also completed the `configs/` (Hydra config + sweep),
 `dockerfiles/`, `tests/`, `.github/workflows/`, `docs/` and `models/` folders and `tasks.py` (invoke commands).
 
@@ -271,11 +271,11 @@ a staged model is fast enough for deployment.
 >
 > Answer:
 
-The total code coverage of our source code is **67%** (measured with `coverage` over `src/street_sign_project`).
-Coverage is high for the parts that are pure logic and easy to test in isolation — the data pipeline (`data.py`, 91%),
+The historical code coverage of our source code was **67%** (measured with `coverage` over `src/street_sign_project`).
+Coverage was high for the parts that are pure logic and easy to test in isolation — the data pipeline (`data.py`, 91%),
 the monitoring modules (85–96%) and the training orchestrator (`train.py`, 93%) — and low for `model.py` (23%) and
-`evaluate.py` (20%), because those wrap Ultralytics YOLO and would require downloading real model weights and running
-inference to exercise fully.
+the former evaluation module (20%), because those wrap Ultralytics YOLO and would require downloading real model
+weights and running inference to exercise fully.
 
 Even if we had 100% coverage we would **not** trust the code to be error-free. Coverage only tells us which lines were
 executed, not whether the assertions actually check the right behaviour, and not whether the model produces correct
@@ -467,7 +467,8 @@ Cloud Build (`cloudbuild_api.yaml`, `cloudbuild_frontend.yaml`) through GitHub A
 The original evaluation container, its Cloud Build configuration, and its build workflow have since been removed.
 The original training container has also been removed; training runs directly on the host in the uv environment with
 `uv run invoke train`.
-Model-quality bookkeeping remains available locally through `uv run invoke create-models-quality-yaml`.
+The original local model-quality leaderboard and its custom evaluation module have also been removed. Training
+saves a checkpoint and logs metrics and the model artifact to W&B; deployment selects an explicit checkpoint.
 
 
 ### Question 16
@@ -569,7 +570,7 @@ The screenshot records four images: **`street-sign-api`**, **`street-sign-fronte
 Cloud Run. The BentoML image contains our first working deployment iteration and provides the core inference
 functionality. For the later production-data, data-drift and API-monitoring work, we continued development with
 FastAPI. The evaluation image was used as a batch utility for evaluating checkpoints and updating the model-quality
-data. Its container definition and automated build workflow have since been removed from the repository.
+data. Its container definition, automated build workflow, and local model-quality implementation have since been removed.
 
 ![Four container images stored in docker-registry](<figures/Artefact Registry.png>)
 
@@ -744,7 +745,8 @@ definitions. A curated mapping converts their labels into one shared class taxon
 divided deterministically into train, validation and test sets using a multi-label-aware heuristic. Images containing
 rare classes are assigned first.
 
-(3) A **models-quality tracking** mechanism that keeps the best models by a simplified AP@50 metric.
+(3) We originally implemented local model-quality tracking based on precision at IoU 0.5. That leaderboard and its
+optional checkpoint-deletion logic have since been removed. Training retains Ultralytics metrics and W&B logging.
 
 (4) Created a **GitHubPage** which contains the documentation accessible under: https://kenkbs.github.io/MLOPSStreetSignClassification/
 
@@ -834,8 +836,8 @@ the complete workflow reliable rather than implementing isolated components.
 Our group had two members, **Finn Schmidt** and **Kenny Kubsch**, and the work was closely shared, with both members
 touching most parts of the codebase (both have roughly the same number of commits).
 
-Student **Finn Schmidt** focused on the `YOLOv26` model wrapper (`model.py`), the evaluation/model-quality logic, the
-W&B experiment tracking and the original automated **model-registry pipeline** (since removed), the
+Student **Finn Schmidt** focused on the `YOLOv26` model wrapper (`model.py`), the original model-quality logic
+(since removed), W&B experiment tracking and the original automated **model-registry pipeline** (since removed), the
 `cml_data.yaml` CML data-checker workflow, the **FastAPI** API, and the Streamlit frontend.
 
 Student **Kenny Kubsch** focused on the custom data pipeline and preprocessing (`data.py`, class mapping and

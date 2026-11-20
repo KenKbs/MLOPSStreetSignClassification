@@ -11,19 +11,12 @@ import matplotlib.pyplot as plt
 import torch
 import typer
 import wandb
-import yaml
 from loguru import logger
 from ultralytics import YOLO, settings
 from ultralytics.engine.results import Results  # for Typing
 from ultralytics.utils.metrics import DetMetrics  # for Typing
 
-from street_sign_project.evaluate import evaluate_tp_fp_fn
 from street_sign_project.utils import project_root
-
-MODELS_QUALITY_YAML = project_root() / "models" / "models_quality.yaml"
-TEST_IMAGES = project_root() / "data" / "preprocessed" / "test" / "images"
-TEST_LABELS = project_root() / "data" / "preprocessed" / "test" / "labels"
-
 
 settings.update({"wandb": False})  # schalte das wandb logging von ultralytics ab, da wir das ja selber machen wollen
 
@@ -92,11 +85,11 @@ class YOLOv26:
         wb_dir: str | Path,
         patience: int,
     ) -> DetMetrics | None:
-        """Fine-tune the YOLO model.
+        """Fine-tune YOLO, save the checkpoint, and log metrics and its artifact to W&B.
 
         Args:
             data: Path to the YOLO dataset YAML file.
-            model_path: Path where the trained model should be saved.
+            model_path: Checkpoint output path. Defaults to models/<generated training name>.pt.
             epochs: Number of training epochs.
             batch_size: Batch size used during training.
             seed: Random seed used by Ultralytics training.
@@ -109,16 +102,8 @@ class YOLOv26:
             wb_project: W&B project used for experiment tracking.
             wb_mode: W&B mode, such as "online", "offline", "disabled", or "shared".
             wb_dir: Local directory used by W&B for run files.
+            patience: Number of epochs without improvement before early stopping.
         """
-        if (
-            not MODELS_QUALITY_YAML.exists()
-        ):  # checken, dass die Models_quality_yaml zur Überwchung der Modellgüte existiert
-            logger.critical(
-                "models_quality.yaml doesn't exist. Create by running >>uv run invoke create-models-quality-yaml<<"
-            )
-            raise FileNotFoundError(
-                "models_quality.yaml doesn't exist. Create by running >>uv run invoke create-models-quality-yaml<<"
-            )
         if self.model_name is None:
             name_string = f"YOLO_eps{epochs}_bs{batch_size}_lr{lr0}_fr{freeze}_{self.model_size}"
             logger.info(f"Initialized training procedure based on yolo26{self.model_size}.pt")
@@ -254,61 +239,6 @@ class YOLOv26:
         artifact.add_file(str(model_path))
         wandb.log_artifact(artifact)
 
-        #####
-        # hier wird jetzt versucht, dass immer die besten 3 Modelle gespeichert werden
-        # dafür das neue Modell mit der korrekten Models quality.yaml abgleichen
-        with open(str(MODELS_QUALITY_YAML), "r") as f:
-            AP_dict = yaml.safe_load(f)
-        tp_global, fp_global, fn_global = 0, 0, 0
-        for image in TEST_IMAGES.glob("*.jpg"):
-            label_path = TEST_LABELS / f"{image.stem}.txt"
-            labels = []
-            if label_path.exists():
-                with open(label_path, "r") as f:
-                    for line in f.readlines():
-                        labels.append([float(x) for x in line.strip().split()])
-            preds = self.predict(image)
-            tp, fp, fn = evaluate_tp_fp_fn(preds, labels, iou_threshold=0.5)
-            tp_global += tp
-            fp_global += fp
-            fn_global += fn
-        if (tp_global + fp_global) == 0:
-            precision_50: float = 0
-        else:
-            precision_50: float = tp_global / (
-                tp_global + fp_global
-            )  # vereinfachte, da normale AP50 ein Mittelwert über alle Konfidenzschwellen ist
-        AP_dict[f"{name_string}.pt"] = precision_50
-        with open(str(MODELS_QUALITY_YAML), "w") as f:
-            yaml.safe_dump(AP_dict, f)
-
-        ############ Automatisches Löschen schlechter Modelle auskommentiert, da unnötig
-
-        #        current_models = list(AP_dict.keys())
-        #        current_values = list(AP_dict.values())
-        #        min_idx = int(torch.tensor(current_values + [precision_50]).argmin().item())
-        #        if min_idx != 3:
-        #            if len(current_models) == 3:
-        #                worst_model = current_models[min_idx]
-        #                worst_model_path = project_root() / "models" / worst_model
-        #                logger.info(
-        #                    f"Trained model has precision_50 of {precision_50}. Old Model {worst_model} is the worst model with precision_50 of {current_values[min_idx]} and is deleted"
-        #                )
-        #                if worst_model_path.exists():
-        #                    worst_model_path.unlink()
-        #                else:
-        #                    raise ValueError("Model to be deleted is not existing in the models folder.")
-        #                del AP_dict[worst_model]  # Altes Modell aus AP_dict löschen
-        #            else:
-        #                logger.info("Less than 3 models saved, so deleting none.")
-        #
-        #            AP_dict[f"{name_string}.pt"] = precision_50
-        #            with open(str(MODELS_QUALITY_YAML), "w") as f:
-        #                yaml.safe_dump(AP_dict, f)
-        #
-        #        else:
-        #            logger.info(f"Trained model has precision_50 of {precision_50} and is therefore not saved")
-
         return train_results
 
     def predict(self, new_data: str | Path | None = None, conf: float = 0.25) -> Results:
@@ -349,61 +279,3 @@ class YOLOv26:
         if not str(file_path).endswith(".pt"):
             raise ValueError('file path needs to be a ".pt" file')
         self.model.save(filename=file_path)
-
-    def evaluate(self) -> float:
-        """vereinfachte, da normale AP50 ein Mittelwert über alle Konfidenzschwellen ist"""
-        tp_global, fp_global, fn_global = 0, 0, 0
-        for image in TEST_IMAGES.glob("*.jpg"):
-            label_path = TEST_LABELS / f"{image.stem}.txt"
-            labels = []
-            if label_path.exists():
-                with open(label_path, "r") as f:
-                    for line in f.readlines():
-                        labels.append([float(x) for x in line.strip().split()])
-            preds = self.predict(image)
-            tp, fp, fn = evaluate_tp_fp_fn(preds, labels, iou_threshold=0.5)
-            tp_global += tp
-            fp_global += fp
-            fn_global += fn
-        if (tp_global + fp_global) == 0:
-            precision_50: float = 0
-        else:
-            precision_50: float = tp_global / (tp_global + fp_global)
-        return precision_50
-
-    def cleanup_savings(self) -> bool:
-        """
-        Abgleich mit models_quality.yaml, um die 3 besten Modelle zu speichern
-        returns a bool that indicates whether model should be saved or not
-        """
-        precision_50 = self.evaluate()
-
-        with open(str(MODELS_QUALITY_YAML), "r") as f:
-            AP_dict = yaml.safe_load(f)
-        current_models = list(AP_dict.keys())
-        current_values = list(AP_dict.values())
-        current_n = len(current_models)
-        min_idx = int(torch.tensor(current_values + [precision_50]).argmin().item())
-        if min_idx != current_n:
-            if current_n >= 3:
-                worst_model = current_models[min_idx]
-                worst_model_path = project_root() / "models" / worst_model
-                logger.info(
-                    f"Trained model has precision_50 of {precision_50}. Old Model {worst_model} is the worst model with precision_50 of {current_values[min_idx]} and is deleted"
-                )
-                if worst_model_path.exists():
-                    worst_model_path.unlink()
-                else:
-                    raise ValueError("Model to be deleted is not existing in the models folder.")
-                del AP_dict[worst_model]  # Altes Modell aus AP_dict löschen
-            else:
-                logger.info("Less than 3 models saved, so deleting none.")
-
-            AP_dict[self.name_string] = precision_50
-            with open(str(MODELS_QUALITY_YAML), "w") as f:
-                yaml.safe_dump(AP_dict, f)
-            saving_model = True
-        else:
-            logger.info(f"Trained model has precision_50 of {precision_50} and is therefore not saved")
-            saving_model = False
-        return saving_model

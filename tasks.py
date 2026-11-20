@@ -12,9 +12,7 @@ from hydra import compose, initialize
 from invoke.context import Context
 from invoke.tasks import task
 from loguru import logger
-from street_sign_project.model import YOLOv26
 from street_sign_project.train import train_model
-from street_sign_project.utils import project_root
 
 WINDOWS = os.name == "nt"
 PROJECT_NAME = "street_sign_project"
@@ -109,11 +107,9 @@ def train(
     wandb_project: str | None = None,
     wandb_mode: str | None = None,
     wandb_dir: str | None = None,
-    auto_save: bool = True,
-    auto_cleanup: bool = False,
 ) -> None:
     """
-    Train model.
+    Train and save a checkpoint, logging metrics and the model artifact to W&B.
 
     Parameters not passed here use the defaults from configs/config.yaml.
     """
@@ -137,23 +133,9 @@ def train(
         "wandb.dir": wandb_dir,
     }
     override_args = [f"{key}={str(value)}" for key, value in overrides.items() if value is not None]
-    # command = f"uv run src/{PROJECT_NAME}/train.py"
-    # if override_args:
-    # command = f"{command} {override_args}"
-    # ctx.run(command, echo=True, pty=not WINDOWS)
     with initialize(version_base=None, config_path="configs"):
         cfg = compose(config_name="config", overrides=override_args)
-    trained_model: YOLOv26 = train_model.__wrapped__(
-        cfg
-    )  # __wrapped__ da es sonst konflikte mit hydra.main in train.py gibt
-    cleanup_indicator = True
-    if auto_cleanup:
-        if auto_save:
-            cleanup_indicator = trained_model.cleanup_savings()
-        else:
-            logger.error("auto saving is turned off, therefore cleanup will NOT be executed")
-    if auto_save and cleanup_indicator:
-        trained_model.save_model(project_root() / "models" / f"{trained_model.name_string}.pt")
+    train_model.__wrapped__(cfg)
 
 
 @task(auto_shortflags=False)
@@ -186,7 +168,7 @@ def profile_train(
 ) -> None:
     """
     Profile one training run with cProfile.
-    WATCH OUT: Model is not saved
+    The training wrapper saves the checkpoint as in a normal training run.
     """
     if output_path is None:
         profile_path = _default_profile_output_path()
@@ -337,12 +319,6 @@ def tune(ctx: Context) -> None:
         echo=True,
         pty=not WINDOWS,
     )
-
-
-@task
-def create_models_quality_yaml(ctx: Context) -> None:
-    """creating a yaml for saving of 3 best models"""
-    ctx.run(f"uv run src/{PROJECT_NAME}/evaluate.py models-quality-yaml", echo=True, pty=not WINDOWS)
 
 
 @task

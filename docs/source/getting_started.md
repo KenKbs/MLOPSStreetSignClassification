@@ -48,6 +48,10 @@ Runs are logged to **Weights & Biases** (metrics, per-epoch loss curves and the 
 artifact). A Bayesian hyperparameter sweep is defined in `configs/sweep.yaml` and started with
 `uv run invoke tune`.
 
+The training wrapper saves the checkpoint once under `models/`, or to a custom path passed with
+`uv run invoke train --model-path models/my-model.pt`.
+Model for deployment is currently selected manually.
+
 ## Testing and code quality
 
 ```bash
@@ -63,6 +67,8 @@ uv run pre-commit run --all-files
 ```bash
 uv run invoke profile-train   # profile one training run with cProfile + snakeviz
 ```
+
+Profiling runs the normal training wrapper and also saves a checkpoint.
 
 ## Serving the model
 

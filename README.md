@@ -131,10 +131,9 @@ uv run invoke preprocess-data
 uv run invoke create-yaml
 ```
 
-Initialize the local model-quality registry, then train with the default configuration or CLI overrides:
+Train with the default configuration or CLI overrides:
 
 ```bash
-uv run invoke create-models-quality-yaml
 uv run invoke train
 uv run invoke train --epochs 100 --batch-size 8 --lr0 0.005 --freeze 10
 ```
@@ -147,7 +146,8 @@ uv run invoke profile-train   # profile a one-epoch run with cProfile and SnakeV
 ```
 
 Training runs log their configuration, detection metrics, loss curves, and model artifact to Weights & Biases. The
-trained weights are also saved under `models/`.
+training wrapper saves the checkpoint once under `models/`, or at the path passed through `--model-path`.
+Training requires no local model-quality registry and does not rank or delete checkpoints.
 
 The former W&B staging-to-production alias automation and its performance test have been removed. Training still
 logs experiments and model artifacts to W&B; the API deployment selects its checkpoint through `API_MODEL_NAME` and DVC.
@@ -181,8 +181,7 @@ uv run invoke start-bento       # build and run the BentoML API at http://localh
 uv run invoke test-bento        # send a smoke-test request to BentoML
 ```
 
-The dedicated evaluation container and its automated Cloud Build workflow have been removed. Update the local
-model-quality registry with `uv run invoke create-models-quality-yaml`.
+The dedicated evaluation container and its automated Cloud Build workflow have been removed.
 
 ## Deployment
 

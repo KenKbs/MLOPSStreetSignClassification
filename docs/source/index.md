@@ -47,12 +47,6 @@ The workflow supports these optional repository variables:
 | `ALLOW_UNAUTHENTICATED`      | `true`                              |
 | `CLOUD_BUILD_STAGING_BUCKET` | `mlops-steetsigns_cloudbuild`       |
 
-For local fallback deployment, use:
-
-```bash
-uv run invoke deploy-api
-```
-
 ## Frontend deployment
 
 The `Test, build, and deploy Streamlit frontend` GitHub Actions workflow is the primary production frontend deployment
@@ -87,8 +81,5 @@ The workflow supports these optional repository variables:
 | `FRONTEND_ALLOW_UNAUTHENTICATED` | `true`                                                       |
 | `CLOUD_BUILD_STAGING_BUCKET`     | `mlops-steetsigns_cloudbuild`                                |
 
-For local fallback deployment, use:
-
-```bash
-uv run invoke deploy-frontend
-```
+The local Cloud Run deployment scripts and their Invoke tasks have been removed. Use the GitHub Actions workflows
+described above for API and frontend cloud deployments; configure deployment settings through their repository variables.

@@ -104,14 +104,14 @@ uv run invoke docker-api        # serve the API in a container
 
 ## Deployment (Google Cloud Run)
 
-```bash
-uv run invoke deploy-api        # build, push and deploy the FastAPI service
-uv run invoke deploy-bento      # deploy the BentoML service
-uv run invoke deploy-frontend   # deploy the Streamlit frontend
-```
+Cloud deployments use the GitHub Actions workflows for the
+[FastAPI backend](https://github.com/KenKbs/MLOPSStreetSignClassification/actions/workflows/deploy_api.yaml) and
+[Streamlit frontend](https://github.com/KenKbs/MLOPSStreetSignClassification/actions/workflows/deploy_frontend.yaml).
+They run on relevant pushes to `main` or can be started manually from GitHub Actions. Configure their repository
+variables and credentials as described in the [deployment documentation](index.md#api-deployment).
 
-The equivalent shell scripts live in `scripts/` and accept overrides via environment variables
-(`PROJECT_ID`, `REGION`, `SERVICE_NAME`, `MODEL_NAME`, …).
+The local Cloud Run deployment scripts and their Invoke tasks have been removed. For local BentoML serving, use
+`uv run invoke start-bento` as described above.
 
 ## Building this documentation
 

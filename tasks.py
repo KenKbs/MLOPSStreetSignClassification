@@ -333,21 +333,6 @@ def test_bento(
     ctx.run(command, echo=True, pty=not WINDOWS)
 
 
-@task(auto_shortflags=False)
-def deploy_api(ctx: Context, model: str | None = None) -> None:
-    """Build, push, and deploy the API Docker container to Cloud Run."""
-    command = "./scripts/deploy_api_cloudrun.sh"
-    if model is not None:
-        command = f"MODEL_NAME={quote(model)} {command}"
-    ctx.run(command, echo=True, pty=not WINDOWS)
-
-
-@task(name="deploy-bento")
-def deploy_bento(ctx: Context) -> None:
-    """Build, push, and deploy the BentoML API Docker container to Cloud Run."""
-    ctx.run("./scripts/deploy_bento_cloudrun.sh", echo=True, pty=not WINDOWS)
-
-
 @task
 def tune(ctx: Context) -> None:
     """tuning the model. See configs/sweep.yaml for changing the params"""
@@ -450,28 +435,6 @@ def start_local_frontend(
         f"API_URL={quote(api_url)} uvx --with requests --from streamlit streamlit run src/{PROJECT_NAME}/streamlit_app.py "
         f"--server.port {port}"
     )
-    ctx.run(command, echo=True, pty=not WINDOWS)
-
-
-@task(name="deploy-frontend", auto_shortflags=False)
-def deploy_frontend(
-    ctx: Context,
-    api_service_name: str | None = None,
-    api_url: str | None = None,
-) -> None:
-    """Build, push, and deploy the Streamlit frontend to Cloud Run."""
-    command = "./scripts/deploy_frontend_cloudrun.sh"
-    if api_service_name is not None:
-        command = f"API_SERVICE_NAME={quote(api_service_name)} {command}"
-    if api_url is not None:
-        command = f"API_URL={quote(api_url)} {command}"
-    ctx.run(command, echo=True, pty=not WINDOWS)
-
-
-@task(name="deploy-api-finn")
-def deploy_api_finn(ctx: Context) -> None:
-    """Build, push, and deploy the API Docker container to Cloud Run."""
-    command = "PROJECT_ID=streetsignproject IMAGE_NAME=street-sign-api-finn SERVICE_NAME=street-sign-api-finn MODEL_NAME=YOLO_eps200_bs16_lr0.005_fr5_x.pt MONITORING_BUCKET=monitoring_bucket_finn ./scripts/deploy_api_cloudrun.sh"
     ctx.run(command, echo=True, pty=not WINDOWS)
 
 

@@ -17,8 +17,6 @@
   * To run the API Docker container locally, use `uv run invoke docker-api`.
   * To run the Streamlit frontend and API locally with Docker, use `uv run invoke docker-frontend`.
   * To start the Streamlit frontend locally, use `uv run invoke start-local-frontend`.
-  * To deploy the Streamlit frontend to Cloud Run locally, use `uv run invoke deploy-frontend` or
-    `./scripts/deploy_frontend_cloudrun.sh`.
   * To build, containerize, and run the BentoML API Docker image locally, use `uv run invoke start-bento`.
   * To send one smoke-test request to the running BentoML API, use `uv run invoke test-bento`.
   * To run the default headless API stress test, use `uv run invoke stress-test`.
@@ -28,24 +26,13 @@
   Cloud Build, and deploys it to Cloud Run.
   * Configure the `GCP_API_DEPLOY_CREDENTIALS` GitHub Actions secret and the repository variables documented in the
     workflow.
-* To build, push, and deploy the API container to Cloud Run locally as a fallback, use
-  `./scripts/deploy_api_cloudrun.sh`.
-  * Override defaults with environment variables such as `PROJECT_ID`, `REGION`, `REPOSITORY`, `SERVICE_NAME`,
-    `MODEL_NAME`, `TAG`, `CPU`, `MEMORY`, and `ALLOW_UNAUTHENTICATED`.
 * The primary Streamlit frontend deployment runs through `.github/workflows/deploy_frontend.yaml` on relevant pushes
   to `main` or by manually starting the workflow. It tests the project, builds the frontend image with Cloud Build,
   and deploys it to Cloud Run.
   * It uses the same `GCP_API_DEPLOY_CREDENTIALS` GitHub Actions secret as the API workflow and the repository variables
     documented in the workflow.
-* To build, push, and deploy the Streamlit frontend container locally as a fallback, use
-  `./scripts/deploy_frontend_cloudrun.sh`.
-  * Override defaults with environment variables such as `PROJECT_ID`, `REGION`, `REPOSITORY`, `SERVICE_NAME`,
-    `API_SERVICE_NAME`, `API_URL`, `TAG`, `CPU`, `MEMORY`, and `ALLOW_UNAUTHENTICATED`.
-* To build, push, and deploy the BentoML API container to Cloud Run, use `uv run invoke deploy-bento` or
-  `./scripts/deploy_bento_cloudrun.sh`.
-  * Override defaults with environment variables such as `PROJECT_ID`, `REGION`, `REPOSITORY`, `SERVICE_NAME`,
-    `IMAGE_NAME`, `MODEL_NAME`, `TAG`, `CPU`, `MEMORY`, `MIN_INSTANCES`, `MAX_INSTANCES`, and
-    `ALLOW_UNAUTHENTICATED`.
+* The local Cloud Run deployment scripts and their Invoke tasks have been removed. Use the API and frontend GitHub
+  Actions workflows for cloud deployment. Local BentoML serving remains available through `start-bento`.
 * The project uses `pre-commit` for managing pre-commit hooks. To run all hooks on all files, use
     `uv run pre-commit run --all-files`. For more information, refer to the `.pre-commit-config.yaml` file.
 

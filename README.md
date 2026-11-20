@@ -185,17 +185,11 @@ The primary production paths are the GitHub Actions workflows for the
 commit-tagged container images with Cloud Build, push them to Artifact Registry, and deploy them to Cloud Run. The API
 workflow also pulls the selected model from DVC before building its image.
 
-Local fallback deployment commands are available when the Google Cloud CLI is authenticated and the required project
-permissions are configured:
+Configure cloud deployment through the repository variables documented in the workflows and the
+[project documentation](docs/source/index.md).
 
-```bash
-uv run invoke deploy-api
-uv run invoke deploy-frontend
-uv run invoke deploy-bento
-```
-
-Deployment settings can be overridden with the environment variables documented in the corresponding scripts under
-[`scripts/`](scripts/) and in the [project documentation](docs/source/index.md).
+The local Cloud Run deployment scripts and their Invoke tasks have been removed. Use the GitHub Actions workflows
+for API and frontend cloud deployments, or the container commands above for local serving.
 
 ## Monitoring
 
@@ -233,7 +227,6 @@ The source documentation is under [`docs/source/`](docs/source/) and is automati
 ├── dockerfiles/             # Training, evaluation, FastAPI, and Streamlit images
 ├── docs/                    # MkDocs site and image assets
 ├── models/                  # DVC model pointers and locally restored weights
-├── scripts/                 # Local Google Cloud deployment scripts
 ├── src/street_sign_project/ # Data, training, serving, and monitoring package
 ├── tests/                   # Unit, API, and performance tests
 ├── docker-compose.yaml      # Local multi-container services

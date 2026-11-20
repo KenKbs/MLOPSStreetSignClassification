@@ -84,7 +84,8 @@ will check the repositories and the code to verify your answers.
 - [x] Add a linting step to your continuous integration (M17)
 - [x] Add pre-commit hooks to your version control setup (M18)
 - [x] Add a continues workflow that triggers when data changes (M19)
-- [x] Add a continues workflow that triggers when changes to the model registry is made (M19)
+- [x] Add a continues workflow that triggers when changes to the model registry is made (M19;
+  historical implementation, now removed)
 - [x] Create a data storage in GCP Bucket for your data and link this with your data version control setup (M21)
 - [x] Create a trigger workflow for automatically building your docker images (M21)
 - [x] Get your model training in GCP using either the Engine or Vertex AI (M21)
@@ -212,7 +213,7 @@ match `uv.lock`. The same command is used in every CI workflow, so the local and
 We initialised the project with the [`mlops_template`](https://github.com/SkafteNicki/mlops_template) cookiecutter
 template. We filled out the `src/street_sign_project/` package (renamed from `project_name`) with `data.py`,
 `dataset.py`, `model.py`, `train.py`, `evaluate.py`, `visualize.py`, `fast_api.py`, `bentoml_api.py`,
-`streamlit_app.py`, `link_model.py` and `utils.py`. We also completed the `configs/` (Hydra config + sweep),
+`streamlit_app.py` and `utils.py`. We also completed the `configs/` (Hydra config + sweep),
 `dockerfiles/`, `tests/`, `.github/workflows/`, `docs/` and `models/` folders and `tasks.py` (invoke commands).
 
 We extended the template with a top-level `data/` directory containing DVC-tracked raw and preprocessed datasets. We
@@ -348,9 +349,9 @@ pre-commit hooks. These workflows run for pull requests targeting `main` and for
 before changes are merged.
 
 We also experimented with continuous-ML automation. **`cml_data.yaml`** reacts to pushed DVC-pointer changes, pulls
-the corresponding data from GCS and generates dataset statistics using CML. **`stage_model.yaml`** is triggered through
-a W&B model-registry event and was designed to performance-test a staged model before assigning it the `production`
-alias.
+the corresponding data from GCS and generates dataset statistics using CML. A former W&B model-registry workflow
+was designed to performance-test a staged model before assigning it the `production` alias. That workflow, its alias
+helper and its performance test have since been removed; W&B experiment tracking and model-artifact logging remain.
 
 Separate continuous-delivery workflows for the FastAPI API and Streamlit frontend first run the tests. The API
 workflow also pulls the DVC-selected model. They then submit the build contexts to Cloud Build, store commit-tagged
@@ -766,10 +767,11 @@ Ruff and pre-commit checks. We used **Invoke** to perform most common repository
 shows all tasks that we created and used throughout the project.
 
 Training happens either locally or in the cloud: the resulting model was logged to **Weights & Biases** (before the
-test account was closed) and stored via DVC. W&B also acted as our **model registry**: assigning the `staging` alias to
-a model artifact triggered, via `repository_dispatch`, a workflow that performance-tests the model and, on success,
-promotes it to `production`. After the test account was closed, the production model is selected through the GitHub
-repository variable **`API_MODEL_NAME`**.
+test account was closed) and stored via DVC. We also experimented with a W&B **model registry**: assigning the
+`staging` alias to a model artifact triggered a workflow through `repository_dispatch`. It ran a performance test and
+assigned a `production` alias, but promotion did not depend on the test succeeding. This automation has since been
+removed. Training retains W&B experiment tracking and model-artifact logging. The deployed checkpoint is selected
+through the GitHub repository variable **`API_MODEL_NAME`** and pulled from DVC.
 
 For continuous deployment, the FastAPI and Streamlit workflows first run the tests. The API workflow pulls the
 selected model from DVC and includes exactly that checkpoint in the build context. **Cloud Build** builds the API and
@@ -832,7 +834,7 @@ Our group had two members, **Finn Schmidt** and **Kenny Kubsch**, and the work w
 touching most parts of the codebase (both have roughly the same number of commits).
 
 Student **Finn Schmidt** focused on the `YOLOv26` model wrapper (`model.py`), the evaluation/model-quality logic, the
-W&B experiment tracking and the automated **model-registry pipeline** (`link_model.py`, `stage_model.yaml`), the
+W&B experiment tracking and the original automated **model-registry pipeline** (since removed), the
 `cml_data.yaml` CML data-checker workflow, the **FastAPI** API, and the Streamlit frontend.
 
 Student **Kenny Kubsch** focused on the custom data pipeline and preprocessing (`data.py`, class mapping and

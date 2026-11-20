@@ -146,6 +146,9 @@ uv run invoke profile-train   # profile a one-epoch run with cProfile and SnakeV
 Training runs log their configuration, detection metrics, loss curves, and model artifact to Weights & Biases. The
 trained weights are also saved under `models/`.
 
+The former W&B staging-to-production alias automation and its performance test have been removed. Training still
+logs experiments and model artifacts to W&B; the API deployment selects its checkpoint through `API_MODEL_NAME` and DVC.
+
 ## Testing and code quality
 
 ```bash

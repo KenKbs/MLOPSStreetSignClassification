@@ -84,7 +84,8 @@ will check the repositories and the code to verify your answers.
 - [x] Add a linting step to your continuous integration (M17)
 - [x] Add pre-commit hooks to your version control setup (M18)
 - [x] Add a continues workflow that triggers when data changes (M19)
-- [x] Add a continues workflow that triggers when changes to the model registry is made (M19)
+- [x] Add a continues workflow that triggers when changes to the model registry is made (M19;
+  historical implementation, now removed)
 - [x] Create a data storage in GCP Bucket for your data and link this with your data version control setup (M21)
 - [x] Create a trigger workflow for automatically building your docker images (M21)
 - [x] Get your model training in GCP using either the Engine or Vertex AI (M21)
@@ -211,8 +212,8 @@ match `uv.lock`. The same command is used in every CI workflow, so the local and
 
 We initialised the project with the [`mlops_template`](https://github.com/SkafteNicki/mlops_template) cookiecutter
 template. We filled out the `src/street_sign_project/` package (renamed from `project_name`) with `data.py`,
-`dataset.py`, `model.py`, `train.py`, `evaluate.py`, `visualize.py`, `fast_api.py`, `bentoml_api.py`,
-`streamlit_app.py`, `link_model.py` and `utils.py`. We also completed the `configs/` (Hydra config + sweep),
+`dataset.py`, `model.py`, `train.py`, `visualize.py`, `fast_api.py`, `bentoml_api.py`,
+`streamlit_app.py` and `utils.py`. We also completed the `configs/` (Hydra config + sweep),
 `dockerfiles/`, `tests/`, `.github/workflows/`, `docs/` and `models/` folders and `tasks.py` (invoke commands).
 
 We extended the template with a top-level `data/` directory containing DVC-tracked raw and preprocessed datasets. We
@@ -270,11 +271,11 @@ a staged model is fast enough for deployment.
 >
 > Answer:
 
-The total code coverage of our source code is **67%** (measured with `coverage` over `src/street_sign_project`).
-Coverage is high for the parts that are pure logic and easy to test in isolation — the data pipeline (`data.py`, 91%),
+The historical code coverage of our source code was **67%** (measured with `coverage` over `src/street_sign_project`).
+Coverage was high for the parts that are pure logic and easy to test in isolation — the data pipeline (`data.py`, 91%),
 the monitoring modules (85–96%) and the training orchestrator (`train.py`, 93%) — and low for `model.py` (23%) and
-`evaluate.py` (20%), because those wrap Ultralytics YOLO and would require downloading real model weights and running
-inference to exercise fully.
+the former evaluation module (20%), because those wrap Ultralytics YOLO and would require downloading real model
+weights and running inference to exercise fully.
 
 Even if we had 100% coverage we would **not** trust the code to be error-free. Coverage only tells us which lines were
 executed, not whether the assertions actually check the right behaviour, and not whether the model produces correct
@@ -348,9 +349,9 @@ pre-commit hooks. These workflows run for pull requests targeting `main` and for
 before changes are merged.
 
 We also experimented with continuous-ML automation. **`cml_data.yaml`** reacts to pushed DVC-pointer changes, pulls
-the corresponding data from GCS and generates dataset statistics using CML. **`stage_model.yaml`** is triggered through
-a W&B model-registry event and was designed to performance-test a staged model before assigning it the `production`
-alias.
+the corresponding data from GCS and generates dataset statistics using CML. A former W&B model-registry workflow
+was designed to performance-test a staged model before assigning it the `production` alias. That workflow, its alias
+helper and its performance test have since been removed; W&B experiment tracking and model-artifact logging remain.
 
 Separate continuous-delivery workflows for the FastAPI API and Streamlit frontend first run the tests. The API
 workflow also pulls the DVC-selected model. They then submit the build contexts to Cloud Build, store commit-tagged
@@ -447,24 +448,27 @@ validation metrics above when comparing models.
 >
 > Answer:
 
-We wrote several Docker images: a **training** image
-(`dockerfiles/train.dockerfile`), an **evaluate** image (builds the models-quality YAML), an **API** image
-(`api.dockerfile`, serves the FastAPI app) and a **frontend** image (`frontend.dockerfile`, the Streamlit app). In
-addition we build a specialised **BentoML** image via `bentoml containerize`. A `docker-compose.yaml` wires the
-train/evaluate/api/frontend services together with the right volume mounts. All Dockerfiles install dependencies in a separate,
+We use an **API** image (`dockerfiles/api.dockerfile`, serves the FastAPI app) and a **frontend** image
+(`dockerfiles/frontend.dockerfile`, the Streamlit app). In addition we build a specialised **BentoML** image via
+`bentoml containerize`. A `docker-compose.yaml` wires the
+API and frontend services together with the right volume mounts. The API Dockerfile installs dependencies in a separate,
 cached layer (`uv sync --frozen --no-install-project`) before copying the source, so rebuilds are fast.
 
 Examples of how we run them:
 
 ```bash
-uv run invoke docker-build      # build train, evaluate, api and frontend images
-uv run invoke docker-train      # run one training run in a container
-uv run invoke docker-evaluate   # evaluate checkpoints and update models_quality.yaml
+uv run invoke docker-build      # build API and frontend images
 uv run invoke docker-api        # serve the API on localhost:8000
 uv run invoke docker-frontend   # serve the frontend on localhost:8501
 ```
 
-Link to the API Dockerfile: `dockerfiles/api.dockerfile`. Evaluation, API and frontend images can also built in the cloud via Cloud Build (`cloudbuild.yaml`, `cloudbuild_api.yaml`, `cloudbuild_frontend.yaml`) and are also part of continous deployment GH actions workflows.
+Link to the API Dockerfile: `dockerfiles/api.dockerfile`. API and frontend images can also be built in the cloud via
+Cloud Build (`cloudbuild_api.yaml`, `cloudbuild_frontend.yaml`) through GitHub Actions deployment workflows.
+The original evaluation container, its Cloud Build configuration, and its build workflow have since been removed.
+The original training container has also been removed; training runs directly on the host in the uv environment with
+`uv run invoke train`.
+The original local model-quality leaderboard and its custom evaluation module have also been removed. Training
+saves a checkpoint and logs metrics and the model artifact to W&B; deployment selects an explicit checkpoint.
 
 
 ### Question 16
@@ -501,9 +505,10 @@ optimise ourselves, so we focused our own optimisation on the data pipeline and 
 We used the following GCP services:
 
 - **Cloud Storage (Buckets):** stores our DVC-tracked data and models (`gs://mlops-street-signs/dvcstore`)
-- **Cloud Build:** builds our Docker images in the cloud from `cloudbuild.yaml` / `cloudbuild_train.yaml`, triggered
+- **Cloud Build:** builds our API and frontend images from `cloudbuild_api.yaml` / `cloudbuild_frontend.yaml`, triggered
   by GitHub Actions.
-- **Artifact Registry:** stores the built Docker images (API, evaluate, train, frontend, BentoML).
+- **Artifact Registry:** stores built serving images (API, frontend, BentoML); evaluation and training containers
+  have since been removed from the repository.
 - **Cloud Run:** serves our deployed containers (FastAPI API, Streamlit frontend and the BentoML service) as
   scalable, managed HTTP services.
 - **IAM / Service Accounts:** service-account keys stored as GitHub secrets let the CI authenticate to GCP.
@@ -560,12 +565,12 @@ this repository.
 
 ![Top-level overview showing the docker-registry repository](<figures/Top level Overview registry.png>)
 
-The repository contains four images: **`street-sign-api`**, **`street-sign-frontend`**, **`street-sign-bento-api`** and
+The screenshot records four images: **`street-sign-api`**, **`street-sign-frontend`**, **`street-sign-bento-api`** and
 **`street-sign-evaluate`**. The FastAPI and Streamlit frontend images are the two active production images deployed to
 Cloud Run. The BentoML image contains our first working deployment iteration and provides the core inference
 functionality. For the later production-data, data-drift and API-monitoring work, we continued development with
-FastAPI. The evaluation image is used as a batch utility for evaluating checkpoints and updating the model-quality
-data.
+FastAPI. The evaluation image was used as a batch utility for evaluating checkpoints and updating the model-quality
+data. Its container definition, automated build workflow, and local model-quality implementation have since been removed.
 
 ![Four container images stored in docker-registry](<figures/Artefact Registry.png>)
 
@@ -740,7 +745,8 @@ definitions. A curated mapping converts their labels into one shared class taxon
 divided deterministically into train, validation and test sets using a multi-label-aware heuristic. Images containing
 rare classes are assigned first.
 
-(3) A **models-quality tracking** mechanism that keeps the best models by a simplified AP@50 metric.
+(3) We originally implemented local model-quality tracking based on precision at IoU 0.5. That leaderboard and its
+optional checkpoint-deletion logic have since been removed. Training retains Ultralytics metrics and W&B logging.
 
 (4) Created a **GitHubPage** which contains the documentation accessible under: https://kenkbs.github.io/MLOPSStreetSignClassification/
 
@@ -764,10 +770,11 @@ Ruff and pre-commit checks. We used **Invoke** to perform most common repository
 shows all tasks that we created and used throughout the project.
 
 Training happens either locally or in the cloud: the resulting model was logged to **Weights & Biases** (before the
-test account was closed) and stored via DVC. W&B also acted as our **model registry**: assigning the `staging` alias to
-a model artifact triggered, via `repository_dispatch`, a workflow that performance-tests the model and, on success,
-promotes it to `production`. After the test account was closed, the production model is selected through the GitHub
-repository variable **`API_MODEL_NAME`**.
+test account was closed) and stored via DVC. We also experimented with a W&B **model registry**: assigning the
+`staging` alias to a model artifact triggered a workflow through `repository_dispatch`. It ran a performance test and
+assigned a `production` alias, but promotion did not depend on the test succeeding. This automation has since been
+removed. Training retains W&B experiment tracking and model-artifact logging. The deployed checkpoint is selected
+through the GitHub repository variable **`API_MODEL_NAME`** and pulled from DVC.
 
 For continuous deployment, the FastAPI and Streamlit workflows first run the tests. The API workflow pulls the
 selected model from DVC and includes exactly that checkpoint in the build context. **Cloud Build** builds the API and
@@ -829,8 +836,8 @@ the complete workflow reliable rather than implementing isolated components.
 Our group had two members, **Finn Schmidt** and **Kenny Kubsch**, and the work was closely shared, with both members
 touching most parts of the codebase (both have roughly the same number of commits).
 
-Student **Finn Schmidt** focused on the `YOLOv26` model wrapper (`model.py`), the evaluation/model-quality logic, the
-W&B experiment tracking and the automated **model-registry pipeline** (`link_model.py`, `stage_model.yaml`), the
+Student **Finn Schmidt** focused on the `YOLOv26` model wrapper (`model.py`), the original model-quality logic
+(since removed), W&B experiment tracking and the original automated **model-registry pipeline** (since removed), the
 `cml_data.yaml` CML data-checker workflow, the **FastAPI** API, and the Streamlit frontend.
 
 Student **Kenny Kubsch** focused on the custom data pipeline and preprocessing (`data.py`, class mapping and

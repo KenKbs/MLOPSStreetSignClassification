@@ -36,8 +36,9 @@ uv run invoke create-yaml       # write data/dataset.yaml
 
 ## Training
 
-Training is configured with **Hydra** (`configs/config.yaml`) and launched through an invoke task.
-Any config value can be overridden on the command line:
+Training runs directly on the host in the uv-managed environment, without Docker. Complete the installation and
+DVC data setup above on the training machine first. Training is configured with **Hydra** (`configs/config.yaml`)
+and launched through an invoke task. Training options can be overridden on the command line:
 
 ```bash
 uv run invoke train --epochs 100 --batch-size 8 --lr0 0.005 --freeze 10
@@ -46,6 +47,10 @@ uv run invoke train --epochs 100 --batch-size 8 --lr0 0.005 --freeze 10
 Runs are logged to **Weights & Biases** (metrics, per-epoch loss curves and the trained model as an
 artifact). A Bayesian hyperparameter sweep is defined in `configs/sweep.yaml` and started with
 `uv run invoke tune`.
+
+The training wrapper saves the checkpoint once under `models/`, or to a custom path passed with
+`uv run invoke train --model-path models/my-model.pt`.
+Model for deployment is currently selected manually.
 
 ## Testing and code quality
 
@@ -62,6 +67,8 @@ uv run pre-commit run --all-files
 ```bash
 uv run invoke profile-train   # profile one training run with cProfile + snakeviz
 ```
+
+Profiling runs the normal training wrapper and also saves a checkpoint.
 
 ## Serving the model
 
@@ -97,21 +104,21 @@ uv run invoke stress-api --ui     # Locust web UI
 ## Docker
 
 ```bash
-uv run invoke docker-build      # build the train, evaluate and api images
-uv run invoke docker-train      # run one training run in a container
+uv run invoke docker-build      # build the API and frontend images
 uv run invoke docker-api        # serve the API in a container
+uv run invoke docker-frontend   # serve the frontend and API with Compose
 ```
 
 ## Deployment (Google Cloud Run)
 
-```bash
-uv run invoke deploy-api        # build, push and deploy the FastAPI service
-uv run invoke deploy-bento      # deploy the BentoML service
-uv run invoke deploy-frontend   # deploy the Streamlit frontend
-```
+Cloud deployments use the GitHub Actions workflows for the
+[FastAPI backend](https://github.com/KenKbs/MLOPSStreetSignClassification/actions/workflows/deploy_api.yaml) and
+[Streamlit frontend](https://github.com/KenKbs/MLOPSStreetSignClassification/actions/workflows/deploy_frontend.yaml).
+They run on relevant pushes to `main` or can be started manually from GitHub Actions. Configure their repository
+variables and credentials as described in the [deployment documentation](index.md#api-deployment).
 
-The equivalent shell scripts live in `scripts/` and accept overrides via environment variables
-(`PROJECT_ID`, `REGION`, `SERVICE_NAME`, `MODEL_NAME`, …).
+The local Cloud Run deployment scripts and their Invoke tasks have been removed. For local BentoML serving, use
+`uv run invoke start-bento` as described above.
 
 ## Building this documentation
 

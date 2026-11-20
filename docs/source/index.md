@@ -9,6 +9,9 @@ The project serves a YOLO street-sign detector through FastAPI and deploys it to
 The overview shows how local development, continuous integration and deployment, cloud services, model serving and
 production monitoring fit together.
 
+Training saves a checkpoint and logs metrics and the model artifact to W&B. Deployment selects
+an explicit checkpoint through `API_MODEL_NAME` and DVC.
+
 ## API deployment
 
 The `Test, build, and deploy FastAPI` GitHub Actions workflow is the primary production deployment path. On relevant
@@ -47,12 +50,6 @@ The workflow supports these optional repository variables:
 | `ALLOW_UNAUTHENTICATED`      | `true`                              |
 | `CLOUD_BUILD_STAGING_BUCKET` | `mlops-steetsigns_cloudbuild`       |
 
-For local fallback deployment, use:
-
-```bash
-uv run invoke deploy-api
-```
-
 ## Frontend deployment
 
 The `Test, build, and deploy Streamlit frontend` GitHub Actions workflow is the primary production frontend deployment
@@ -87,8 +84,5 @@ The workflow supports these optional repository variables:
 | `FRONTEND_ALLOW_UNAUTHENTICATED` | `true`                                                       |
 | `CLOUD_BUILD_STAGING_BUCKET`     | `mlops-steetsigns_cloudbuild`                                |
 
-For local fallback deployment, use:
-
-```bash
-uv run invoke deploy-frontend
-```
+The local Cloud Run deployment scripts and their Invoke tasks have been removed. Use the GitHub Actions workflows
+described above for API and frontend cloud deployments; configure deployment settings through their repository variables.

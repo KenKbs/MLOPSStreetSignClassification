@@ -12,9 +12,7 @@ from hydra import compose, initialize
 from invoke.context import Context
 from invoke.tasks import task
 from loguru import logger
-from street_sign_project.model import YOLOv26
 from street_sign_project.train import train_model
-from street_sign_project.utils import project_root
 
 WINDOWS = os.name == "nt"
 PROJECT_NAME = "street_sign_project"
@@ -109,11 +107,9 @@ def train(
     wandb_project: str | None = None,
     wandb_mode: str | None = None,
     wandb_dir: str | None = None,
-    auto_save: bool = True,
-    auto_cleanup: bool = False,
 ) -> None:
     """
-    Train model.
+    Train and save a checkpoint, logging metrics and the model artifact to W&B.
 
     Parameters not passed here use the defaults from configs/config.yaml.
     """
@@ -137,23 +133,9 @@ def train(
         "wandb.dir": wandb_dir,
     }
     override_args = [f"{key}={str(value)}" for key, value in overrides.items() if value is not None]
-    # command = f"uv run src/{PROJECT_NAME}/train.py"
-    # if override_args:
-    # command = f"{command} {override_args}"
-    # ctx.run(command, echo=True, pty=not WINDOWS)
     with initialize(version_base=None, config_path="configs"):
         cfg = compose(config_name="config", overrides=override_args)
-    trained_model: YOLOv26 = train_model.__wrapped__(
-        cfg
-    )  # __wrapped__ da es sonst konflikte mit hydra.main in train.py gibt
-    cleanup_indicator = True
-    if auto_cleanup:
-        if auto_save:
-            cleanup_indicator = trained_model.cleanup_savings()
-        else:
-            logger.error("auto saving is turned off, therefore cleanup will NOT be executed")
-    if auto_save and cleanup_indicator:
-        trained_model.save_model(project_root() / "models" / f"{trained_model.name_string}.pt")
+    train_model.__wrapped__(cfg)
 
 
 @task(auto_shortflags=False)
@@ -186,7 +168,7 @@ def profile_train(
 ) -> None:
     """
     Profile one training run with cProfile.
-    WATCH OUT: Model is not saved
+    The training wrapper saves the checkpoint as in a normal training run.
     """
     if output_path is None:
         profile_path = _default_profile_output_path()
@@ -267,23 +249,9 @@ def stress_api(
 
 @task
 def docker_build(ctx: Context, progress: str = "plain") -> None:
-    """Build docker images."""
-    ctx.run(f"docker compose --progress={progress} build train", echo=True, pty=not WINDOWS)
-    ctx.run(f"docker compose --progress={progress} build evaluate", echo=True, pty=not WINDOWS)
+    """Build the API and frontend Docker images."""
     ctx.run(f"docker compose --progress={progress} build api", echo=True, pty=not WINDOWS)
     ctx.run(f"docker compose --progress={progress} build frontend", echo=True, pty=not WINDOWS)
-
-
-@task
-def docker_train(ctx: Context) -> None:
-    """Run the training Docker container."""
-    ctx.run("docker compose run --rm train", echo=True, pty=not WINDOWS)
-
-
-@task
-def docker_evaluate(ctx: Context) -> None:
-    """Run the evaluation Docker container."""
-    ctx.run("docker compose run --rm evaluate", echo=True, pty=not WINDOWS)
 
 
 @task
@@ -333,21 +301,6 @@ def test_bento(
     ctx.run(command, echo=True, pty=not WINDOWS)
 
 
-@task(auto_shortflags=False)
-def deploy_api(ctx: Context, model: str | None = None) -> None:
-    """Build, push, and deploy the API Docker container to Cloud Run."""
-    command = "./scripts/deploy_api_cloudrun.sh"
-    if model is not None:
-        command = f"MODEL_NAME={quote(model)} {command}"
-    ctx.run(command, echo=True, pty=not WINDOWS)
-
-
-@task(name="deploy-bento")
-def deploy_bento(ctx: Context) -> None:
-    """Build, push, and deploy the BentoML API Docker container to Cloud Run."""
-    ctx.run("./scripts/deploy_bento_cloudrun.sh", echo=True, pty=not WINDOWS)
-
-
 @task
 def tune(ctx: Context) -> None:
     """tuning the model. See configs/sweep.yaml for changing the params"""
@@ -366,18 +319,6 @@ def tune(ctx: Context) -> None:
         echo=True,
         pty=not WINDOWS,
     )
-
-
-@task
-def create_models_quality_yaml(ctx: Context) -> None:
-    """creating a yaml for saving of 3 best models"""
-    ctx.run(f"uv run src/{PROJECT_NAME}/evaluate.py models-quality-yaml", echo=True, pty=not WINDOWS)
-
-
-@task
-def plot_images(ctx: Context) -> None:
-    """plotting example images"""
-    ctx.run(f"uv run src/{PROJECT_NAME}/visualize.py plot-image-pred", echo=True, pty=not WINDOWS)
 
 
 @task
@@ -450,40 +391,4 @@ def start_local_frontend(
         f"API_URL={quote(api_url)} uvx --with requests --from streamlit streamlit run src/{PROJECT_NAME}/streamlit_app.py "
         f"--server.port {port}"
     )
-    ctx.run(command, echo=True, pty=not WINDOWS)
-
-
-@task(name="deploy-frontend", auto_shortflags=False)
-def deploy_frontend(
-    ctx: Context,
-    api_service_name: str | None = None,
-    api_url: str | None = None,
-) -> None:
-    """Build, push, and deploy the Streamlit frontend to Cloud Run."""
-    command = "./scripts/deploy_frontend_cloudrun.sh"
-    if api_service_name is not None:
-        command = f"API_SERVICE_NAME={quote(api_service_name)} {command}"
-    if api_url is not None:
-        command = f"API_URL={quote(api_url)} {command}"
-    ctx.run(command, echo=True, pty=not WINDOWS)
-
-
-@task(name="deploy-api-finn")
-def deploy_api_finn(ctx: Context) -> None:
-    """Build, push, and deploy the API Docker container to Cloud Run."""
-    command = "PROJECT_ID=streetsignproject IMAGE_NAME=street-sign-api-finn SERVICE_NAME=street-sign-api-finn MODEL_NAME=YOLO_eps200_bs16_lr0.005_fr5_x.pt MONITORING_BUCKET=monitoring_bucket_finn ./scripts/deploy_api_cloudrun.sh"
-    ctx.run(command, echo=True, pty=not WINDOWS)
-
-
-@task(name="stop-api-finn")
-def stop_api_finn(ctx: Context) -> None:
-    """Stop the API in Cloud Run."""
-    command = "gcloud run services delete street-sign-api-finn --region=europe-west3 --project=streetsignproject"
-    ctx.run(command, echo=True, pty=not WINDOWS)
-
-
-@task(name="stop-frontend-cloud")
-def stop_frontend_cloud(ctx: Context) -> None:
-    """Stop the Streamlit frontend in Cloud Run."""
-    command = "gcloud run services delete street-sign-frontend --region=europe-west3 --project=streetsignproject"
     ctx.run(command, echo=True, pty=not WINDOWS)

@@ -121,6 +121,9 @@ curl -X POST \
 The Hydra defaults live in [`configs/config.yaml`](configs/config.yaml). The dataset follows the YOLO image/label
 layout described in [`data/dataset.yaml`](data/dataset.yaml).
 
+Training runs directly on the host in the uv-managed environment. Use the installation steps above to restore the
+environment and DVC data on the training machine; no training container is used.
+
 Prepare the data and recreate the dataset definition:
 
 ```bash
@@ -128,10 +131,9 @@ uv run invoke preprocess-data
 uv run invoke create-yaml
 ```
 
-Initialize the local model-quality registry, then train with the default configuration or CLI overrides:
+Train with the default configuration or CLI overrides:
 
 ```bash
-uv run invoke create-models-quality-yaml
 uv run invoke train
 uv run invoke train --epochs 100 --batch-size 8 --lr0 0.005 --freeze 10
 ```
@@ -144,7 +146,11 @@ uv run invoke profile-train   # profile a one-epoch run with cProfile and SnakeV
 ```
 
 Training runs log their configuration, detection metrics, loss curves, and model artifact to Weights & Biases. The
-trained weights are also saved under `models/`.
+training wrapper saves the checkpoint once under `models/`, or at the path passed through `--model-path`.
+Training requires no local model-quality registry and does not rank or delete checkpoints.
+
+The former W&B staging-to-production alias automation and its performance test have been removed. Training still
+logs experiments and model artifacts to W&B; the API deployment selects its checkpoint through `API_MODEL_NAME` and DVC.
 
 ## Testing and code quality
 
@@ -168,14 +174,14 @@ Use `uv run invoke stress-api --ui` to start the Locust web interface, or pass `
 ## Containers and serving options
 
 ```bash
-uv run invoke docker-build      # build training, evaluation, API, and frontend images
-uv run invoke docker-train      # run training in Docker
-uv run invoke docker-evaluate   # run evaluation in Docker
+uv run invoke docker-build      # build API and frontend images
 uv run invoke docker-api        # serve FastAPI at http://localhost:8000
 uv run invoke docker-frontend   # serve the complete app at http://localhost:8501
 uv run invoke start-bento       # build and run the BentoML API at http://localhost:3000
 uv run invoke test-bento        # send a smoke-test request to BentoML
 ```
+
+The dedicated evaluation container and its automated Cloud Build workflow have been removed.
 
 ## Deployment
 
@@ -185,17 +191,11 @@ The primary production paths are the GitHub Actions workflows for the
 commit-tagged container images with Cloud Build, push them to Artifact Registry, and deploy them to Cloud Run. The API
 workflow also pulls the selected model from DVC before building its image.
 
-Local fallback deployment commands are available when the Google Cloud CLI is authenticated and the required project
-permissions are configured:
+Configure cloud deployment through the repository variables documented in the workflows and the
+[project documentation](docs/source/index.md).
 
-```bash
-uv run invoke deploy-api
-uv run invoke deploy-frontend
-uv run invoke deploy-bento
-```
-
-Deployment settings can be overridden with the environment variables documented in the corresponding scripts under
-[`scripts/`](scripts/) and in the [project documentation](docs/source/index.md).
+The local Cloud Run deployment scripts and their Invoke tasks have been removed. Use the GitHub Actions workflows
+for API and frontend cloud deployments, or the container commands above for local serving.
 
 ## Monitoring
 
@@ -230,10 +230,9 @@ The source documentation is under [`docs/source/`](docs/source/) and is automati
 ├── .github/workflows/       # CI, model checks, documentation, and Cloud Run deployment
 ├── configs/                 # Hydra training configuration, sweep, and class mappings
 ├── data/                    # DVC-tracked raw and preprocessed datasets plus YOLO dataset YAML
-├── dockerfiles/             # Training, evaluation, FastAPI, and Streamlit images
+├── dockerfiles/             # FastAPI and Streamlit images
 ├── docs/                    # MkDocs site and image assets
 ├── models/                  # DVC model pointers and locally restored weights
-├── scripts/                 # Local Google Cloud deployment scripts
 ├── src/street_sign_project/ # Data, training, serving, and monitoring package
 ├── tests/                   # Unit, API, and performance tests
 ├── docker-compose.yaml      # Local multi-container services

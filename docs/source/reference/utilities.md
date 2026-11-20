@@ -1,6 +1,6 @@
 # Utilities
 
-Helper utilities, the W&B model-registry linker and the visualization commands.
+Shared helper utilities and dataset-annotation drawing.
 
 ## `utils`
 
@@ -8,15 +8,10 @@ Small shared helpers (e.g. locating the project root).
 
 ::: street_sign_project.utils
 
-## `link_model`
-
-Stage a W&B model artifact to the model registry by assigning aliases (e.g. `staging`,
-`production`).
-
-::: street_sign_project.link_model
-
 ## `visualize`
 
-Commands for plotting example predictions and ground-truth labels.
+The `plot_image_label` helper draws bounding boxes from dataset annotations and saves or displays the images.
+Dataset statistics call it directly to save annotated examples. This module has no command-line interface;
+prediction images returned by FastAPI and BentoML are drawn in their respective serving modules.
 
 ::: street_sign_project.visualize

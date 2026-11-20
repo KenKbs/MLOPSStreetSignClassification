@@ -346,12 +346,6 @@ def create_models_quality_yaml(ctx: Context) -> None:
 
 
 @task
-def plot_images(ctx: Context) -> None:
-    """plotting example images"""
-    ctx.run(f"uv run src/{PROJECT_NAME}/visualize.py plot-image-pred", echo=True, pty=not WINDOWS)
-
-
-@task
 def dataset_statistics_check(ctx: Context) -> None:
     """running the dataset statistics (for automation via GitHub with cml_data.yaml)"""
     ctx.run(f"uv run src/{PROJECT_NAME}/dataset.py dataset-statistics", echo=True, pty=not WINDOWS)
@@ -421,18 +415,4 @@ def start_local_frontend(
         f"API_URL={quote(api_url)} uvx --with requests --from streamlit streamlit run src/{PROJECT_NAME}/streamlit_app.py "
         f"--server.port {port}"
     )
-    ctx.run(command, echo=True, pty=not WINDOWS)
-
-
-@task(name="stop-api-finn")
-def stop_api_finn(ctx: Context) -> None:
-    """Stop the API in Cloud Run."""
-    command = "gcloud run services delete street-sign-api-finn --region=europe-west3 --project=streetsignproject"
-    ctx.run(command, echo=True, pty=not WINDOWS)
-
-
-@task(name="stop-frontend-cloud")
-def stop_frontend_cloud(ctx: Context) -> None:
-    """Stop the Streamlit frontend in Cloud Run."""
-    command = "gcloud run services delete street-sign-frontend --region=europe-west3 --project=streetsignproject"
     ctx.run(command, echo=True, pty=not WINDOWS)

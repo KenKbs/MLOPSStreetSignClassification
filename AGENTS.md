@@ -23,18 +23,22 @@
   * To send one smoke-test request to the running BentoML API, use `uv run invoke test-bento`.
   * To run the default headless API stress test, use `uv run invoke stress-api`.
   * To start the Locust UI for API stress testing, use `uv run invoke stress-api --ui`.
-* The primary API deployment runs through `.github/workflows/deploy_api.yaml` on relevant pushes to `main` or by
-  manually starting the workflow. It tests the project, pulls the configured model from DVC, builds the API image with
-  Cloud Build, and deploys it to Cloud Run.
+* API image publishing runs through `.github/workflows/cloudbuild_api.yaml` on relevant pushes to `main` or by manually
+  starting the workflow on `main`. It tests the project, pulls the configured model from DVC, builds the API image with
+  Cloud Build, and publishes a unique version tag plus `latest` to Artifact Registry.
   * Configure the `GCP_API_DEPLOY_CREDENTIALS` GitHub Actions secret and the repository variables documented in the
     workflow.
-* The primary Streamlit frontend deployment runs through `.github/workflows/deploy_frontend.yaml` on relevant pushes
-  to `main` or by manually starting the workflow. It tests the project, builds the frontend image with Cloud Build,
-  and deploys it to Cloud Run.
+* Streamlit frontend image publishing runs through `.github/workflows/cloudbuild_frontend.yaml` on relevant pushes to
+  `main` or by manually starting the workflow on `main`. It tests the project, builds the frontend image with Cloud
+  Build, and publishes a unique version tag plus `latest` to Artifact Registry.
   * It uses the same `GCP_API_DEPLOY_CREDENTIALS` GitHub Actions secret as the API workflow and the repository variables
     documented in the workflow.
-* The local Cloud Run deployment scripts and their Invoke tasks have been removed. Use the API and frontend GitHub
-  Actions workflows for cloud deployment. Local BentoML serving remains available through `start-bento`.
+* `.github/workflows/deploy_api_cloudrun.yaml` and `.github/workflows/deploy_frontend_cloudrun.yaml` preserve the full
+  Cloud Run deployment flows as retired examples. Their contents and triggers are unchanged; retirement is managed
+  by disabling the workflows in GitHub. Verify the renamed workflows are disabled after publishing the rename.
+* Registry retention and on-premises deployment are not configured by the build workflows.
+* The local Cloud Run deployment scripts and their Invoke tasks have been removed. Local BentoML serving remains
+  available through `start-bento`.
 * The project uses `pre-commit` for managing pre-commit hooks. To run all hooks on all files, use
     `uv run pre-commit run --all-files`. For more information, refer to the `.pre-commit-config.yaml` file.
 

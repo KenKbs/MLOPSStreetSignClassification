@@ -1,0 +1,83 @@
+name: Test, build, and publish Streamlit frontend
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".dockerignore"
+      - ".gcloudignore"
+      - ".github/workflows/cloudbuild_frontend.yaml"
+      - "cloudbuild_frontend.yaml"
+      - "dockerfiles/frontend.dockerfile"
+      - "pyproject.toml"
+      - "src/street_sign_project/streamlit_app.py"
+      - "tasks.py"
+      - "tests/**"
+      - "uv.lock"
+  workflow_dispatch:
+
+concurrency:
+  group: build-streamlit-artifacts
+  cancel-in-progress: false
+
+env:
+  PROJECT_ID: ${{ vars.GCP_PROJECT_ID || 'mlops-steetsigns' }}
+  REGION: ${{ vars.GCP_REGION || 'europe-west3' }}
+  REPOSITORY: ${{ vars.GAR_REPOSITORY || 'docker-registry' }}
+  IMAGE_NAME: ${{ vars.FRONTEND_IMAGE_NAME || 'street-sign-frontend' }}
+  CLOUD_BUILD_STAGING_BUCKET: ${{ vars.CLOUD_BUILD_STAGING_BUCKET || 'mlops-steetsigns_cloudbuild' }}
+  IMAGE_TAG: ${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+
+jobs:
+  build-frontend:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          python-version: "3.12"
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+
+      - name: Install dependencies
+        run: uv sync --dev --locked
+
+      - name: Run tests
+        run: uv run invoke test
+
+      - name: Prepare frontend build context
+        shell: bash
+        run: |
+          build_context="${RUNNER_TEMP}/street-sign-frontend-build-context"
+          mkdir -p "${build_context}"
+          git archive HEAD | tar -x -C "${build_context}"
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+          credentials_json: ${{ secrets.GCP_API_DEPLOY_CREDENTIALS }}
+
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+
+      - name: Build and push frontend image with Cloud Build
+        shell: bash
+        run: |
+          build_context="${RUNNER_TEMP}/street-sign-frontend-build-context"
+          substitutions="_REGION=${REGION},_REPOSITORY=${REPOSITORY},_IMAGE_NAME=${IMAGE_NAME}"
+          substitutions="${substitutions},_IMAGE_TAG=${IMAGE_TAG}"
+          gcloud builds submit "${build_context}" \
+            --config="${build_context}/cloudbuild_frontend.yaml" \
+            --gcs-source-staging-dir="gs://${CLOUD_BUILD_STAGING_BUCKET}/source" \
+            --project="${PROJECT_ID}" \
+            --substitutions="${substitutions}"

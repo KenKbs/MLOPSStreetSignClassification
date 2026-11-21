@@ -109,13 +109,23 @@ uv run invoke docker-api        # serve the API in a container
 uv run invoke docker-frontend   # serve the frontend and API with Compose
 ```
 
-## Deployment (Google Cloud Run)
+## Image publishing
 
-Cloud deployments use the GitHub Actions workflows for the
-[FastAPI backend](https://github.com/KenKbs/MLOPSStreetSignClassification/actions/workflows/deploy_api.yaml) and
-[Streamlit frontend](https://github.com/KenKbs/MLOPSStreetSignClassification/actions/workflows/deploy_frontend.yaml).
-They run on relevant pushes to `main` or can be started manually from GitHub Actions. Configure their repository
-variables and credentials as described in the [deployment documentation](index.md#api-deployment).
+The [API build](https://github.com/KenKbs/MLOPSStreetSignClassification/actions/workflows/cloudbuild_api.yaml) and
+[frontend build](https://github.com/KenKbs/MLOPSStreetSignClassification/actions/workflows/cloudbuild_frontend.yaml)
+workflows run on relevant pushes to `main` or can be started manually on `main`. They run tests and use Cloud Build
+to publish a unique version tag and `latest` to Artifact Registry. They do not deploy services or configure retention.
+Configure their repository variables and credentials as described in the
+[publishing documentation](index.md#image-publishing).
+
+## Retired Cloud Run deployment examples
+
+The [API Cloud Run](https://github.com/KenKbs/MLOPSStreetSignClassification/actions/workflows/deploy_api_cloudrun.yaml)
+and [frontend Cloud Run][cloud-ui]
+workflows retain their full test, build, publish, and deploy flows and their original triggers. They are retired by
+disabling them in GitHub. Verify the renamed workflows are disabled after the rename is published.
+
+[cloud-ui]: https://github.com/KenKbs/MLOPSStreetSignClassification/actions/workflows/deploy_frontend_cloudrun.yaml
 
 The local Cloud Run deployment scripts and their Invoke tasks have been removed. For local BentoML serving, use
 `uv run invoke start-bento` as described above.

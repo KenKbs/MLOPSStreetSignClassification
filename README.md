@@ -181,6 +181,10 @@ uv run invoke start-bento       # build and run the BentoML API at http://localh
 uv run invoke test-bento        # send a smoke-test request to BentoML
 ```
 
+The local Compose stack checks API and frontend health every 10 seconds. The frontend waits for the API to become
+healthy before starting; the API has a 120-second startup grace period for loading the model. Check service health
+with `docker compose ps`.
+
 The dedicated evaluation container and its automated Cloud Build workflow have been removed.
 
 ## Image publishing and deployment

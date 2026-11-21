@@ -7,8 +7,20 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./models:/app/models:ro
       - ./API_uploads:/app/API_uploads
+    healthcheck:
+      test:
+        - CMD
+        - uv
+        - run
+        - --no-sync
+        - python
+        - -c
+        - "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/openapi.json', timeout=3)"
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 120s
 
   frontend:
     build:
@@ -20,5 +32,16 @@ services:
     environment:
       API_URL: http://api:8000
       STREAMLIT_LOCK_API_URL: "true"
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/_stcore/health', timeout=3)"
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
     depends_on:
-      - api
+      api:
+        condition: service_healthy

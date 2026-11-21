@@ -109,6 +109,9 @@ uv run invoke docker-api        # serve the API in a container
 uv run invoke docker-frontend   # serve the frontend and API with Compose
 ```
 
+Both Compose services have health checks. The frontend starts after the API becomes healthy, with a 120-second
+startup grace period for loading the API model. Use `docker compose ps` to inspect service health.
+
 ## Image publishing
 
 The [API build](https://github.com/KenKbs/MLOPSStreetSignClassification/actions/workflows/cloudbuild_api.yaml) and

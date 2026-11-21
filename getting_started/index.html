@@ -414,10 +414,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#deployment-google-cloud-run" class="md-nav__link">
+  <a href="#image-publishing" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Deployment (Google Cloud Run)
+        Image publishing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#retired-cloud-run-deployment-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Retired Cloud Run deployment examples
       
     </span>
   </a>
@@ -791,10 +802,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#deployment-google-cloud-run" class="md-nav__link">
+  <a href="#image-publishing" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Deployment (Google Cloud Run)
+        Image publishing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#retired-cloud-run-deployment-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Retired Cloud Run deployment examples
       
     </span>
   </a>
@@ -896,12 +918,20 @@ uv run invoke stress-api --ui     # Locust web UI
 uv run invoke docker-api        # serve the API in a container
 uv run invoke docker-frontend   # serve the frontend and API with Compose
 </code></pre>
-<h2 id="deployment-google-cloud-run">Deployment (Google Cloud Run)</h2>
-<p>Cloud deployments use the GitHub Actions workflows for the
-<a href="https://github.com/KenKbs/MLOPSStreetSignClassification/actions/workflows/deploy_api.yaml">FastAPI backend</a> and
-<a href="https://github.com/KenKbs/MLOPSStreetSignClassification/actions/workflows/deploy_frontend.yaml">Streamlit frontend</a>.
-They run on relevant pushes to <code>main</code> or can be started manually from GitHub Actions. Configure their repository
-variables and credentials as described in the <a href="../#api-deployment">deployment documentation</a>.</p>
+<p>Both Compose services have health checks. The frontend starts after the API becomes healthy, with a 120-second
+startup grace period for loading the API model. Use <code>docker compose ps</code> to inspect service health.</p>
+<h2 id="image-publishing">Image publishing</h2>
+<p>The <a href="https://github.com/KenKbs/MLOPSStreetSignClassification/actions/workflows/cloudbuild_api.yaml">API build</a> and
+<a href="https://github.com/KenKbs/MLOPSStreetSignClassification/actions/workflows/cloudbuild_frontend.yaml">frontend build</a>
+workflows run on relevant pushes to <code>main</code> or can be started manually on <code>main</code>. They run tests and use Cloud Build
+to publish a unique version tag and <code>latest</code> to Artifact Registry. They do not deploy services or configure retention.
+Configure their repository variables and credentials as described in the
+<a href="../#image-publishing">publishing documentation</a>.</p>
+<h2 id="retired-cloud-run-deployment-examples">Retired Cloud Run deployment examples</h2>
+<p>The <a href="https://github.com/KenKbs/MLOPSStreetSignClassification/actions/workflows/deploy_api_cloudrun.yaml">API Cloud Run</a>
+and <a href="https://github.com/KenKbs/MLOPSStreetSignClassification/actions/workflows/deploy_frontend_cloudrun.yaml">frontend Cloud Run</a>
+workflows retain their full test, build, publish, and deploy flows and their original triggers. They are retired by
+disabling them in GitHub. Verify the renamed workflows are disabled after the rename is published.</p>
 <p>The local Cloud Run deployment scripts and their Invoke tasks have been removed. For local BentoML serving, use
 <code>uv run invoke start-bento</code> as described above.</p>
 <h2 id="building-this-documentation">Building this documentation</h2>

@@ -269,10 +269,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#api-deployment" class="md-nav__link">
+  <a href="#image-publishing" class="md-nav__link">
     <span class="md-ellipsis">
       
-        API deployment
+        Image publishing
       
     </span>
   </a>
@@ -280,10 +280,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#frontend-deployment" class="md-nav__link">
+  <a href="#api-deployment-retired-cloud-run-example" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Frontend deployment
+        API deployment (retired Cloud Run example)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#frontend-deployment-retired-cloud-run-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Frontend deployment (retired Cloud Run example)
       
     </span>
   </a>
@@ -557,10 +568,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#api-deployment" class="md-nav__link">
+  <a href="#image-publishing" class="md-nav__link">
     <span class="md-ellipsis">
       
-        API deployment
+        Image publishing
       
     </span>
   </a>
@@ -568,10 +579,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#frontend-deployment" class="md-nav__link">
+  <a href="#api-deployment-retired-cloud-run-example" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Frontend deployment
+        API deployment (retired Cloud Run example)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#frontend-deployment-retired-cloud-run-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Frontend deployment (retired Cloud Run example)
       
     </span>
   </a>
@@ -596,16 +618,36 @@
 
 
 <h1 id="street-sign-project">Street Sign Project</h1>
-<p>The project serves a YOLO street-sign detector through FastAPI and deploys it to Google Cloud Run.</p>
+<p>The project serves a YOLO street-sign detector through FastAPI and publishes API and frontend images to
+Artifact Registry.</p>
 <h2 id="system-architecture">System architecture</h2>
 <p><img alt="Street-sign MLOps architecture overview" src="assets/architecture_overview.png" /></p>
 <p>The overview shows how local development, continuous integration and deployment, cloud services, model serving and
 production monitoring fit together.</p>
 <p>Training saves a checkpoint and logs metrics and the model artifact to W&amp;B. Deployment selects
 an explicit checkpoint through <code>API_MODEL_NAME</code> and DVC.</p>
-<h2 id="api-deployment">API deployment</h2>
-<p>The <code>Test, build, and deploy FastAPI</code> GitHub Actions workflow is the primary production deployment path. On relevant
-pushes to <code>main</code>, or when started manually, it:</p>
+<h2 id="image-publishing">Image publishing</h2>
+<p>The <code>Test, build, and publish FastAPI</code> (<code>cloudbuild_api.yaml</code>) and
+<code>Test, build, and publish Streamlit frontend</code> (<code>cloudbuild_frontend.yaml</code>) GitHub Actions workflows run on relevant
+pushes to <code>main</code> or can be started manually on <code>main</code>. They install the locked development environment, run the tests, and
+submit builds to Cloud Build. The API workflow first downloads the checkpoint selected by <code>API_MODEL_NAME</code> from DVC.</p>
+<p>Both builds publish a unique <code>&lt;commit-sha&gt;-&lt;run-id&gt;-&lt;run-attempt&gt;</code> tag and <code>latest</code> to Artifact Registry using the
+existing Cloud Build configurations and AMD64 architecture. Publishing is serialized per service; manual runs on
+other branches are skipped. These workflows do not deploy services or configure registry retention.</p>
+<p>Both workflows use the existing <code>GCP_API_DEPLOY_CREDENTIALS</code> repository secret. Publishing needs
+<code>roles/storage.objectUser</code> on the Cloud Build staging bucket and <code>roles/cloudbuild.builds.editor</code> on the project;
+the API workflow also needs <code>roles/storage.objectViewer</code> on the DVC bucket. The Cloud Build service account needs
+<code>roles/artifactregistry.writer</code> on the image repository. Cloud Run deployment permissions are not required by the
+new build workflows.</p>
+<p>Shared repository variables are <code>GCP_PROJECT_ID</code>, <code>GCP_REGION</code>, <code>GAR_REPOSITORY</code>, and <code>CLOUD_BUILD_STAGING_BUCKET</code>.
+The API build also uses <code>API_IMAGE_NAME</code> and <code>API_MODEL_NAME</code>; the frontend build uses <code>FRONTEND_IMAGE_NAME</code>.
+Their defaults are listed in the Cloud Run reference tables below.</p>
+<p>Registry cleanup policies and on-premises deployment are deferred. The Cloud Run workflows below are retained as
+retired showcase examples. Their complete contents and triggers are unchanged, and retirement is managed by disabling
+them in GitHub. Verify the renamed workflows remain disabled after publishing the rename.</p>
+<h2 id="api-deployment-retired-cloud-run-example">API deployment (retired Cloud Run example)</h2>
+<p>The <code>Test, build, and deploy FastAPI</code> GitHub Actions workflow (<code>deploy_api_cloudrun.yaml</code>) retains the full deployment
+flow. If enabled in GitHub, on relevant pushes to <code>main</code>, or when started manually, it:</p>
 <ol>
 <li>installs the locked development environment and runs the test suite;</li>
 <li>downloads the configured API model from the DVC GCS remote;</li>
@@ -690,9 +732,9 @@ needs <code>roles/artifactregistry.writer</code> on the image repository. The Cl
 </tr>
 </tbody>
 </table>
-<h2 id="frontend-deployment">Frontend deployment</h2>
-<p>The <code>Test, build, and deploy Streamlit frontend</code> GitHub Actions workflow is the primary production frontend deployment
-path. On relevant pushes to <code>main</code>, or when started manually, it:</p>
+<h2 id="frontend-deployment-retired-cloud-run-example">Frontend deployment (retired Cloud Run example)</h2>
+<p>The <code>Test, build, and deploy Streamlit frontend</code> GitHub Actions workflow (<code>deploy_frontend_cloudrun.yaml</code>) retains the
+full deployment flow. If enabled in GitHub, on relevant pushes to <code>main</code>, or when started manually, it:</p>
 <ol>
 <li>installs the locked development environment and runs the test suite;</li>
 <li>submits the Streamlit container build to Google Cloud Build;</li>
@@ -767,8 +809,8 @@ service account needs <code>roles/storage.objectUser</code> on the Cloud Build s
 </tr>
 </tbody>
 </table>
-<p>The local Cloud Run deployment scripts and their Invoke tasks have been removed. Use the GitHub Actions workflows
-described above for API and frontend cloud deployments; configure deployment settings through their repository variables.</p>
+<p>The local Cloud Run deployment scripts and their Invoke tasks have been removed. The retired GitHub Actions workflows
+above document API and frontend cloud deployment; their repository variables configure deployment settings.</p>
 
 
 

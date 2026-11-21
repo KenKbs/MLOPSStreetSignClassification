@@ -2,8 +2,8 @@
 
 [![Tests][tests-badge]][tests-workflow]
 [![Ruff][ruff-badge]][ruff-workflow]
-[![Deploy API][api-badge]][api-workflow]
-[![Deploy frontend][ui-badge]][frontend-workflow]
+[![Build API][api-badge]][api-workflow]
+[![Build frontend][ui-badge]][frontend-workflow]
 
 An end-to-end MLOps project for detecting and classifying street signs in images. The project fine-tunes an
 Ultralytics YOLO model on 73 street-sign classes, serves predictions through FastAPI and Streamlit, and automates data
@@ -29,7 +29,7 @@ The Cloud Run services can scale to zero, so the first request after an idle per
 - Records production image features and prediction summaries for Evidently data-drift reports.
 - Exposes Prometheus request, error, and prediction-latency metrics.
 - Tests across supported Python and operating-system combinations with GitHub Actions.
-- Builds images with Google Cloud Build, stores them in Artifact Registry, and deploys them to Cloud Run.
+- Builds images with Google Cloud Build and stores them in Artifact Registry; retains Cloud Run deployment examples.
 
 ## Architecture
 
@@ -181,21 +181,32 @@ uv run invoke start-bento       # build and run the BentoML API at http://localh
 uv run invoke test-bento        # send a smoke-test request to BentoML
 ```
 
+The local Compose stack checks API and frontend health every 10 seconds. The frontend waits for the API to become
+healthy before starting; the API has a 120-second startup grace period for loading the model. Check service health
+with `docker compose ps`.
+
 The dedicated evaluation container and its automated Cloud Build workflow have been removed.
 
-## Deployment
+## Image publishing and deployment
 
-The primary production paths are the GitHub Actions workflows for the
-[FastAPI backend](.github/workflows/deploy_api.yaml) and
-[Streamlit frontend](.github/workflows/deploy_frontend.yaml). On relevant changes to `main`, they run the tests, build
-commit-tagged container images with Cloud Build, push them to Artifact Registry, and deploy them to Cloud Run. The API
-workflow also pulls the selected model from DVC before building its image.
+The [API build](.github/workflows/cloudbuild_api.yaml) and
+[frontend build](.github/workflows/cloudbuild_frontend.yaml) workflows run on relevant changes to `main`, or manually
+on `main`. They run the tests, build images with Cloud Build, and publish them to Artifact Registry without deploying.
+The API workflow also pulls the selected model from DVC before building its image.
 
-Configure cloud deployment through the repository variables documented in the workflows and the
-[project documentation](docs/source/index.md).
+Each image receives a unique `<commit-sha>-<run-id>-<run-attempt>` tag and the moving `latest` tag. Publishing is
+serialized per service. Registry retention policies and on-premises deployment will be configured separately.
 
-The local Cloud Run deployment scripts and their Invoke tasks have been removed. Use the GitHub Actions workflows
-for API and frontend cloud deployments, or the container commands above for local serving.
+Configure publishing through the repository variables documented in the workflows and the
+[project documentation](docs/source/index.md#image-publishing).
+
+The full [API Cloud Run](.github/workflows/deploy_api_cloudrun.yaml) and
+[frontend Cloud Run](.github/workflows/deploy_frontend_cloudrun.yaml) workflows are retained as retired showcase
+examples, with their existing triggers and behavior unchanged. Retirement is managed by disabling them in GitHub;
+verify that the renamed workflows are disabled after the rename reaches GitHub.
+
+The local Cloud Run deployment scripts and their Invoke tasks have been removed. Use the container commands above
+for local serving.
 
 ## Monitoring
 
@@ -227,7 +238,7 @@ The source documentation is under [`docs/source/`](docs/source/) and is automati
 ## Repository layout
 
 ```text
-├── .github/workflows/       # CI, model checks, documentation, and Cloud Run deployment
+├── .github/workflows/       # CI, image publishing, documentation, and retired Cloud Run deployment
 ├── configs/                 # Hydra training configuration, sweep, and class mappings
 ├── data/                    # DVC-tracked raw and preprocessed datasets plus YOLO dataset YAML
 ├── dockerfiles/             # FastAPI and Streamlit images
@@ -246,10 +257,10 @@ Run `uv run invoke --list` for the complete command reference.
 
 This project is available under the [MIT License](LICENSE).
 
-[api-badge]: https://github.com/KenKbs/MLOPSStreetSignClassification/actions/workflows/deploy_api.yaml/badge.svg
-[api-workflow]: https://github.com/KenKbs/MLOPSStreetSignClassification/actions/workflows/deploy_api.yaml
+[api-badge]: https://github.com/KenKbs/MLOPSStreetSignClassification/actions/workflows/cloudbuild_api.yaml/badge.svg
+[api-workflow]: https://github.com/KenKbs/MLOPSStreetSignClassification/actions/workflows/cloudbuild_api.yaml
 [frontend-screenshot]: docs/source/assets/frontend_screenshot.png
-[frontend-workflow]: https://github.com/KenKbs/MLOPSStreetSignClassification/actions/workflows/deploy_frontend.yaml
+[frontend-workflow]: https://github.com/KenKbs/MLOPSStreetSignClassification/actions/workflows/cloudbuild_frontend.yaml
 [live-api]: https://street-sign-api-205178077520.europe-west3.run.app/
 [live-frontend]: https://street-sign-frontend-205178077520.europe-west3.run.app
 [live-swagger]: https://street-sign-api-205178077520.europe-west3.run.app/docs
@@ -257,4 +268,4 @@ This project is available under the [MIT License](LICENSE).
 [ruff-workflow]: https://github.com/KenKbs/MLOPSStreetSignClassification/actions/workflows/codecheck.yaml
 [tests-badge]: https://github.com/KenKbs/MLOPSStreetSignClassification/actions/workflows/tests.yaml/badge.svg
 [tests-workflow]: https://github.com/KenKbs/MLOPSStreetSignClassification/actions/workflows/tests.yaml
-[ui-badge]: https://github.com/KenKbs/MLOPSStreetSignClassification/actions/workflows/deploy_frontend.yaml/badge.svg
+[ui-badge]: https://github.com/KenKbs/MLOPSStreetSignClassification/actions/workflows/cloudbuild_frontend.yaml/badge.svg
